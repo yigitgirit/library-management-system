@@ -153,7 +153,7 @@ export function BookFilters() {
             ))}
           </div>
         ) : (
-          <div className="max-h-[300px] overflow-y-auto pr-2 -mr-2 space-y-3">
+          <div className="max-h-[300px] overflow-y-auto overflow-x-hidden pr-2 -mr-2 space-y-3">
             {filteredCategories.length > 0 ? (
               filteredCategories.map((category) => (
                 <div key={category.id} className="flex items-center space-x-2">
