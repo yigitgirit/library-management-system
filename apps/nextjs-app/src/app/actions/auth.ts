@@ -5,7 +5,7 @@ import { cookies } from "next/headers"
 import { AuthControllerService } from "@/lib/api"
 import { loginSchema, registerSchema, LoginInput, RegisterInput } from "@/lib/schemas/auth"
 import { OpenAPI } from "@/lib/api/core/OpenAPI"
-import { parseApiError } from "@/lib/api-client/api-utils"
+import { handleApiError } from "@/lib/api-client/api-utils"
 
 export type ActionResponse = {
   success: boolean
@@ -62,7 +62,7 @@ export async function loginAction(data: LoginInput): Promise<ActionResponse> {
     return { success: false, error: "Login failed: No access token received" }
   } catch (error) {
     console.error("Login action error:", error)
-    const { message, validationErrors } = parseApiError(error);
+    const { message, validationErrors } = handleApiError(error);
     return { success: false, error: message, validationErrors }
   }
 }
@@ -87,7 +87,7 @@ export async function registerAction(data: RegisterInput): Promise<ActionRespons
 
     return { success: true }
   } catch (error) {
-    const { message, validationErrors } = parseApiError(error);
+    const { message, validationErrors } = handleApiError(error);
     return { success: false, error: message, validationErrors }
   }
 }
