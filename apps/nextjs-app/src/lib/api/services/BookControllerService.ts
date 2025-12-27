@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApiResponseBookDto } from '../models/ApiResponseBookDto';
-import type { ApiResponsePageBookDto } from '../models/ApiResponsePageBookDto';
+import type { ApiResponsePagedDataBookDto } from '../models/ApiResponsePagedDataBookDto';
 import type { BookSearchRequest } from '../models/BookSearchRequest';
 import type { Pageable } from '../models/Pageable';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -13,13 +13,13 @@ export class BookControllerService {
     /**
      * @param request
      * @param pageable
-     * @returns ApiResponsePageBookDto OK
+     * @returns ApiResponsePagedDataBookDto OK
      * @throws ApiError
      */
     public static getAllBooks(
         request: BookSearchRequest,
         pageable: Pageable,
-    ): CancelablePromise<ApiResponsePageBookDto> {
+    ): CancelablePromise<ApiResponsePagedDataBookDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/books',

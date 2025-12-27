@@ -10,6 +10,7 @@ export namespace FineUserSearchRequest {
         UNPAID = 'UNPAID',
         PAID = 'PAID',
         WAIVED = 'WAIVED',
+        CANCELLED = 'CANCELLED',
     }
 }
 

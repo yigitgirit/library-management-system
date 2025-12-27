@@ -20,6 +20,7 @@ export namespace FineSearchRequest {
         UNPAID = 'UNPAID',
         PAID = 'PAID',
         WAIVED = 'WAIVED',
+        CANCELLED = 'CANCELLED',
     }
 }
 

@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApiResponseCopyDto } from '../models/ApiResponseCopyDto';
-import type { ApiResponsePageCopyDto } from '../models/ApiResponsePageCopyDto';
+import type { ApiResponsePagedDataCopyDto } from '../models/ApiResponsePagedDataCopyDto';
 import type { CopySearchRequest } from '../models/CopySearchRequest';
 import type { Pageable } from '../models/Pageable';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -13,13 +13,13 @@ export class CopyControllerService {
     /**
      * @param request
      * @param pageable
-     * @returns ApiResponsePageCopyDto OK
+     * @returns ApiResponsePagedDataCopyDto OK
      * @throws ApiError
      */
     public static getAllCopies(
         request: CopySearchRequest,
         pageable: Pageable,
-    ): CancelablePromise<ApiResponsePageCopyDto> {
+    ): CancelablePromise<ApiResponsePagedDataCopyDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/copies',

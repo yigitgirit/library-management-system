@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApiResponseLoanDetailDto } from '../models/ApiResponseLoanDetailDto';
-import type { ApiResponsePageLoanDto } from '../models/ApiResponsePageLoanDto';
+import type { ApiResponsePagedDataLoanDto } from '../models/ApiResponsePagedDataLoanDto';
 import type { ApiResponseVoid } from '../models/ApiResponseVoid';
 import type { LoanCreateRequest } from '../models/LoanCreateRequest';
 import type { LoanPatchRequest } from '../models/LoanPatchRequest';
@@ -90,13 +90,13 @@ export class LoanManagementControllerService {
     /**
      * @param request
      * @param pageable
-     * @returns ApiResponsePageLoanDto OK
+     * @returns ApiResponsePagedDataLoanDto OK
      * @throws ApiError
      */
     public static getAllLoans(
         request: LoanSearchRequest,
         pageable: Pageable,
-    ): CancelablePromise<ApiResponsePageLoanDto> {
+    ): CancelablePromise<ApiResponsePagedDataLoanDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/management/loans',

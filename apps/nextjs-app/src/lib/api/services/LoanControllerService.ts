@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ApiResponsePageLoanUserSummaryDto } from '../models/ApiResponsePageLoanUserSummaryDto';
+import type { ApiResponsePagedDataLoanUserSummaryDto } from '../models/ApiResponsePagedDataLoanUserSummaryDto';
 import type { LoanUserSearchRequest } from '../models/LoanUserSearchRequest';
 import type { Pageable } from '../models/Pageable';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -12,13 +12,13 @@ export class LoanControllerService {
     /**
      * @param request
      * @param pageable
-     * @returns ApiResponsePageLoanUserSummaryDto OK
+     * @returns ApiResponsePagedDataLoanUserSummaryDto OK
      * @throws ApiError
      */
     public static getMyLoans(
         request: LoanUserSearchRequest,
         pageable: Pageable,
-    ): CancelablePromise<ApiResponsePageLoanUserSummaryDto> {
+    ): CancelablePromise<ApiResponsePagedDataLoanUserSummaryDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/loans/my-loans',

@@ -3,12 +3,12 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApiErrorResponse } from './ApiErrorResponse';
-import type { PageObject } from './PageObject';
-export type ApiResponsePageFineDto = {
+import type { PagedDataAuthorDto } from './PagedDataAuthorDto';
+export type ApiResponsePagedDataAuthorDto = {
     success?: boolean;
     timestamp?: string;
     message?: string;
-    data?: PageObject;
+    data?: PagedDataAuthorDto;
     error?: ApiErrorResponse;
 };
 

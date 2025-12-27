@@ -7,8 +7,9 @@ export type BookSearchRequest = {
     isbn?: string;
     title?: string;
     authorName?: string;
-    categoryId?: number;
+    categoryIds?: Array<number>;
     minPrice?: number;
     maxPrice?: number;
     available?: boolean;
 };
+

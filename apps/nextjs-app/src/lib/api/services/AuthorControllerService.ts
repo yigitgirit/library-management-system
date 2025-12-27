@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApiResponseAuthorDto } from '../models/ApiResponseAuthorDto';
-import type { ApiResponsePageAuthorDto } from '../models/ApiResponsePageAuthorDto';
+import type { ApiResponsePagedDataAuthorDto } from '../models/ApiResponsePagedDataAuthorDto';
 import type { Pageable } from '../models/Pageable';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -12,13 +12,13 @@ export class AuthorControllerService {
     /**
      * @param pageable
      * @param name
-     * @returns ApiResponsePageAuthorDto OK
+     * @returns ApiResponsePagedDataAuthorDto OK
      * @throws ApiError
      */
     public static getAllAuthors(
         pageable: Pageable,
         name?: string,
-    ): CancelablePromise<ApiResponsePageAuthorDto> {
+    ): CancelablePromise<ApiResponsePagedDataAuthorDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/authors',

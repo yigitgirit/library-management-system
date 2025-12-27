@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApiResponseCategoryDto } from '../models/ApiResponseCategoryDto';
-import type { ApiResponsePageCategoryDto } from '../models/ApiResponsePageCategoryDto';
+import type { ApiResponsePagedDataCategoryDto } from '../models/ApiResponsePagedDataCategoryDto';
 import type { Pageable } from '../models/Pageable';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -12,13 +12,13 @@ export class CategoryControllerService {
     /**
      * @param pageable
      * @param name
-     * @returns ApiResponsePageCategoryDto OK
+     * @returns ApiResponsePagedDataCategoryDto OK
      * @throws ApiError
      */
     public static getCategories(
         pageable: Pageable,
         name?: string,
-    ): CancelablePromise<ApiResponsePageCategoryDto> {
+    ): CancelablePromise<ApiResponsePagedDataCategoryDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/categories',

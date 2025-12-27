@@ -2,13 +2,21 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type LoanUserSearchRequest = {
+export type LoanDto = {
+    id?: number;
+    userId?: number;
+    userEmail?: string;
+    copyId?: number;
     bookTitle?: string;
-    isbn?: string;
-    status?: LoanUserSearchRequest.status;
-    overdue?: boolean;
+    bookIsbn?: string;
+    bookCoverUrl?: string;
+    status?: LoanDto.status;
+    loanDate?: string;
+    dueDate?: string;
+    returnDate?: string;
+    isOverdue?: boolean;
 };
-export namespace LoanUserSearchRequest {
+export namespace LoanDto {
     export enum status {
         ACTIVE = 'ACTIVE',
         OVERDUE = 'OVERDUE',

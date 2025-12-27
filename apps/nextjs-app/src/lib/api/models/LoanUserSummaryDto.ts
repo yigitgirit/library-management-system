@@ -2,13 +2,19 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type LoanUserSearchRequest = {
+import type { FineDto } from './FineDto';
+export type LoanUserSummaryDto = {
+    id?: number;
     bookTitle?: string;
-    isbn?: string;
-    status?: LoanUserSearchRequest.status;
-    overdue?: boolean;
+    bookCoverUrl?: string;
+    status?: LoanUserSummaryDto.status;
+    loanDate?: string;
+    dueDate?: string;
+    returnDate?: string;
+    isOverdue?: boolean;
+    fines?: Array<FineDto>;
 };
-export namespace LoanUserSearchRequest {
+export namespace LoanUserSummaryDto {
     export enum status {
         ACTIVE = 'ACTIVE',
         OVERDUE = 'OVERDUE',

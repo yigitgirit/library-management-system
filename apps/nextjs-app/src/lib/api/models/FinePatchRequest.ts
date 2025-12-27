@@ -12,6 +12,7 @@ export namespace FinePatchRequest {
         UNPAID = 'UNPAID',
         PAID = 'PAID',
         WAIVED = 'WAIVED',
+        CANCELLED = 'CANCELLED',
     }
 }
 

@@ -21,3 +21,4 @@ export type DashboardOverviewDto = {
     unpaidFinesAmount?: number;
     collectedFinesThisMonth?: number;
 };
+

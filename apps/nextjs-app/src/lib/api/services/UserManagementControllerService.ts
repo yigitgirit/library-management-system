@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ApiResponsePageUserDto } from '../models/ApiResponsePageUserDto';
+import type { ApiResponsePagedDataUserDto } from '../models/ApiResponsePagedDataUserDto';
 import type { ApiResponseUserDto } from '../models/ApiResponseUserDto';
 import type { ApiResponseUserUpdateResponse } from '../models/ApiResponseUserUpdateResponse';
 import type { ApiResponseVoid } from '../models/ApiResponseVoid';
@@ -68,12 +68,12 @@ export class UserManagementControllerService {
     }
     /**
      * @param pageable
-     * @returns ApiResponsePageUserDto OK
+     * @returns ApiResponsePagedDataUserDto OK
      * @throws ApiError
      */
     public static getAllUsers(
         pageable: Pageable,
-    ): CancelablePromise<ApiResponsePageUserDto> {
+    ): CancelablePromise<ApiResponsePagedDataUserDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/management/users',

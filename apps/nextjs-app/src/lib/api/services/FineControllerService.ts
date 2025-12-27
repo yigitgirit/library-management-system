@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApiResponseFineDto } from '../models/ApiResponseFineDto';
-import type { ApiResponsePageFineDto } from '../models/ApiResponsePageFineDto';
+import type { ApiResponsePagedDataFineDto } from '../models/ApiResponsePagedDataFineDto';
 import type { FineUserSearchRequest } from '../models/FineUserSearchRequest';
 import type { Pageable } from '../models/Pageable';
 import type { PaymentRequest } from '../models/PaymentRequest';
@@ -34,13 +34,13 @@ export class FineControllerService {
     /**
      * @param request
      * @param pageable
-     * @returns ApiResponsePageFineDto OK
+     * @returns ApiResponsePagedDataFineDto OK
      * @throws ApiError
      */
     public static getMyFines(
         request: FineUserSearchRequest,
         pageable: Pageable,
-    ): CancelablePromise<ApiResponsePageFineDto> {
+    ): CancelablePromise<ApiResponsePagedDataFineDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/fines/my-fines',
