@@ -10,7 +10,7 @@ export default async function BooksManagementPage() {
     redirect("/login");
   }
 
-  if (!user.roles.some(role => role === ROLES.ADMIN || role === ROLES.LIBRARIAN)) {
+  if (!user.roles?.some(role => role === ROLES.ADMIN || role === ROLES.LIBRARIAN)) {
       redirect("/dashboard");
   }
 

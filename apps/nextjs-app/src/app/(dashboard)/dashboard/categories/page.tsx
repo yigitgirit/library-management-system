@@ -10,7 +10,7 @@ export default async function CategoriesManagementPage() {
     redirect("/login");
   }
 
-  if (!user.roles.includes(ROLES.ADMIN)) {
+  if (!user.roles?.includes(ROLES.ADMIN)) {
       redirect("/dashboard");
   }
 
