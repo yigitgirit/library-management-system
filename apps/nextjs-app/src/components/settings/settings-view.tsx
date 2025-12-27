@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2, Bell, Mail, MessageSquare, Smartphone } from "lucide-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { parseApiError } from "@/lib/api-client/api-utils"
+import { handleApiError } from "@/lib/api-client/api-utils"
 import { Switch } from "@/components/ui/switch"
 import { Skeleton } from "@/components/ui/skeleton"
 
@@ -49,7 +49,7 @@ export function SettingsView({ initialProfile }: SettingsViewProps) {
       })
     },
     onError: (error: unknown) => {
-      const parsedError = parseApiError(error)
+      const parsedError = handleApiError(error)
       
       if (parsedError.validationErrors) {
         setValidationErrors(parsedError.validationErrors)
