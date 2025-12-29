@@ -1,5 +1,5 @@
-import { bookService } from "@/lib/books/service"
-import { Book } from "@/lib/books/types"
+import { BookControllerService } from "@/lib/api"
+import { BookDto } from "@/lib/api"
 import { cn, createBookSlug } from "@/lib/utils"
 import { Library, BookOpen } from "lucide-react"
 import Link from "next/link"
@@ -7,7 +7,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { BookPagination } from "@/components/books/book-pagination"
+import { BookPagination } from "@/features/books/book-pagination"
 
 interface BookListProps {
   searchParams: { [key: string]: string | string[] | undefined }
@@ -36,23 +36,24 @@ export async function BookList({ searchParams }: BookListProps) {
   const colsParam = searchParams.cols
   const cols = colsParam === '2' ? 2 : colsParam === '3' ? 3 : 4
 
-  let books: Book[] = []
+  let books: BookDto[] = []
   let totalPages = 0
   let totalElements = 0
   let error = null
 
   try {
-    const response = await bookService.getBooks({
-      search,
-      categoryIds,
-      available: available ? true : undefined,
-      page,
-      size,
-      sort
-    })
-    books = response.content || []
-    totalPages = response.page?.totalPages || 0
-    totalElements = response.page?.totalElements || 0
+    const response = await BookControllerService.getAllBooks(
+        {
+            search: search,
+            categoryIds: categoryIds,
+            available: available ? true : undefined,
+            page: page,
+            size: size,
+            sort: sort ? [sort] : undefined
+        })
+    books = response.data?.content || []
+    totalPages = response.data?.page?.totalPages || 0
+    totalElements = response.data?.page?.totalElements || 0
   } catch (e) {
     console.error("Failed to fetch books:", e)
     error = e
@@ -109,9 +110,9 @@ export async function BookList({ searchParams }: BookListProps) {
   )
 }
 
-function BookCard({ book }: { book: Book }) {
+function BookCard({ book }: { book: BookDto }) {
   const isAvailable = (book.availableCopies || 0) > 0
-  const bookSlug = createBookSlug(book.id, book.title || "book");
+  const bookSlug = createBookSlug(book.id!, book.title || "book");
 
   return (
     <Card className="flex flex-col h-full overflow-hidden hover:shadow-md transition-shadow group">

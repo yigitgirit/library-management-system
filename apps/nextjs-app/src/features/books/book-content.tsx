@@ -18,9 +18,9 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { BookDescription } from "@/components/books/book-description"
-import { BookReviews } from "@/components/books/book-reviews"
-import { BookFloatingBar } from "@/components/books/book-floating-bar"
+import { BookDescription } from "@/features/books/book-description"
+import { BookReviews } from "@/features/books/book-reviews"
+import { BookFloatingBar } from "@/features/books/book-floating-bar"
 
 interface BookContentProps {
   id: string
@@ -30,7 +30,7 @@ export async function BookContent({ id }: BookContentProps) {
   let bookData = null
 
   try {
-    const response = await BookControllerService.getBookById(Number(id))
+    const response = await BookControllerService.getBookById({id: Number(id)})
     bookData = response.data
   } catch (error) {
     console.error("Failed to fetch book:", error)
@@ -42,23 +42,23 @@ export async function BookContent({ id }: BookContentProps) {
 
   // Mock Reviews (17 items) - Reviews API is not ready yet
   const reviews = [
-    { id: 1, user: "Alice M.", rating: 5, comment: "An absolute masterpiece. Must read!", date: "2 days ago" },
-    { id: 2, user: "Bob D.", rating: 4, comment: "Great story but a bit slow in the middle.", date: "1 week ago" },
-    { id: 3, user: "Charlie K.", rating: 5, comment: "Couldn't put it down. Highly recommended.", date: "2 weeks ago" },
-    { id: 4, user: "David L.", rating: 3, comment: "It was okay, but I expected more from the hype.", date: "3 weeks ago" },
-    { id: 5, user: "Eve P.", rating: 5, comment: "One of the best books I've read this year.", date: "1 month ago" },
-    { id: 6, user: "Frank S.", rating: 4, comment: "Solid writing and great character development.", date: "1 month ago" },
-    { id: 7, user: "Grace H.", rating: 2, comment: "Not my cup of tea. Too descriptive.", date: "2 months ago" },
-    { id: 8, user: "Henry T.", rating: 5, comment: "A classic for a reason.", date: "2 months ago" },
-    { id: 9, user: "Ivy R.", rating: 4, comment: "Enjoyed it thoroughly.", date: "3 months ago" },
-    { id: 10, user: "Jack N.", rating: 5, comment: "Life changing book.", date: "3 months ago" },
-    { id: 11, user: "Kelly O.", rating: 3, comment: "Good but repetitive.", date: "4 months ago" },
-    { id: 12, user: "Liam Y.", rating: 5, comment: "Brilliant!", date: "5 months ago" },
-    { id: 13, user: "Mia U.", rating: 4, comment: "Very engaging plot.", date: "6 months ago" },
-    { id: 14, user: "Noah I.", rating: 5, comment: "Loved every page.", date: "7 months ago" },
-    { id: 15, user: "Olivia E.", rating: 1, comment: "Boring.", date: "8 months ago" },
-    { id: 16, user: "Peter W.", rating: 5, comment: "Fantastic read.", date: "9 months ago" },
-    { id: 17, user: "Quinn Q.", rating: 4, comment: "Well written.", date: "10 months ago" },
+    { id: 1, user: "Alice M.", rating: 4, comment: "The narrative structure is solid, though the pacing in the second act drags slightly due to excessive exposition.", date: "2 days ago" },
+    { id: 2, user: "Burak K.", rating: 3, comment: "Karakter gelişimleri tutarlı ancak kurgudaki bazı teknik detaylar gerçekçilikten uzaklaşmış.", date: "1 week ago" },
+    { id: 3, user: "Charlie K.", rating: 4, comment: "A comprehensive analysis of the subject matter. The author provides good references but lacks a modern perspective on chapter 4.", date: "2 weeks ago" },
+    { id: 4, user: "Deniz Y.", rating: 4, comment: "Yazarın dili oldukça akıcı, fakat betimlemeler bazen olay örgüsünün önüne geçiyor. Teknik açıdan başarılı bir eser.", date: "3 weeks ago" },
+    { id: 5, user: "Eve P.", rating: 3, comment: "Interesting concepts presented. The methodology used for the main argument is sound, but the conclusion feels rushed.", date: "1 month ago" },
+    { id: 6, user: "Fatih S.", rating: 3, comment: "Konu ele alınış biçimiyle özgün. Ancak yan karakterlerin motivasyonları yeterince derinleştirilmemiş.", date: "1 month ago" },
+    { id: 7, user: "Grace H.", rating: 4, comment: "Technically accurate descriptions of the era. The dialogue, however, feels slightly anachronistic at times.", date: "2 months ago" },
+    { id: 8, user: "Hakan T.", rating: 4, comment: "Kurgu matematiği iyi kurulmuş. Olayların birbirine bağlanışı mantıklı, sadece final bölümü biraz daha detaylandırılabilirdi.", date: "2 months ago" },
+    { id: 9, user: "Ivy R.", rating: 4, comment: "Good use of technical terminology without alienating the reader. A solid resource for intermediate learners.", date: "3 months ago" },
+    { id: 10, user: "Jale N.", rating: 3, comment: "Sistematik bir anlatımı var. Bölümler arası geçişler yumuşak, ancak bazı teorik kısımlar daha fazla örnekle desteklenebilirdi.", date: "3 months ago" },
+    { id: 11, user: "Kelly O.", rating: 3, comment: "The premise is executed well. The technical aspects of the plot are handled with care, though emotional resonance is minimal.", date: "4 months ago" },
+    { id: 12, user: "Levent Y.", rating: 4, comment: "Dil bilgisi ve anlatım teknikleri açısından kusursuz. İçerik yoğunluğu sebebiyle yavaş okunması gereken bir kitap.", date: "5 months ago" },
+    { id: 13, user: "Mia U.", rating: 3, comment: "Provides a balanced view on the topic. The statistical data cited is outdated, but the core arguments remain valid.", date: "6 months ago" },
+    { id: 14, user: "Nihat I.", rating: 3, comment: "Teknik terimlerin kullanımı yerinde. Çeviri kalitesi genel olarak iyi olsa da bazı cümleler devrik kalmış.", date: "7 months ago" },
+    { id: 15, user: "Olivia E.", rating: 4, comment: "Solid framework and logical progression of ideas. It serves well as a reference material rather than a casual read.", date: "8 months ago" },
+    { id: 16, user: "Pelin W.", rating: 3, comment: "Yazarın konuya hakimiyeti belli oluyor. Akademik bir dille yazılmış, bu yüzden genel okuyucu için biraz ağır olabilir.", date: "9 months ago" },
+    { id: 17, user: "Quinn Q.", rating: 3, comment: "The world-building relies heavily on established tropes but executes them with technical precision.", date: "10 months ago" },
   ]
 
   // Prepare display data
