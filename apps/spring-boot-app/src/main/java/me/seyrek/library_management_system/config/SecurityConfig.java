@@ -48,7 +48,9 @@ public class SecurityConfig {
                             "/api/categories/**",
                             "/api/authors/**")
                         .permitAll()
-                    .requestMatchers("/api/loans/**").hasAnyRole("USER", "LIBRARIAN", "ADMIN")
+                    .requestMatchers("/api/loans/**").hasAnyRole("MEMBER", "LIBRARIAN", "ADMIN")
+                    .requestMatchers("/api/fines/**").hasAnyRole("MEMBER", "LIBRARIAN", "ADMIN")
+                    .requestMatchers("/api/notification-preferences/**").hasAnyRole("MEMBER", "LIBRARIAN", "ADMIN")
                     .requestMatchers("/api/management/**").hasAnyRole("ADMIN", "LIBRARIAN")
                     .requestMatchers(
                             "/swagger-ui/**",
