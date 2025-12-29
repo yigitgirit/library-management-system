@@ -1,31 +1,31 @@
-import { BooksManagementView } from "@/components/dashboard/books/books-management-view"
-import { getCurrentUser } from "@/lib/auth/auth-utils"
-import { redirect } from "next/navigation"
-import { ROLES } from "@/lib/constants"
+import { BooksContent } from "@/components/dashboard/books/books-content"
+import { BooksToolbar } from "@/components/dashboard/books/books-toolbar"
+import {BookSearchParams, bookSearchParamsSchema} from "@/lib/validations/book-search"
 
-export default async function BooksManagementPage() {
-  const user = await getCurrentUser();
-  
-  if (!user) {
-    redirect("/login");
-  }
+type BooksManagementPageProps = {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
 
-  if (!user.roles?.some(role => role === ROLES.ADMIN || role === ROLES.LIBRARIAN)) {
-      redirect("/dashboard");
-  }
+export default async function BooksManagementPage(props: BooksManagementPageProps) {
+    const rawParams = await props.searchParams;
+    const result = bookSearchParamsSchema.safeParse(rawParams);
+    const parsedParams: BookSearchParams = result.success ? result.data : bookSearchParamsSchema.parse({});
 
-  return (
-    <div className="flex flex-col gap-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Book Management</h2>
-          <p className="text-muted-foreground">
-            Manage library inventory, add new books, and update details.
-          </p>
+    return (
+        <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+                <div>
+                    <h2 className="text-2xl font-bold tracking-tight">Book Management</h2>
+                    <p className="text-sm text-muted-foreground">
+                        Manage library inventory of {parsedParams.search ? "filtered" : "all"} books.
+                    </p>
+                </div>
+            </div>
+
+            <div className="space-y-4">
+                <BooksToolbar initialFilters={parsedParams} />
+                <BooksContent params={parsedParams} />
+            </div>
         </div>
-      </div>
-
-      <BooksManagementView />
-    </div>
-  )
+    )
 }
