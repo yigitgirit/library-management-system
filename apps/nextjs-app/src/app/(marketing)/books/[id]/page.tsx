@@ -5,7 +5,7 @@ import { BookControllerService } from "@/lib/api"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import React, { Suspense } from "react"
-import { BookContent } from "./book-content"
+import { BookContent } from "@/features/books/book-content"
 import { Skeleton } from "@/components/ui/skeleton"
 import { extractIdFromSlug } from "@/lib/utils"
 
@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: BookPageProps): Promise<Metad
   const id = extractIdFromSlug(slug);
 
   try {
-    const response = await BookControllerService.getBookById(id)
+    const response = await BookControllerService.getBookById({id: id})
     const book = response.data
     
     if (!book) {

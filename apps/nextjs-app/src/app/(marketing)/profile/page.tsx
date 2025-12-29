@@ -6,7 +6,7 @@ import { cookies } from "next/headers"
 import { UserPrivateProfile } from "@/lib/profile/types"
 import Link from "next/link"
 import { Settings } from "lucide-react"
-import { AccessDenied } from "@/components/auth/access-denied"
+import { AccessDenied } from "@/features/auth/access-denied"
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 

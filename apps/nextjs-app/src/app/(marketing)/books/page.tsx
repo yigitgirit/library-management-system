@@ -2,12 +2,13 @@ import { Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Filter } from "lucide-react"
-import { BookFilters } from "@/components/books/book-filters"
-import { BookSort } from "@/components/books/book-sort"
-import { BookSearch } from "@/components/books/book-search"
-import { BookViewOptions } from "@/components/books/book-view-options"
+import { BookFilters } from "@/features/books/book-filters"
+import { BookSort } from "@/features/books/book-sort"
+import { BookSearch } from "@/features/books/book-search"
+import { BookViewOptions } from "@/features/books/book-view-options"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { BookList } from "./book-list"
+import { BookList } from "@/features/books/book-list"
+import { cn } from "@/lib/utils"
 
 export const dynamic = 'force-dynamic'
 
@@ -119,18 +120,19 @@ function FiltersSkeleton() {
 }
 
 function BookListSkeleton({ cols = 4, count = 8 }: { cols?: number, count?: number }) {
-    const gridClass = {
-        2: "grid-cols-1 sm:grid-cols-2",
-        3: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
-        4: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-    }[cols as 2 | 3 | 4] || "grid-cols-4";
+    const gridClass = cn(
+        "grid gap-6",
+        cols === 2 && "grid-cols-1 sm:grid-cols-2",
+        cols === 3 && "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
+        cols === 4 && "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+    )
 
     return (
         <div className="space-y-6">
             {/* Sync with Results Count Indicator */}
             <Skeleton className="h-5 w-48" />
 
-            <div className={`grid gap-6 ${gridClass}`}>
+            <div className={gridClass}>
                 {Array.from({ length: count }).map((_, i) => (
                     <div key={i} className="flex flex-col h-full overflow-hidden border rounded-lg bg-card">
                         {/* 4. Aspect Ratio Lock */}
