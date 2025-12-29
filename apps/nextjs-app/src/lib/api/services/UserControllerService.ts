@@ -21,13 +21,14 @@ export class UserControllerService {
         });
     }
     /**
-     * @param requestBody
      * @returns ApiResponseUserEditProfileResponse OK
      * @throws ApiError
      */
-    public static editMyProfile(
+    public static editMyProfile({
+        requestBody,
+    }: {
         requestBody: UserEditProfileRequest,
-    ): CancelablePromise<ApiResponseUserEditProfileResponse> {
+    }): CancelablePromise<ApiResponseUserEditProfileResponse> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/api/users/me',
@@ -36,13 +37,14 @@ export class UserControllerService {
         });
     }
     /**
-     * @param id
      * @returns ApiResponseUserPublicProfile OK
      * @throws ApiError
      */
-    public static getUserPublicProfile(
+    public static getUserPublicProfile({
+        id,
+    }: {
         id: number,
-    ): CancelablePromise<ApiResponseUserPublicProfile> {
+    }): CancelablePromise<ApiResponseUserPublicProfile> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/users/{id}',

@@ -4,38 +4,54 @@
 /* eslint-disable */
 import type { ApiResponseCategoryDto } from '../models/ApiResponseCategoryDto';
 import type { ApiResponsePagedDataCategoryDto } from '../models/ApiResponsePagedDataCategoryDto';
-import type { Pageable } from '../models/Pageable';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class CategoryControllerService {
     /**
-     * @param pageable
-     * @param name
      * @returns ApiResponsePagedDataCategoryDto OK
      * @throws ApiError
      */
-    public static getCategories(
-        pageable: Pageable,
+    public static getCategories({
+        name,
+        page,
+        size = 20,
+        sort,
+    }: {
         name?: string,
-    ): CancelablePromise<ApiResponsePagedDataCategoryDto> {
+        /**
+         * Zero-based page index (0..N)
+         */
+        page?: number,
+        /**
+         * The size of the page to be returned
+         */
+        size?: number,
+        /**
+         * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+         */
+        sort?: Array<string>,
+    }): CancelablePromise<ApiResponsePagedDataCategoryDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/categories',
             query: {
                 'name': name,
-                'pageable': pageable,
+                'page': page,
+                'size': size,
+                'sort': sort,
             },
         });
     }
     /**
-     * @param id
      * @returns ApiResponseCategoryDto OK
      * @throws ApiError
      */
-    public static getCategoryById(
+    public static getCategoryById({
+        id,
+    }: {
         id: number,
-    ): CancelablePromise<ApiResponseCategoryDto> {
+    }): CancelablePromise<ApiResponseCategoryDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/categories/{id}',

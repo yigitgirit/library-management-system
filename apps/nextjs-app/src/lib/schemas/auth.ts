@@ -1,9 +1,10 @@
 import { z } from "zod"
+import type { LoginRequest, RegisterRequest } from "@/lib/api"
 
 export const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
   password: z.string().min(1, { message: "Password is required" }),
-})
+}) satisfies z.ZodType<LoginRequest>
 
 export const registerSchema = z
   .object({
@@ -16,7 +17,7 @@ export const registerSchema = z
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
-  })
+  }) satisfies z.ZodType<RegisterRequest & { confirmPassword: string }>
 
 export type LoginInput = z.infer<typeof loginSchema>
 export type RegisterInput = z.infer<typeof registerSchema>

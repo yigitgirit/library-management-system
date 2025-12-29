@@ -14,13 +14,14 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class AuthControllerService {
     /**
-     * @param requestBody
      * @returns ApiResponseVoid Created
      * @throws ApiError
      */
-    public static register(
+    public static register({
+        requestBody,
+    }: {
         requestBody: RegisterRequest,
-    ): CancelablePromise<ApiResponseVoid> {
+    }): CancelablePromise<ApiResponseVoid> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/auth/register',
@@ -29,13 +30,14 @@ export class AuthControllerService {
         });
     }
     /**
-     * @param requestBody
      * @returns ApiResponseRefreshResponse OK
      * @throws ApiError
      */
-    public static refresh(
+    public static refresh({
+        requestBody,
+    }: {
         requestBody: RefreshRequest,
-    ): CancelablePromise<ApiResponseRefreshResponse> {
+    }): CancelablePromise<ApiResponseRefreshResponse> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/auth/refresh',
@@ -44,13 +46,14 @@ export class AuthControllerService {
         });
     }
     /**
-     * @param requestBody
      * @returns ApiResponseVoid OK
      * @throws ApiError
      */
-    public static logout(
+    public static logout({
+        requestBody,
+    }: {
         requestBody: LogoutRequest,
-    ): CancelablePromise<ApiResponseVoid> {
+    }): CancelablePromise<ApiResponseVoid> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/auth/logout',
@@ -59,13 +62,14 @@ export class AuthControllerService {
         });
     }
     /**
-     * @param requestBody
      * @returns ApiResponseLoginResponse OK
      * @throws ApiError
      */
-    public static login(
+    public static login({
+        requestBody,
+    }: {
         requestBody: LoginRequest,
-    ): CancelablePromise<ApiResponseLoginResponse> {
+    }): CancelablePromise<ApiResponseLoginResponse> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/auth/login',

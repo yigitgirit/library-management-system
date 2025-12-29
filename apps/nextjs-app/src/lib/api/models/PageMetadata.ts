@@ -21,6 +21,6 @@ export type PageMetadata = {
     /**
      * Current page number (zero-based index)
      */
-    numberEhe?: number;
+    number?: number;
 };
 

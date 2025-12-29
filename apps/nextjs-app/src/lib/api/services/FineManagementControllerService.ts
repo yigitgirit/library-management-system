@@ -14,13 +14,14 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class FineManagementControllerService {
     /**
-     * @param id
      * @returns ApiResponseFineDto OK
      * @throws ApiError
      */
-    public static getFineById(
+    public static getFineById({
+        id,
+    }: {
         id: number,
-    ): CancelablePromise<ApiResponseFineDto> {
+    }): CancelablePromise<ApiResponseFineDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/management/fines/{id}',
@@ -30,15 +31,16 @@ export class FineManagementControllerService {
         });
     }
     /**
-     * @param id
-     * @param requestBody
      * @returns ApiResponseFineDto OK
      * @throws ApiError
      */
-    public static updateFine(
+    public static updateFine({
+        id,
+        requestBody,
+    }: {
         id: number,
         requestBody: FineUpdateRequest,
-    ): CancelablePromise<ApiResponseFineDto> {
+    }): CancelablePromise<ApiResponseFineDto> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/api/management/fines/{id}',
@@ -50,15 +52,16 @@ export class FineManagementControllerService {
         });
     }
     /**
-     * @param id
-     * @param requestBody
      * @returns ApiResponseFineDto OK
      * @throws ApiError
      */
-    public static patchFine(
+    public static patchFine({
+        id,
+        requestBody,
+    }: {
         id: number,
         requestBody: FinePatchRequest,
-    ): CancelablePromise<ApiResponseFineDto> {
+    }): CancelablePromise<ApiResponseFineDto> {
         return __request(OpenAPI, {
             method: 'PATCH',
             url: '/api/management/fines/{id}',
@@ -70,15 +73,16 @@ export class FineManagementControllerService {
         });
     }
     /**
-     * @param request
-     * @param pageable
      * @returns ApiResponsePagedDataFineDto OK
      * @throws ApiError
      */
-    public static getAllFines(
+    public static getAllFines({
+        request,
+        pageable,
+    }: {
         request: FineSearchRequest,
         pageable: Pageable,
-    ): CancelablePromise<ApiResponsePagedDataFineDto> {
+    }): CancelablePromise<ApiResponsePagedDataFineDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/management/fines',
@@ -89,13 +93,14 @@ export class FineManagementControllerService {
         });
     }
     /**
-     * @param requestBody
      * @returns ApiResponseFineDto Created
      * @throws ApiError
      */
-    public static createFine(
+    public static createFine({
+        requestBody,
+    }: {
         requestBody: FineCreateRequest,
-    ): CancelablePromise<ApiResponseFineDto> {
+    }): CancelablePromise<ApiResponseFineDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/management/fines',

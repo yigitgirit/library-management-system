@@ -11,15 +11,16 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class CopyControllerService {
     /**
-     * @param request
-     * @param pageable
      * @returns ApiResponsePagedDataCopyDto OK
      * @throws ApiError
      */
-    public static getAllCopies(
+    public static getAllCopies({
+        request,
+        pageable,
+    }: {
         request: CopySearchRequest,
         pageable: Pageable,
-    ): CancelablePromise<ApiResponsePagedDataCopyDto> {
+    }): CancelablePromise<ApiResponsePagedDataCopyDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/copies',
@@ -30,13 +31,14 @@ export class CopyControllerService {
         });
     }
     /**
-     * @param id
      * @returns ApiResponseCopyDto OK
      * @throws ApiError
      */
-    public static getCopyById(
+    public static getCopyById({
+        id,
+    }: {
         id: number,
-    ): CancelablePromise<ApiResponseCopyDto> {
+    }): CancelablePromise<ApiResponseCopyDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/copies/{id}',
@@ -46,13 +48,14 @@ export class CopyControllerService {
         });
     }
     /**
-     * @param barcode
      * @returns ApiResponseCopyDto OK
      * @throws ApiError
      */
-    public static getCopyByBarcode(
+    public static getCopyByBarcode({
+        barcode,
+    }: {
         barcode: string,
-    ): CancelablePromise<ApiResponseCopyDto> {
+    }): CancelablePromise<ApiResponseCopyDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/copies/by-barcode/{barcode}',
