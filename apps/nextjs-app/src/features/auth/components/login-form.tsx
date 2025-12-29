@@ -58,7 +58,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
   return (
     <div className={cn("grid gap-6", className)} {...props}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" noValidate>
           <FormField
             control={form.control}
             name="email"
