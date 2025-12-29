@@ -5,6 +5,7 @@ import me.seyrek.library_management_system.category.dto.CategoryDto;
 import me.seyrek.library_management_system.category.service.CategoryService;
 import me.seyrek.library_management_system.common.ApiResponse;
 import me.seyrek.library_management_system.common.PagedData;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -20,7 +21,7 @@ public class CategoryController {
     @GetMapping
     public ApiResponse<PagedData<CategoryDto>> getCategories(
             @RequestParam(required = false) String name,
-            @PageableDefault(size = 20, sort = "id") Pageable pageable) {
+            @ParameterObject @PageableDefault(size = 20, sort = "id") Pageable pageable) {
         Page<CategoryDto> categories = categoryService.getCategories(name, pageable);
         return ApiResponse.success(PagedData.of(categories));
     }

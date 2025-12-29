@@ -5,7 +5,7 @@ import { cookies } from "next/headers"
 import { AuthControllerService } from "@/lib/api"
 import { loginSchema, registerSchema, LoginInput, RegisterInput } from "@/lib/schemas/auth"
 import { OpenAPI } from "@/lib/api/core/OpenAPI"
-import { parseApiError } from "@/lib/api-client/api-utils"
+import { handleApiError } from "@/lib/api-client/api-utils"
 
 export type ActionResponse = {
   success: boolean
@@ -29,9 +29,10 @@ export async function loginAction(data: LoginInput): Promise<ActionResponse> {
 
     console.log("Calling AuthControllerService.login...")
     const response = await AuthControllerService.login({
-      email: result.data.email,
-      password: result.data.password,
-    })
+      requestBody: {
+        email: result.data.email,
+        password: result.data.password,
+      }})
     console.log("Login API response received:", response)
 
     if (response.data?.accessToken) {
@@ -62,7 +63,7 @@ export async function loginAction(data: LoginInput): Promise<ActionResponse> {
     return { success: false, error: "Login failed: No access token received" }
   } catch (error) {
     console.error("Login action error:", error)
-    const { message, validationErrors } = parseApiError(error);
+    const { message, validationErrors } = handleApiError(error);
     return { success: false, error: message, validationErrors }
   }
 }
@@ -79,15 +80,17 @@ export async function registerAction(data: RegisterInput): Promise<ActionRespons
     OpenAPI.TOKEN = undefined;
 
     await AuthControllerService.register({
-      firstName: result.data.firstName,
-      lastName: result.data.lastName,
-      email: result.data.email,
-      password: result.data.password,
+      requestBody: {
+         firstName: result.data.firstName,
+         lastName: result.data.lastName,
+         email: result.data.email,
+         password: result.data.password,
+        }
     })
 
     return { success: true }
   } catch (error) {
-    const { message, validationErrors } = parseApiError(error);
+    const { message, validationErrors } = handleApiError(error);
     return { success: false, error: message, validationErrors }
   }
 }
@@ -102,8 +105,8 @@ export async function logoutAction(): Promise<void> {
         OpenAPI.TOKEN = accessToken;
         
         await AuthControllerService.logout({
-            refreshToken: refreshToken
-        })
+          requestBody: {refreshToken: refreshToken
+        }})
     } catch (error) {
         console.error("Logout failed on server:", error)
     }
@@ -126,7 +129,7 @@ export async function refreshSessionAction(): Promise<ActionResponse> {
     OpenAPI.TOKEN = undefined;
 
     const response = await AuthControllerService.refresh({
-      refreshToken: refreshToken
+      requestBody: {refreshToken: refreshToken}
     })
 
     if (response.data?.accessToken) {

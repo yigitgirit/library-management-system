@@ -12,15 +12,16 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class BookManagementControllerService {
     /**
-     * @param id
-     * @param requestBody
      * @returns ApiResponseBookDto OK
      * @throws ApiError
      */
-    public static updateBook(
+    public static updateBook({
+        id,
+        requestBody,
+    }: {
         id: number,
         requestBody: BookUpdateRequest,
-    ): CancelablePromise<ApiResponseBookDto> {
+    }): CancelablePromise<ApiResponseBookDto> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/api/management/books/{id}',
@@ -32,13 +33,14 @@ export class BookManagementControllerService {
         });
     }
     /**
-     * @param id
      * @returns ApiResponseVoid OK
      * @throws ApiError
      */
-    public static deleteBook(
+    public static deleteBook({
+        id,
+    }: {
         id: number,
-    ): CancelablePromise<ApiResponseVoid> {
+    }): CancelablePromise<ApiResponseVoid> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/api/management/books/{id}',
@@ -48,15 +50,16 @@ export class BookManagementControllerService {
         });
     }
     /**
-     * @param id
-     * @param requestBody
      * @returns ApiResponseBookDto OK
      * @throws ApiError
      */
-    public static patchBook(
+    public static patchBook({
+        id,
+        requestBody,
+    }: {
         id: number,
         requestBody: BookPatchRequest,
-    ): CancelablePromise<ApiResponseBookDto> {
+    }): CancelablePromise<ApiResponseBookDto> {
         return __request(OpenAPI, {
             method: 'PATCH',
             url: '/api/management/books/{id}',
@@ -68,13 +71,14 @@ export class BookManagementControllerService {
         });
     }
     /**
-     * @param requestBody
      * @returns ApiResponseBookDto Created
      * @throws ApiError
      */
-    public static createBook(
+    public static createBook({
+        requestBody,
+    }: {
         requestBody: BookCreateRequest,
-    ): CancelablePromise<ApiResponseBookDto> {
+    }): CancelablePromise<ApiResponseBookDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/management/books',

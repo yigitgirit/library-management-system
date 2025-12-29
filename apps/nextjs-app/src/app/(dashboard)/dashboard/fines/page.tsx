@@ -11,7 +11,7 @@ export default async function FinesManagementPage() {
   }
 
   // Only ADMIN can manage fines (based on backend controller)
-  if (!user.roles.includes(ROLES.ADMIN)) {
+  if (!user.roles?.includes(ROLES.ADMIN)) {
       redirect("/dashboard");
   }
 

@@ -7,6 +7,7 @@ import me.seyrek.library_management_system.loan.dto.LoanUserSearchRequest;
 import me.seyrek.library_management_system.loan.dto.LoanUserSummaryDto;
 import me.seyrek.library_management_system.loan.service.LoanService;
 import me.seyrek.library_management_system.security.utils.SecurityUtils;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -23,8 +24,8 @@ public class LoanController {
 
     @GetMapping("/my-loans")
     public ApiResponse<PagedData<LoanUserSummaryDto>> getMyLoans(
-            LoanUserSearchRequest request,
-            @PageableDefault(size = 20, sort = "loanDate") Pageable pageable
+            @ParameterObject LoanUserSearchRequest request,
+            @ParameterObject @PageableDefault(size = 20, sort = "loanDate") Pageable pageable
     ) {
         Page<LoanUserSummaryDto> loans = loanService.getMyLoans(SecurityUtils.getCurrentUserId(), request, pageable);
         return ApiResponse.success(PagedData.of(loans));

@@ -11,15 +11,16 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class CategoryManagementControllerService {
     /**
-     * @param id
-     * @param requestBody
      * @returns ApiResponseCategoryDto OK
      * @throws ApiError
      */
-    public static updateCategory(
+    public static updateCategory({
+        id,
+        requestBody,
+    }: {
         id: number,
         requestBody: CategoryUpdateRequest,
-    ): CancelablePromise<ApiResponseCategoryDto> {
+    }): CancelablePromise<ApiResponseCategoryDto> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/api/management/categories/{id}',
@@ -31,13 +32,14 @@ export class CategoryManagementControllerService {
         });
     }
     /**
-     * @param id
      * @returns ApiResponseVoid OK
      * @throws ApiError
      */
-    public static deleteCategory(
+    public static deleteCategory({
+        id,
+    }: {
         id: number,
-    ): CancelablePromise<ApiResponseVoid> {
+    }): CancelablePromise<ApiResponseVoid> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/api/management/categories/{id}',
@@ -47,13 +49,14 @@ export class CategoryManagementControllerService {
         });
     }
     /**
-     * @param requestBody
      * @returns ApiResponseCategoryDto Created
      * @throws ApiError
      */
-    public static createCategory(
+    public static createCategory({
+        requestBody,
+    }: {
         requestBody: CategoryCreateRequest,
-    ): CancelablePromise<ApiResponseCategoryDto> {
+    }): CancelablePromise<ApiResponseCategoryDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/management/categories',

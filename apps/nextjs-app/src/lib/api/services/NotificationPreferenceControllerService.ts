@@ -20,13 +20,14 @@ export class NotificationPreferenceControllerService {
         });
     }
     /**
-     * @param requestBody
      * @returns ApiResponseUserNotificationPreferenceDto OK
      * @throws ApiError
      */
-    public static updatePreference(
+    public static updatePreference({
+        requestBody,
+    }: {
         requestBody: UpdateNotificationPreferenceRequest,
-    ): CancelablePromise<ApiResponseUserNotificationPreferenceDto> {
+    }): CancelablePromise<ApiResponseUserNotificationPreferenceDto> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/api/notification-preferences',

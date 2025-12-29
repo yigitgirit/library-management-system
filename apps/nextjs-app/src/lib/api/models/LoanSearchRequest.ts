@@ -27,6 +27,7 @@ export namespace LoanSearchRequest {
         RETURNED_OVERDUE = 'RETURNED_OVERDUE',
         RETURNED_DAMAGED = 'RETURNED_DAMAGED',
         LOST = 'LOST',
+        CANCELLED = 'CANCELLED',
     }
 }
 

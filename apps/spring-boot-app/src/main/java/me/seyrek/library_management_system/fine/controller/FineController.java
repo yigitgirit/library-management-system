@@ -10,6 +10,7 @@ import me.seyrek.library_management_system.fine.service.FineService;
 import me.seyrek.library_management_system.fine.service.FineServiceImpl;
 import me.seyrek.library_management_system.payment.dto.PaymentRequest;
 import me.seyrek.library_management_system.security.utils.SecurityUtils;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,8 +27,8 @@ public class FineController {
     // TODO: fineStatus, bookTitle parametreleri yeterli olacaktır
     @GetMapping("/my-fines")
     public ApiResponse<PagedData<FineDto>> getMyFines(
-            FineUserSearchRequest request,
-            @PageableDefault(size = 20, sort = "fineDate", direction = Sort.Direction.DESC) Pageable pageable
+            @ParameterObject FineUserSearchRequest request,
+            @ParameterObject @PageableDefault(size = 20, sort = "fineDate", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         Page<FineDto> fines = fineService.getMyFines(SecurityUtils.getCurrentUserId(), request, pageable);
         return ApiResponse.success(PagedData.of(fines));

@@ -14,7 +14,7 @@ export async function getCurrentUser(): Promise<UserDto | null> {
   try {
     // Decode token to get user info
     // We don't verify signature here for performance, middleware/backend handles security
-    const payload = decodeJwt(accessToken) as CustomJwtPayload
+    const payload: CustomJwtPayload = decodeJwt(accessToken) as CustomJwtPayload
     
     // Map JWT payload to UserDto
     return {

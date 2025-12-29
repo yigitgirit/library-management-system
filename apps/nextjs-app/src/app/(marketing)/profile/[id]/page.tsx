@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { UserPublicProfile } from "@/lib/profile/types"
 import { getCurrentUser } from "@/lib/auth/auth-utils"
-import { AccessDenied } from "@/components/auth/access-denied"
+import { AccessDenied } from "@/features/auth/access-denied"
 import { cookies } from "next/headers"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"

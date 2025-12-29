@@ -63,6 +63,6 @@ public class PagedData<T> {
         private int totalPages;
 
         @Schema(description = "Current page number (zero-based index)", example = "0")
-        private int numberEhe;
+        private int number;
     }
 }

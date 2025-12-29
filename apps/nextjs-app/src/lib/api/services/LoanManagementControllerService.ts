@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApiResponseLoanDetailDto } from '../models/ApiResponseLoanDetailDto';
-import type { ApiResponsePageLoanDto } from '../models/ApiResponsePageLoanDto';
+import type { ApiResponsePagedDataLoanDto } from '../models/ApiResponsePagedDataLoanDto';
 import type { ApiResponseVoid } from '../models/ApiResponseVoid';
 import type { LoanCreateRequest } from '../models/LoanCreateRequest';
 import type { LoanPatchRequest } from '../models/LoanPatchRequest';
@@ -16,13 +16,14 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class LoanManagementControllerService {
     /**
-     * @param id
      * @returns ApiResponseLoanDetailDto OK
      * @throws ApiError
      */
-    public static getLoanById(
+    public static getLoanById({
+        id,
+    }: {
         id: number,
-    ): CancelablePromise<ApiResponseLoanDetailDto> {
+    }): CancelablePromise<ApiResponseLoanDetailDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/management/loans/{id}',
@@ -32,15 +33,16 @@ export class LoanManagementControllerService {
         });
     }
     /**
-     * @param id
-     * @param requestBody
      * @returns ApiResponseLoanDetailDto OK
      * @throws ApiError
      */
-    public static updateLoan(
+    public static updateLoan({
+        id,
+        requestBody,
+    }: {
         id: number,
         requestBody: LoanUpdateRequest,
-    ): CancelablePromise<ApiResponseLoanDetailDto> {
+    }): CancelablePromise<ApiResponseLoanDetailDto> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/api/management/loans/{id}',
@@ -52,13 +54,14 @@ export class LoanManagementControllerService {
         });
     }
     /**
-     * @param id
      * @returns ApiResponseVoid OK
      * @throws ApiError
      */
-    public static deleteLoan(
+    public static deleteLoan({
+        id,
+    }: {
         id: number,
-    ): CancelablePromise<ApiResponseVoid> {
+    }): CancelablePromise<ApiResponseVoid> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/api/management/loans/{id}',
@@ -68,15 +71,16 @@ export class LoanManagementControllerService {
         });
     }
     /**
-     * @param id
-     * @param requestBody
      * @returns ApiResponseLoanDetailDto OK
      * @throws ApiError
      */
-    public static patchLoan(
+    public static patchLoan({
+        id,
+        requestBody,
+    }: {
         id: number,
         requestBody: LoanPatchRequest,
-    ): CancelablePromise<ApiResponseLoanDetailDto> {
+    }): CancelablePromise<ApiResponseLoanDetailDto> {
         return __request(OpenAPI, {
             method: 'PATCH',
             url: '/api/management/loans/{id}',
@@ -88,15 +92,16 @@ export class LoanManagementControllerService {
         });
     }
     /**
-     * @param request
-     * @param pageable
-     * @returns ApiResponsePageLoanDto OK
+     * @returns ApiResponsePagedDataLoanDto OK
      * @throws ApiError
      */
-    public static getAllLoans(
+    public static getAllLoans({
+        request,
+        pageable,
+    }: {
         request: LoanSearchRequest,
         pageable: Pageable,
-    ): CancelablePromise<ApiResponsePageLoanDto> {
+    }): CancelablePromise<ApiResponsePagedDataLoanDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/management/loans',
@@ -107,13 +112,14 @@ export class LoanManagementControllerService {
         });
     }
     /**
-     * @param requestBody
      * @returns ApiResponseLoanDetailDto Created
      * @throws ApiError
      */
-    public static createLoan(
+    public static createLoan({
+        requestBody,
+    }: {
         requestBody: LoanCreateRequest,
-    ): CancelablePromise<ApiResponseLoanDetailDto> {
+    }): CancelablePromise<ApiResponseLoanDetailDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/management/loans',
@@ -122,13 +128,14 @@ export class LoanManagementControllerService {
         });
     }
     /**
-     * @param id
      * @returns ApiResponseLoanDetailDto OK
      * @throws ApiError
      */
-    public static returnLoan(
+    public static returnLoan({
+        id,
+    }: {
         id: number,
-    ): CancelablePromise<ApiResponseLoanDetailDto> {
+    }): CancelablePromise<ApiResponseLoanDetailDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/management/loans/{id}/return',
@@ -138,13 +145,14 @@ export class LoanManagementControllerService {
         });
     }
     /**
-     * @param id
      * @returns ApiResponseLoanDetailDto OK
      * @throws ApiError
      */
-    public static reportLost(
+    public static reportLost({
+        id,
+    }: {
         id: number,
-    ): CancelablePromise<ApiResponseLoanDetailDto> {
+    }): CancelablePromise<ApiResponseLoanDetailDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/management/loans/{id}/report-lost',
@@ -154,15 +162,16 @@ export class LoanManagementControllerService {
         });
     }
     /**
-     * @param id
-     * @param requestBody
      * @returns ApiResponseLoanDetailDto OK
      * @throws ApiError
      */
-    public static reportDamaged(
+    public static reportDamaged({
+        id,
+        requestBody,
+    }: {
         id: number,
         requestBody: LoanReportDamagedRequest,
-    ): CancelablePromise<ApiResponseLoanDetailDto> {
+    }): CancelablePromise<ApiResponseLoanDetailDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/management/loans/{id}/report-damaged',

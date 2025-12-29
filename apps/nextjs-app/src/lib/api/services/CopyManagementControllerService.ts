@@ -12,15 +12,16 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class CopyManagementControllerService {
     /**
-     * @param id
-     * @param requestBody
      * @returns ApiResponseCopyDto OK
      * @throws ApiError
      */
-    public static updateCopy(
+    public static updateCopy({
+        id,
+        requestBody,
+    }: {
         id: number,
         requestBody: CopyUpdateRequest,
-    ): CancelablePromise<ApiResponseCopyDto> {
+    }): CancelablePromise<ApiResponseCopyDto> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/api/management/copies/{id}',
@@ -32,15 +33,16 @@ export class CopyManagementControllerService {
         });
     }
     /**
-     * @param id
-     * @param requestBody
      * @returns ApiResponseCopyDto OK
      * @throws ApiError
      */
-    public static patchCopy(
+    public static patchCopy({
+        id,
+        requestBody,
+    }: {
         id: number,
         requestBody: CopyPatchRequest,
-    ): CancelablePromise<ApiResponseCopyDto> {
+    }): CancelablePromise<ApiResponseCopyDto> {
         return __request(OpenAPI, {
             method: 'PATCH',
             url: '/api/management/copies/{id}',
@@ -52,13 +54,14 @@ export class CopyManagementControllerService {
         });
     }
     /**
-     * @param requestBody
      * @returns ApiResponseCopyDto Created
      * @throws ApiError
      */
-    public static createCopy(
+    public static createCopy({
+        requestBody,
+    }: {
         requestBody: CopyCreateRequest,
-    ): CancelablePromise<ApiResponseCopyDto> {
+    }): CancelablePromise<ApiResponseCopyDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/management/copies',
@@ -67,13 +70,14 @@ export class CopyManagementControllerService {
         });
     }
     /**
-     * @param id
      * @returns ApiResponseVoid OK
      * @throws ApiError
      */
-    public static retireCopy(
+    public static retireCopy({
+        id,
+    }: {
         id: number,
-    ): CancelablePromise<ApiResponseVoid> {
+    }): CancelablePromise<ApiResponseVoid> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/management/copies/{id}/retire',

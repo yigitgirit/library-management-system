@@ -3,24 +3,23 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApiResponseFineDto } from '../models/ApiResponseFineDto';
-import type { ApiResponsePageFineDto } from '../models/ApiResponsePageFineDto';
-import type { FineUserSearchRequest } from '../models/FineUserSearchRequest';
-import type { Pageable } from '../models/Pageable';
+import type { ApiResponsePagedDataFineDto } from '../models/ApiResponsePagedDataFineDto';
 import type { PaymentRequest } from '../models/PaymentRequest';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class FineControllerService {
     /**
-     * @param id
-     * @param requestBody
      * @returns ApiResponseFineDto OK
      * @throws ApiError
      */
-    public static payFine(
+    public static payFine({
+        id,
+        requestBody,
+    }: {
         id: number,
         requestBody: PaymentRequest,
-    ): CancelablePromise<ApiResponseFineDto> {
+    }): CancelablePromise<ApiResponseFineDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/fines/{id}/pay',
@@ -32,21 +31,37 @@ export class FineControllerService {
         });
     }
     /**
-     * @param request
-     * @param pageable
-     * @returns ApiResponsePageFineDto OK
+     * @returns ApiResponsePagedDataFineDto OK
      * @throws ApiError
      */
-    public static getMyFines(
-        request: FineUserSearchRequest,
-        pageable: Pageable,
-    ): CancelablePromise<ApiResponsePageFineDto> {
+    public static getMyFines({
+        status,
+        page,
+        size = 20,
+        sort,
+    }: {
+        status?: 'UNPAID' | 'PAID' | 'WAIVED' | 'CANCELLED',
+        /**
+         * Zero-based page index (0..N)
+         */
+        page?: number,
+        /**
+         * The size of the page to be returned
+         */
+        size?: number,
+        /**
+         * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+         */
+        sort?: Array<string>,
+    }): CancelablePromise<ApiResponsePagedDataFineDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/fines/my-fines',
             query: {
-                'request': request,
-                'pageable': pageable,
+                'status': status,
+                'page': page,
+                'size': size,
+                'sort': sort,
             },
         });
     }

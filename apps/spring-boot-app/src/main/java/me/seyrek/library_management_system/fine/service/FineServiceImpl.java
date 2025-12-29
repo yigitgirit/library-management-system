@@ -30,7 +30,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Service
@@ -125,11 +128,20 @@ public class FineServiceImpl implements FineService {
 
         BigDecimal fineAmount = overdueFineCalculationStrategy.calculateFine(loan);
 
+        long overdueDays = Duration.between(loan.getDueDate(), loan.getReturnDate()).toDays();
+        // If duration is less than 1 day but still overdue (e.g. hours), count as 1 day
+        if (overdueDays == 0 && loan.getReturnDate().isAfter(loan.getDueDate())) {
+            overdueDays = 1;
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy").withZone(ZoneId.systemDefault());
+        String formattedDueDate = formatter.format(loan.getDueDate());
+
         Fine fine = new Fine();
         fine.setUser(loan.getUser());
         fine.setLoan(loan);
         fine.setAmount(fineAmount);
-        fine.setReason(String.format("Overdue fine for loan ID: %d. Due date: %s. Return date: %s.", loan.getId(), loan.getDueDate(), loan.getReturnDate()));
+        fine.setReason(String.format("Overdue fine for returning book %d days after due date (%s).", overdueDays, formattedDueDate));
         fine.setStatus(FineStatus.UNPAID);
         fine.setFineDate(loan.getReturnDate());
 

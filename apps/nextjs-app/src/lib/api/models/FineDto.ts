@@ -20,6 +20,7 @@ export namespace FineDto {
         UNPAID = 'UNPAID',
         PAID = 'PAID',
         WAIVED = 'WAIVED',
+        CANCELLED = 'CANCELLED',
     }
 }
 
