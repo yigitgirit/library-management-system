@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     id BIGSERIAL PRIMARY KEY,
     table_name VARCHAR(50) NOT NULL,
     record_id BIGINT NOT NULL,
-    action VARCHAR(10) NOT NULL,
+    action VARCHAR(50) NOT NULL,
     old_data JSONB,
     new_data JSONB,
     changed_by VARCHAR(100),
