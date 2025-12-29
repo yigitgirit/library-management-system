@@ -6,6 +6,7 @@ import me.seyrek.library_management_system.common.ApiResponse;
 import me.seyrek.library_management_system.common.PagedData;
 import me.seyrek.library_management_system.user.dto.*;
 import me.seyrek.library_management_system.user.service.UserService;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -24,7 +25,7 @@ public class UserManagementController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse<PagedData<UserDto>> getAllUsers(
-            @PageableDefault(size = 20, sort = "id")
+            @ParameterObject @PageableDefault(size = 20, sort = "id")
             Pageable pageable
     ) {
         Page<UserDto> users = userService.findAllUsers(pageable);

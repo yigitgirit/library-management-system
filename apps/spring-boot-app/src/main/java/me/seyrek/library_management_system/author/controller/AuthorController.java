@@ -4,6 +4,7 @@ import me.seyrek.library_management_system.author.dto.AuthorDto;
 import me.seyrek.library_management_system.author.service.AuthorService;
 import me.seyrek.library_management_system.common.ApiResponse;
 import me.seyrek.library_management_system.common.PagedData;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -22,7 +23,7 @@ public class AuthorController {
     @GetMapping
     public ApiResponse<PagedData<AuthorDto>> getAllAuthors(
             @RequestParam(required = false) String name,
-            @PageableDefault(size = 20, sort = "id") Pageable pageable) {
+            @ParameterObject @PageableDefault(size = 20, sort = "id") Pageable pageable) {
         Page<AuthorDto> authors = authorService.getAllAuthors(name, pageable);
         return ApiResponse.success(PagedData.of(authors));
     }
