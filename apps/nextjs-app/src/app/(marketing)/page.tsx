@@ -17,11 +17,7 @@ OpenAPI.BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
 async function getBooks(sort: string[] = ['title,asc']): Promise<BookDto[]> {
   try {
-    const response = await BookControllerService.getAllBooks({}, {
-      page: 0,
-      size: 10,
-      sort: sort
-    });
+    const response = await BookControllerService.getAllBooks({});
     return response.data?.content || [];
   } catch (error) {
     console.error("Failed to fetch books:", error);
