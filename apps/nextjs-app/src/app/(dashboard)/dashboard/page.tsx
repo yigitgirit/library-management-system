@@ -18,23 +18,22 @@ import {
   LucideIcon
 } from "lucide-react"
 import { ROLES } from "@/lib/constants"
-import { useApiQuery } from "@/lib/api-client/api-hooks"
 import { DashboardControllerService } from "@/lib/api"
 import { Skeleton } from "@/features/common/components/ui/skeleton"
 import { Progress } from "@/features/common/components/ui/progress"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/features/common/components/ui/tooltip"
 import { Button } from "@/features/common/components/ui/button"
 import Link from "next/link"
+import {useQuery} from "@tanstack/react-query";
 
 export default function DashboardPage() {
   const { user } = useAuth()
   const isAdmin = user?.roles?.includes(ROLES.ADMIN)
 
-  const { data: statsData, isLoading } = useApiQuery(
-    ['dashboard-overview'],
-    DashboardControllerService.getOverview,
-    []
-  )
+  const { data: statsData, isLoading } = useQuery({
+          queryKey: ['dashboard-overview'],
+          queryFn: DashboardControllerService.getOverview
+      })
 
   const stats = statsData?.data
 

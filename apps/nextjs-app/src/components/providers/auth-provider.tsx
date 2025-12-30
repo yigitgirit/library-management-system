@@ -6,8 +6,8 @@ import { UserControllerService, UserDto } from "@/lib/api"
 import { OpenAPI } from "@/lib/api/core/OpenAPI"
 import { logoutAction } from "@/app/actions/auth"
 import { useRouter } from "next/navigation"
-import { useApiQuery } from "@/lib/api-client/api-hooks"
 import { setupAxiosInterceptors } from "@/lib/api-client/axios-interceptor"
+import {useQuery} from "@tanstack/react-query";
 
 // Set base URL immediately
 OpenAPI.BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
@@ -43,17 +43,13 @@ export function AuthProvider({ children, accessToken }: AuthProviderProps) {
     return UserControllerService.getMyProfile();
   };
 
-  // Use React Query to fetch the profile
-  const { data: userProfile, isError, isLoading: isQueryLoading } = useApiQuery(
-    ['my-profile', accessToken], // Add accessToken to the query key
-    fetchProfile,
-    [],
-    {
-      enabled: !!accessToken, // Only fetch if token exists
-      retry: false, // Don't retry if 401/403
-      staleTime: 1000 * 60 * 5, // Cache profile for 5 minutes
-    }
-  )
+  const { data: userProfile, isError, isLoading: isQueryLoading } = useQuery({
+    queryKey: ['my-profile', accessToken], // Add accessToken to the query key
+    queryFn: fetchProfile,
+    enabled: !!accessToken, // Only fetch if token exists
+    retry: false, // Don't retry if 401/403
+    staleTime: 1000 * 60 * 5 // Cache profile for 5 minutes
+  })
 
   useEffect(() => {
     if (!accessToken) {

@@ -38,7 +38,7 @@ export function AuthLayout({
             {/* Logo Area - Minimalist Glass */}
             <div className="flex items-center select-none">
             <Link 
-                href="/apps/nextjs-app/public"
+                href="/"
                 className="flex items-center gap-3 transition-all hover:opacity-80 group"
             >
                 <div className="p-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 shadow-sm group-hover:bg-white/20 transition-colors">
@@ -75,7 +75,7 @@ export function AuthLayout({
           
           {/* Mobile Logo (Visible only on small screens) */}
           <div className="flex flex-col space-y-2 text-center lg:hidden select-none">
-            <Link href="/apps/nextjs-app/public" className="flex items-center justify-center gap-2 font-semibold">
+            <Link href="/" className="flex items-center justify-center gap-2 font-semibold">
               <BookOpen className="h-6 w-6 text-primary" />
               Library System
             </Link>

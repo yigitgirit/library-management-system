@@ -33,7 +33,7 @@ export function AccessDenied({
         </CardContent>
         <CardFooter className="flex justify-center gap-4">
           <Button variant="outline" asChild>
-            <Link href="/apps/nextjs-app/public">Go Home</Link>
+fix:            <Link href="/">Go Home</Link>
           </Button>
           <Button asChild>
             <Link href={returnUrl}>Sign In</Link>
