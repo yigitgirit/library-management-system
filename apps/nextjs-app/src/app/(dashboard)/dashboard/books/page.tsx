@@ -1,6 +1,6 @@
-import { BooksContent } from "@/components/dashboard/books/books-content"
-import { BooksToolbar } from "@/components/dashboard/books/books-toolbar"
-import {BookSearchParams, bookSearchParamsSchema} from "@/lib/validations/book-search"
+import { BooksContent } from "@/features/books/components/dashboard/books-content"
+import { BooksToolbar } from "@/features/books/components/dashboard/books-toolbar"
+import {BookSearchParams, bookSearchParamsSchema} from "@/features/books/schemas/book-search"
 
 type BooksManagementPageProps = {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>

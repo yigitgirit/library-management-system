@@ -1,5 +1,5 @@
-import { LoansManagementView } from "@/components/dashboard/loans/loans-management-view"
-import { getCurrentUser } from "@/lib/auth/auth-utils"
+import { LoansManagementView } from "@/features/loans/components/loans-management-view"
+import { getCurrentUser } from "@/features/auth/utils"
 import { redirect } from "next/navigation"
 import { ROLES } from "@/lib/constants"
 

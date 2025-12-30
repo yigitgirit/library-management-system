@@ -1,7 +1,7 @@
 "use client"
 
-import { useAuth } from "@/hooks/use-auth"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { useAuth } from "@/features/auth/hooks/use-auth"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/features/common/components/ui/card"
 import { 
   Book, 
   Users, 
@@ -20,10 +20,10 @@ import {
 import { ROLES } from "@/lib/constants"
 import { useApiQuery } from "@/lib/api-client/api-hooks"
 import { DashboardControllerService } from "@/lib/api"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Progress } from "@/components/ui/progress"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/features/common/components/ui/skeleton"
+import { Progress } from "@/features/common/components/ui/progress"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/features/common/components/ui/tooltip"
+import { Button } from "@/features/common/components/ui/button"
 import Link from "next/link"
 
 export default function DashboardPage() {

@@ -1,5 +1,5 @@
-import { Skeleton } from "@/components/ui/skeleton"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/features/common/components/ui/skeleton"
+import { Card, CardContent, CardHeader, CardTitle } from "@/features/common/components/ui/card"
 
 export default function DashboardLoading() {
   return (

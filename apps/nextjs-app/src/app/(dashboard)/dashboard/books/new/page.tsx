@@ -1,12 +1,12 @@
 "use client"
 
-import { BookForm } from "@/components/dashboard/books/book-form"
+import { BookForm } from "@/features/books/components/dashboard/book-form"
 import { BookManagementControllerService } from "@/lib/api"
 import { useMutation } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
-import { useToast } from "@/components/ui/use-toast"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { useToast } from "@/features/common/components/ui/use-toast"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/features/common/components/ui/card"
+import { Button } from "@/features/common/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 

@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/providers/theme-provider"
 import { AuthProvider } from "@/components/providers/auth-provider"
 import { QueryProvider } from "@/components/providers/query-provider"
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/features/common/components/ui/toaster"
 import React from "react";
 
 const inter = Inter({ subsets: ["latin", "latin-ext"] });

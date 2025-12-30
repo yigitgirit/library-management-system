@@ -3,7 +3,7 @@
 import "@/lib/api-client/api-config" // Import configuration to set API base URL
 import { cookies } from "next/headers"
 import { AuthControllerService } from "@/lib/api"
-import { loginSchema, registerSchema, LoginInput, RegisterInput } from "@/lib/schemas/auth"
+import { loginSchema, registerSchema, LoginInput, RegisterInput } from "@/features/auth/schemas"
 import { OpenAPI } from "@/lib/api/core/OpenAPI"
 import { handleApiError } from "@/lib/api-client/api-utils"
 

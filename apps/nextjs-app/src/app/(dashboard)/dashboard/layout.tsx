@@ -2,10 +2,10 @@
 
 import * as React from "react"
 import { useRouter, usePathname } from "next/navigation"
-import { useAuth } from "@/hooks/use-auth"
-import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar"
+import { useAuth } from "@/features/auth/hooks/use-auth"
+import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/features/common/components/ui/sidebar"
 import { AppSidebar } from "@/components/layout/app-sidebar"
-import { Separator } from "@/components/ui/separator"
+import { Separator } from "@/features/common/components/ui/separator"
 import { ROLES } from "@/lib/constants"
 import { ModeToggle } from "@/components/layout/mode-toggle"
 import { BookOpen } from "lucide-react"
@@ -16,7 +16,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+} from "@/features/common/components/ui/breadcrumb"
 
 export default function DashboardLayout({
   children,

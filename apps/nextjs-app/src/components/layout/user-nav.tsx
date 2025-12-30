@@ -4,8 +4,8 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+} from "@/features/common/components/ui/avatar"
+import { Button } from "@/features/common/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,8 +14,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { useAuthStore } from "@/lib/store/auth-store"
+} from "@/features/common/components/ui/dropdown-menu"
+import { useAuthStore } from "@/features/auth/store"
 import { logoutAction } from "@/app/actions/auth"
 import { User, CreditCard, Settings, LogOut, LayoutDashboard } from "lucide-react"
 import Link from "next/link"

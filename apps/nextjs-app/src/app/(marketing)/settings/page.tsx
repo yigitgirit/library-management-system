@@ -1,7 +1,7 @@
 import { SettingsView } from "@/components/settings/settings-view"
-import { getCurrentUser } from "@/lib/auth/auth-utils"
+import { getCurrentUser } from "@/features/auth/utils"
 import { cookies } from "next/headers"
-import { UserPrivateProfile } from "@/lib/profile/types"
+import { UserPrivateProfile } from "@/features/users/services/types"
 import { AccessDenied } from "@/features/auth/access-denied"
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";

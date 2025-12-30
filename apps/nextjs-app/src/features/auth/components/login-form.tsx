@@ -8,7 +8,7 @@ import { useState, useTransition } from "react"
 import Link from "next/link"
 import { Loader2 } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/features/common/components/ui/button"
 import {
   Form,
   FormControl,
@@ -16,9 +16,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { loginSchema, LoginInput } from "@/lib/schemas/auth"
+} from "@/features/common/components/ui/form"
+import { Input } from "@/features/common/components/ui/input"
+import { loginSchema, LoginInput } from "@/features/auth/schemas"
 import { loginAction } from "@/app/actions/auth"
 import { cn } from "@/lib/utils"
 

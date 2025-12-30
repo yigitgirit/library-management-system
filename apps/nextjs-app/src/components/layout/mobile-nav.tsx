@@ -5,18 +5,18 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { BookOpen, Menu, Info, Phone, HelpCircle, LayoutDashboard, CreditCard, User, Settings } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/features/common/components/ui/button"
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
+} from "@/features/common/components/ui/sheet"
 import { cn } from "@/lib/utils"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/features/auth/hooks/use-auth"
 import { ROLES } from "@/lib/constants"
-import { Separator } from "@/components/ui/separator"
+import { Separator } from "@/features/common/components/ui/separator"
 
 export function MobileNav() {
   const [open, setOpen] = React.useState(false)

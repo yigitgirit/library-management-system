@@ -1,5 +1,5 @@
-import { CategoriesManagementView } from "@/components/dashboard/categories/categories-management-view"
-import { getCurrentUser } from "@/lib/auth/auth-utils"
+import { CategoriesManagementView } from "@/features/categories/components/categories-management-view"
+import { getCurrentUser } from "@/features/auth/utils"
 import { redirect } from "next/navigation"
 import { ROLES } from "@/lib/constants"
 

@@ -1,5 +1,5 @@
-import { LoansView } from "@/features/loans/loans-view"
-import { getCurrentUser } from "@/lib/auth/auth-utils"
+import { LoansView } from "@/features/loans/components/loans-view"
+import { getCurrentUser } from "@/features/auth/utils"
 import { cookies } from "next/headers"
 import { AccessDenied } from "@/features/auth/access-denied"
 import { OpenAPI, LoanUserSummaryDto } from "@/lib/api"

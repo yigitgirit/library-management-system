@@ -1,5 +1,5 @@
-import { UsersView } from "@/components/dashboard/users/users-view"
-import { getCurrentUser } from "@/lib/auth/auth-utils"
+import { UsersView } from "@/features/users/components/users-view"
+import { getCurrentUser } from "@/features/auth/utils"
 import { redirect } from "next/navigation"
 import { ROLES } from "@/lib/constants"
 

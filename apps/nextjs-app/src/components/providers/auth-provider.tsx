@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useRef } from "react"
-import { useAuthStore } from "@/lib/store/auth-store"
+import { useAuthStore } from "@/features/auth/store"
 import { UserControllerService, UserDto } from "@/lib/api"
 import { OpenAPI } from "@/lib/api/core/OpenAPI"
 import { logoutAction } from "@/app/actions/auth"

@@ -1,5 +1,5 @@
-import { AuthorsManagementView } from "@/components/dashboard/authors/authors-management-view"
-import { getCurrentUser } from "@/lib/auth/auth-utils"
+import { AuthorsManagementView } from "@/features/authors/components/authors-management-view"
+import { getCurrentUser } from "@/features/auth/utils"
 import { redirect } from "next/navigation"
 import { ROLES } from "@/lib/constants"
 

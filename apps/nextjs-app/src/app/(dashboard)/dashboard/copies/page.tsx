@@ -1,5 +1,5 @@
-import { CopiesManagementView } from "@/components/dashboard/copies/copies-management-view"
-import { getCurrentUser } from "@/lib/auth/auth-utils"
+import { CopiesManagementView } from "@/features/copies/components/copies-management-view"
+import { getCurrentUser } from "@/features/auth/utils"
 import { redirect } from "next/navigation"
 import { ROLES } from "@/lib/constants"
 

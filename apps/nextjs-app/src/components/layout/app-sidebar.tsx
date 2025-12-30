@@ -29,7 +29,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarSeparator,
-} from "@/components/ui/sidebar"
+} from "@/features/common/components/ui/sidebar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,14 +38,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/features/common/components/ui/dropdown-menu"
 import { UserDto } from "@/lib/api"
-import { useAuthStore } from "@/lib/store/auth-store"
+import { useAuthStore } from "@/features/auth/store"
 import { logoutAction } from "@/app/actions/auth"
 import { useRouter } from "next/navigation"
 import { ROLES } from "@/lib/constants"
 import { useQueryClient } from "@tanstack/react-query"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/features/common/components/ui/avatar"
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   user: UserDto | null

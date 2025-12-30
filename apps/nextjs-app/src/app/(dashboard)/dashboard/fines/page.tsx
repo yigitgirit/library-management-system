@@ -1,5 +1,5 @@
-import { FinesManagementView } from "@/components/dashboard/fines/fines-management-view"
-import { getCurrentUser } from "@/lib/auth/auth-utils"
+import { FinesManagementView } from "@/features/fines/components/fines-management-view"
+import { getCurrentUser } from "@/features/auth/utils"
 import { redirect } from "next/navigation"
 import { ROLES } from "@/lib/constants"
 
