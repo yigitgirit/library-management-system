@@ -1,48 +1,35 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { ArrowRight, Star, ScanBarcode, ListChecks, Search, ShieldCheck, LucideIcon } from "lucide-react"
+import { Star, ScanBarcode, ListChecks, Search, ShieldCheck, LucideIcon } from "lucide-react"
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
-import { BookCarousel } from "@/components/landing/book-carousel"
+import { BookCarousel } from "@/features/books/components/landing/book-carousel"
 import { FaqSection } from "@/components/landing/faq-section"
-import { BookControllerService, BookDto, DashboardControllerService, DashboardOverviewDto } from "@/lib/api"
-import { OpenAPI } from "@/lib/api/core/OpenAPI"
-import { getCurrentUser } from "@/lib/auth/auth-utils"
+import { getCurrentUser } from "@/features/auth/utils"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { HeroSearch } from "@/components/landing/hero-search"
+import { HeroSearch } from "@/features/books/components/landing/hero-search"
+import { bookService } from "@/features/books/services/bookService"
+import { Book } from "@/features/books/types/book"
 
-// Configure OpenAPI for Server Side
-OpenAPI.BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
-
-async function getBooks(sort: string[] = ['title,asc']): Promise<BookDto[]> {
+async function getBooks(sort: string[] = ['title,asc']): Promise<Book[]> {
   try {
-    const response = await BookControllerService.getAllBooks({});
-    return response.data?.content || [];
+    const response = await bookService.getAll({ sort, size: 10 });
+    return response.content || [];
   } catch (error) {
     console.error("Failed to fetch books:", error);
     return [];
   }
 }
 
-async function getStats(): Promise<DashboardOverviewDto | null> {
-    try {
-        const response = await DashboardControllerService.getOverview();
-        return response.data || null;
-    } catch (error) {
-        return null;
-    }
-}
-
 export default async function Home() {
   const user = await getCurrentUser();
 
   // Fetch data in parallel
-  const [newArrivals, featuredBooks, popularBooks, stats] = await Promise.all([
+  const [newArrivals, featuredBooks, popularBooks] = await Promise.all([
     getBooks(['createdAt,desc']), // New Arrivals
     getBooks(['title,asc']),      // Featured (Mock sort)
     getBooks(['price,desc']),     // Popular (Mock sort)
-    getStats()
   ]);
 
   // Mock Data for Interstitials
@@ -227,15 +214,11 @@ export default async function Home() {
                 <div className="container px-4 md:px-6 mx-auto max-w-7xl">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-8 border-y border-border/50">
                         <div className="text-center space-y-2">
-                            <div className="text-4xl font-bold text-primary">
-                                {stats?.totalBooks ? `${(stats.totalBooks / 1000).toFixed(1)}k+` : "10k+"}
-                            </div>
+                            <div className="text-4xl font-bold text-primary">10k+</div>
                             <div className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Books Available</div>
                         </div>
                         <div className="text-center space-y-2">
-                            <div className="text-4xl font-bold text-primary">
-                                {stats?.totalUsers ? `${(stats.totalUsers / 1000).toFixed(1)}k+` : "5k+"}
-                            </div>
+                            <div className="text-4xl font-bold text-primary">5k+</div>
                             <div className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Active Members</div>
                         </div>
                         <div className="text-center space-y-2">

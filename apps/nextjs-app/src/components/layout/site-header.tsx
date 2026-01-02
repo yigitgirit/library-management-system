@@ -7,7 +7,7 @@ import { UserNav } from "@/components/layout/user-nav"
 import { BookOpen } from "lucide-react"
 import { MainNav } from "@/components/layout/main-nav"
 import { MobileNav } from "@/components/layout/mobile-nav"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/features/auth/hooks/use-auth"
 import { Skeleton } from "@/components/ui/skeleton"
 
 export function SiteHeader() {

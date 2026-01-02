@@ -1,18 +1,10 @@
 import { JWTPayload } from "jose"
+import { Role } from "@/features/users/types/user"
 
 export type CustomJwtPayload = JWTPayload & {
-  email?: string
-  firstName?: string
-  lastName?: string
-  roles?: string[]
-}
-
-export type PageResponse<T> = {
-  content: T[];
-  page: {
-    size: number;
-    number: number;
-    totalElements: number;
-    totalPages: number;
-  }
+  sub: string
+  email: string
+  firstName: string
+  lastName: string
+  roles: Role[]
 }

@@ -1,0 +1,15 @@
+import { z } from "zod"
+
+export const userSearchParamsSchema = z.object({
+    page: z.coerce.number().min(0).default(0),
+    size: z.coerce.number().min(1).default(20),
+    sort: z
+        .preprocess((val) => {
+            if (Array.isArray(val)) return val;
+            if (typeof val === 'string') return [val];
+            return undefined;
+        }, z.array(z.string()).optional()),
+    search: z.string().optional(),
+});
+
+export type UserSearchParams = z.infer<typeof userSearchParamsSchema>

@@ -18,7 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { loginSchema, LoginInput } from "@/lib/schemas/auth"
+import { loginSchema, LoginInput } from "@/features/auth/schemas"
 import { loginAction } from "@/app/actions/auth"
 import { cn } from "@/lib/utils"
 

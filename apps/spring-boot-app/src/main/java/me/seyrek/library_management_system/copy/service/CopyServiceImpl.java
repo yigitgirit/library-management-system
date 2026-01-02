@@ -125,7 +125,7 @@ public class CopyServiceImpl implements CopyService {
         return copyMapper.toCopyDto(copyRepository.save(existingCopy));
     }
 
-    // buralarda sıkıntı çıkabilir :D
+    // TODO: buralarda sıkıntı çıkabilir :D
 
     @Override
     @Transactional

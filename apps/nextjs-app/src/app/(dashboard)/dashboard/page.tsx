@@ -1,6 +1,6 @@
 "use client"
 
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/features/auth/hooks/use-auth"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { 
   Book, 
@@ -17,28 +17,21 @@ import {
   Wrench,
   LucideIcon
 } from "lucide-react"
-import { ROLES } from "@/lib/constants"
-import { useApiQuery } from "@/lib/api-client/api-hooks"
-import { DashboardControllerService } from "@/lib/api"
+import { ROLES } from "@/constants"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Progress } from "@/components/ui/progress"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import {useQuery} from "@tanstack/react-query";
+import { dashboardQueries } from "@/features/dashboard/api/dashboardQueries"
 
 export default function DashboardPage() {
   const { user } = useAuth()
   const isAdmin = user?.roles?.includes(ROLES.ADMIN)
 
-  const { data: statsData, isLoading } = useApiQuery(
-    ['dashboard-overview'],
-    DashboardControllerService.getOverview,
-    []
-  )
+  const { data: stats, isLoading } = useQuery(dashboardQueries.overview())
 
-  const stats = statsData?.data
-
-  // Calculate percentages for progress bars
   const availabilityRate = stats?.totalCopies && stats?.totalCopies > 0 
     ? Math.round(((stats.availableCopies || 0) / stats.totalCopies) * 100) 
     : 0
@@ -61,7 +54,7 @@ export default function DashboardPage() {
         <div className="flex items-center gap-2">
           {isAdmin && (
              <Button asChild>
-                <Link href="/books/new">Add New Book</Link>
+                <Link href="/dashboard/books/new">Add New Book</Link>
              </Button>
           )}
         </div>

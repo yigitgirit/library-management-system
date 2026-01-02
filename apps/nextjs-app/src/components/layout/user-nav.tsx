@@ -15,17 +15,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useAuthStore } from "@/lib/store/auth-store"
+import { useAuthStore } from "@/features/auth/store"
 import { logoutAction } from "@/app/actions/auth"
-import { User, CreditCard, Settings, LogOut, LayoutDashboard } from "lucide-react"
+import { User as UserIcon, CreditCard, Settings, LogOut, LayoutDashboard } from "lucide-react"
 import Link from "next/link"
-import { ROLES } from "@/lib/constants"
-import { UserDto } from "@/lib/api"
+import { ROLES } from "@/constants"
+import { User } from "@/features/users/types/user"
 import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 
 interface UserNavProps {
-  user?: UserDto | null
+  user?: User | null
 }
 
 export function UserNav({ user: propUser }: UserNavProps) {
@@ -35,6 +35,7 @@ export function UserNav({ user: propUser }: UserNavProps) {
   
   // Prefer propUser (from server) over storeUser (from client state)
   // This prevents layout shift during hydration
+  // TODO: fix this weird sitiution
   const user = propUser || storeUser
 
   if (!user) {
@@ -42,16 +43,10 @@ export function UserNav({ user: propUser }: UserNavProps) {
   }
 
   const handleLogout = async () => {
-    // 1. Call server action to clear cookies
     await logoutAction()
-    
-    // 2. Clear client-side store
     logout()
-    
-    // 3. Clear React Query cache to prevent stale data
     queryClient.removeQueries()
-    
-    // 4. Refresh/Redirect
+
     router.push('/login')
     router.refresh()
   }
@@ -90,7 +85,7 @@ export function UserNav({ user: propUser }: UserNavProps) {
           )}
           <DropdownMenuItem asChild>
             <Link href="/profile">
-              <User className="mr-2 h-4 w-4" />
+              <UserIcon className="mr-2 h-4 w-4" />
               <span>Profile</span>
             </Link>
           </DropdownMenuItem>

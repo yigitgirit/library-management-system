@@ -1,5 +1,5 @@
-import { BookControllerService } from "@/lib/api"
-import { EditBookForm } from "@/components/dashboard/books/edit-book-form"
+import { bookService } from "@/features/books/services/bookService"
+import { EditBookForm } from "@/features/books/components/dashboard/edit-book-form"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, ExternalLink } from "lucide-react"
@@ -23,8 +23,7 @@ export default async function EditBookPage({ params }: EditBookPageProps) {
     let bookData;
 
     try {
-        const response = await BookControllerService.getBookById({id: bookId});
-        bookData = response.data;
+        bookData = await bookService.getById(bookId);
     } catch (error) {
         notFound();
     }

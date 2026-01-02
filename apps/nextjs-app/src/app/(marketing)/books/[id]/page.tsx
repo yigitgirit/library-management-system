@@ -1,13 +1,14 @@
-import "@/lib/api-client/api-config"
-import { Metadata } from "next"
+import { Metadata, ResolvingMetadata } from "next"
 import Link from "next/link"
-import { BookControllerService } from "@/lib/api"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import React, { Suspense } from "react"
-import { BookContent } from "@/features/books/book-content"
+import { BookContent } from "@/features/books/components/book-content"
 import { Skeleton } from "@/components/ui/skeleton"
 import { extractIdFromSlug } from "@/lib/utils"
+import { bookService } from "@/features/books/services/bookService"
+import { QueryClient, HydrationBoundary, dehydrate } from "@tanstack/react-query"
+import { bookQueries } from "@/features/books/api/bookQueries"
 
 interface BookPageProps {
   params: Promise<{
@@ -15,32 +16,68 @@ interface BookPageProps {
   }>
 }
 
-export async function generateMetadata({ params }: BookPageProps): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: BookPageProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const { id: slug } = await params
-  const id = extractIdFromSlug(slug);
+  const id = extractIdFromSlug(slug)
 
   try {
-    const response = await BookControllerService.getBookById({id: id})
-    const book = response.data
-    
+    const book = await bookService.getById(id)
+
     if (!book) {
       return {
-        title: "Book Not Found",
+        title: "Book Not Found - Library System",
       }
     }
 
+    const previousImages = (await parent).openGraph?.images || []
+    const title = `${book.title} - Library System`
+    const description = book.description || `Details about ${book.title}`
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://library.com"
+    const url = `${baseUrl}/books/${slug}`
+
+    const images = book.coverImageUrl
+      ? [
+          {
+            url: book.coverImageUrl,
+            width: 800,
+            height: 600,
+            alt: `Cover of ${book.title}`,
+          },
+          ...previousImages,
+        ]
+      : previousImages
+
+    const authors = book.authors
+      ?.map((a) => a.name)
+      .filter((name): name is string => !!name) || []
+
     return {
-      title: `${book.title} - Library System`,
-      description: book.description || `Details about ${book.title}`,
+      title,
+      description,
+      authors: authors.map((name) => ({ name })),
       openGraph: {
-          title: book.title,
-          description: book.description,
-          images: [book.coverImageUrl || '/default-book-cover.jpg'],
-      }
+        title: book.title,
+        description,
+        url,
+        siteName: "Library System",
+        images,
+        type: "book",
+        authors: authors,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: book.title,
+        description,
+        images,
+      },
     }
   } catch (error) {
     return {
-      title: "Error",
+      title: "Error - Library System",
+      description: "An error occurred while fetching book details.",
     }
   }
 }
@@ -48,6 +85,9 @@ export async function generateMetadata({ params }: BookPageProps): Promise<Metad
 export default async function BookPage({ params }: BookPageProps) {
   const { id: slug } = await params
   const id = extractIdFromSlug(slug);
+  const queryClient = new QueryClient()
+
+  await queryClient.prefetchQuery(bookQueries.detail(id))
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -65,9 +105,11 @@ export default async function BookPage({ params }: BookPageProps) {
           </Button>
         </div>
 
-        <Suspense fallback={<BookContentSkeleton />}>
-            <BookContent id={String(id)} />
-        </Suspense>
+        <HydrationBoundary state={dehydrate(queryClient)}>
+            <Suspense fallback={<BookContentSkeleton />}>
+                <BookContent id={id} />
+            </Suspense>
+        </HydrationBoundary>
       </main>
     </div>
   )

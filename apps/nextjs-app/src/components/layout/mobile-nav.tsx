@@ -14,8 +14,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
-import { useAuth } from "@/hooks/use-auth"
-import { ROLES } from "@/lib/constants"
+import { useAuth } from "@/features/auth/hooks/use-auth"
+import { ROLES } from "@/constants"
 import { Separator } from "@/components/ui/separator"
 
 export function MobileNav() {

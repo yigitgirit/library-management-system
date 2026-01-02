@@ -1,31 +1,27 @@
-import { AuthorsManagementView } from "@/components/dashboard/authors/authors-management-view"
-import { getCurrentUser } from "@/lib/auth/auth-utils"
+import { AuthorsManagementView } from "@/features/authors/components/authors-management-view"
+import { getCurrentUser } from "@/features/auth/utils"
 import { redirect } from "next/navigation"
-import { ROLES } from "@/lib/constants"
+import { ROLES } from "@/constants"
+import { authorSearchParamsSchema } from "@/features/authors/schemas/author-search"
+import { DashboardPageHeader } from "@/features/common/components/ui/dashboard-page-header"
+import { parseSearchParams } from "@/lib/search-params-utils"
+import { NextPageSearchParams } from "@/features/common/types/search-params"
 
-export default async function AuthorsManagementPage() {
-  const user = await getCurrentUser();
-  
-  if (!user) {
-    redirect("/login");
-  }
+type AuthorsManagementPageProps = {
+    searchParams: Promise<NextPageSearchParams>
+}
 
-  if (!user.roles?.includes(ROLES.ADMIN)) {
-      redirect("/dashboard");
-  }
+export default async function AuthorsManagementPage(props: AuthorsManagementPageProps) {
+    const parsedParams = await parseSearchParams(props.searchParams, authorSearchParamsSchema);
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Author Management</h2>
-          <p className="text-muted-foreground">
-            Manage authors and their details.
-          </p>
-        </div>
-      </div>
+      <DashboardPageHeader 
+        heading="Author Management" 
+        text="Manage authors and their details." 
+      />
 
-      <AuthorsManagementView />
+      <AuthorsManagementView initialFilters={parsedParams} />
     </div>
   )
 }
