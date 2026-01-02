@@ -4,10 +4,15 @@ import { jwtVerify } from "jose"
 import { ROLES } from "@/lib/constants"
 
 // Define protected routes and their required roles
+// Order matters: specific routes should come before general routes
 const protectedRoutes = [
   {
     path: "/dashboard",
-    roles: [ROLES.ADMIN, ROLES.LIBRARIAN],
+    roles: [ROLES.ADMIN, ROLES.LIBRARIAN, ROLES.MEMBER],
+  },
+  {
+    path: "/loans",
+    roles: [ROLES.ADMIN, ROLES.LIBRARIAN, ROLES.MEMBER],
   },
 ]
 
@@ -62,6 +67,11 @@ export async function middleware(request: NextRequest) {
 
       if (!hasAccess) {
         // User is authenticated but doesn't have permission
+        // If trying to access a specific management page, redirect to dashboard overview
+        if (pathname.startsWith("/dashboard/") && pathname !== "/dashboard") {
+             return NextResponse.redirect(new URL("/dashboard", request.url))
+        }
+        // Otherwise redirect to home
         return NextResponse.redirect(new URL("/", request.url))
       }
     } catch (error) {
