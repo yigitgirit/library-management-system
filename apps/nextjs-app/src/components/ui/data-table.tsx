@@ -14,9 +14,14 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/features/common/components/ui/table"
-import { Skeleton } from "@/features/common/components/ui/skeleton"
+} from "@/components/ui/table"
+import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
+
+// Define custom meta type
+interface DataTableColumnMeta {
+    skeletonClassName?: string
+}
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -24,6 +29,7 @@ interface DataTableProps<TData, TValue> {
     isLoading?: boolean   // True only when there is NO data (Initial Load)
     isFetching?: boolean  // True whenever a request is in flight (Filter/Page Change)
     pageSize?: number
+    emptyMessage?: string
 }
 
 export function DataTable<TData, TValue>({
@@ -32,6 +38,7 @@ export function DataTable<TData, TValue>({
                                              isLoading,
                                              isFetching,
                                              pageSize = 10,
+                                             emptyMessage = "No results found.",
                                          }: DataTableProps<TData, TValue>) {
     const table = useReactTable({
         data,
@@ -58,7 +65,7 @@ export function DataTable<TData, TValue>({
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
                             {headerGroup.headers.map((header) => (
-                                <TableHead key={header.id} style={{ width: header.column.getSize() }}>
+                                <TableHead key={header.id}>
                                     {header.isPlaceholder
                                         ? null
                                         : flexRender(header.column.columnDef.header, header.getContext())}
@@ -77,7 +84,7 @@ export function DataTable<TData, TValue>({
                                         <Skeleton
                                             className={cn(
                                                 "h-5 w-full",
-                                                (header.column.columnDef.meta as any)?.skeletonClassName
+                                                (header.column.columnDef.meta as DataTableColumnMeta)?.skeletonClassName
                                             )}
                                         />
                                     </TableCell>
@@ -97,7 +104,7 @@ export function DataTable<TData, TValue>({
                     ) : (
                         <TableRow>
                             <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground">
-                                No books found in the collection.
+                                {emptyMessage}
                             </TableCell>
                         </TableRow>
                     )}
