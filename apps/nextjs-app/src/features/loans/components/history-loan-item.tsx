@@ -1,9 +1,9 @@
 "use client"
 
-import { Badge } from "@/features/common/components/ui/badge"
-import { Button } from "@/features/common/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Calendar, CreditCard, AlertCircle } from "lucide-react"
-import { LoanUserSummaryDto, FineDto } from "@/lib/api"
+import { LoanUserSummaryDto, FineStatus } from "../types/loan"
 import Image from "next/image"
 import Link from "next/link"
 import { formatDate } from "@/lib/utils"
@@ -12,7 +12,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/features/common/components/ui/accordion"
+} from "@/components/ui/accordion"
 
 interface HistoryLoanItemProps {
   loan: LoanUserSummaryDto
@@ -68,7 +68,7 @@ export function HistoryLoanItem({ loan }: HistoryLoanItemProps) {
                                                     <span>Issued: {formatDate(fine.fineDate)}</span>
                                                 </div>
                                                 <div className="flex justify-between items-center mt-1 pt-1 border-t border-dashed">
-                                                    {fine.status === FineDto.status.UNPAID && (
+                                                    {fine.status === FineStatus.UNPAID && (
                                                         <>
                                                             <Badge variant="destructive" className="h-4 px-1.5 text-[10px]">Unpaid</Badge>
                                                             <Button 
@@ -83,16 +83,16 @@ export function HistoryLoanItem({ loan }: HistoryLoanItemProps) {
                                                             </Button>
                                                         </>
                                                     )}
-                                                    {fine.status === FineDto.status.PAID && (
+                                                    {fine.status === FineStatus.PAID && (
                                                         <div className="flex items-center gap-1">
                                                             <Badge variant="outline" className="h-4 px-1.5 text-[10px] border-green-600 text-green-600 bg-green-50">Paid</Badge>
                                                             <span className="text-[10px]">on {formatDate(fine.paymentDate)}</span>
                                                         </div>
                                                     )}
-                                                    {fine.status === FineDto.status.WAIVED && (
+                                                    {fine.status === FineStatus.WAIVED && (
                                                         <Badge variant="secondary" className="h-4 px-1.5 text-[10px]">Waived</Badge>
                                                     )}
-                                                    {fine.status === FineDto.status.CANCELLED && (
+                                                    {fine.status === FineStatus.CANCELLED && (
                                                         <Badge variant="outline" className="h-4 px-1.5 text-[10px]">Cancelled</Badge>
                                                     )}
                                                 </div>

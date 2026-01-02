@@ -8,7 +8,7 @@ import {
   Banknote,
   Library,
   LogOut,
-  User,
+  User as UserIcon,
   Home,
   Settings,
   ChevronsUpDown,
@@ -29,7 +29,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarSeparator,
-} from "@/features/common/components/ui/sidebar"
+} from "@/components/ui/sidebar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,17 +38,17 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/features/common/components/ui/dropdown-menu"
-import { UserDto } from "@/lib/api"
+} from "@/components/ui/dropdown-menu"
+import { User } from "@/features/users/types/user"
 import { useAuthStore } from "@/features/auth/store"
 import { logoutAction } from "@/app/actions/auth"
 import { useRouter } from "next/navigation"
-import { ROLES } from "@/lib/constants"
+import { ROLES } from "@/constants"
 import { useQueryClient } from "@tanstack/react-query"
-import { Avatar, AvatarFallback, AvatarImage } from "@/features/common/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  user: UserDto | null
+  user: User | null
 }
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
@@ -211,7 +211,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                 <DropdownMenuGroup>
                   <DropdownMenuItem asChild>
                     <Link href="/profile">
-                      <User className="mr-2 h-4 w-4" />
+                      <UserIcon className="mr-2 h-4 w-4" />
                       Profile
                     </Link>
                   </DropdownMenuItem>

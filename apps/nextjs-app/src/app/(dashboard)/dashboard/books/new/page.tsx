@@ -1,36 +1,40 @@
 "use client"
 
 import { BookForm } from "@/features/books/components/dashboard/book-form"
-import { BookManagementControllerService } from "@/lib/api"
-import { useMutation } from "@tanstack/react-query"
+import { useCreateBook } from "@/features/books/api/bookQueries"
 import { useRouter } from "next/navigation"
-import { useToast } from "@/features/common/components/ui/use-toast"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/features/common/components/ui/card"
-import { Button } from "@/features/common/components/ui/button"
+import { useToast } from "@/features/common/hooks/use-toast"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import { BookCreateInput, BookUpdateInput } from "@/features/books/schemas/book"
+import { handleApiError } from "@/lib/api-client/error-utils"
 
 export default function NewBookPage() {
   const router = useRouter()
   const { toast } = useToast()
+  const createBookMutation = useCreateBook()
 
-  const createBookMutation = useMutation({
-    mutationFn: BookManagementControllerService.createBook,
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Book created successfully",
-      })
-      router.push("/dashboard/books")
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      })
-    },
-  })
+  const handleSubmit = (data: BookCreateInput | BookUpdateInput) => {
+    createBookMutation.mutate(data as BookCreateInput, {
+      onSuccess: () => {
+        toast({
+          title: "Success",
+          description: "Book created successfully",
+        })
+        router.push("/dashboard/books")
+      },
+      onError: (error: unknown) => {
+        const { message } = handleApiError(error)
+        toast({
+          title: "Error",
+          description: message,
+          variant: "destructive",
+        })
+      },
+    })
+  }
 
   return (
     <div className="space-y-6">
@@ -57,7 +61,7 @@ export default function NewBookPage() {
         </CardHeader>
         <CardContent>
           <BookForm 
-            onSubmit={(data) => createBookMutation.mutate({requestBody: data})}
+            onSubmit={handleSubmit}
             isLoading={createBookMutation.isPending}
           />
         </CardContent>

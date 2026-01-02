@@ -1,40 +1,35 @@
 "use client"
 
-import { Checkbox } from "@/features/common/components/ui/checkbox"
-import { Label } from "@/features/common/components/ui/label"
-import { Separator } from "@/features/common/components/ui/separator"
-import { Button } from "@/features/common/components/ui/button"
-import { Skeleton } from "@/features/common/components/ui/skeleton"
-import { Input } from "@/features/common/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Input } from "@/components/ui/input"
 import { X, Search } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
-import { bookService } from "@/features/books/services/service"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useState } from "react"
 import { cn } from "@/lib/utils"
+import {categoryQueries} from "@/features/categories/api/categoryQueries";
 
 export function BookFilters() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [categorySearch, setCategorySearch] = useState("")
-  
-  // Read state from URL
+
   const selectedCategories = searchParams.getAll("categoryIds")
   const inStockOnly = searchParams.get("available") === "true"
 
-  const { data: categoriesData, isLoading } = useQuery({
-    queryKey: ['categories'],
-    queryFn: bookService.getCategories
-  })
+  const { data: categoriesData, isLoading } = useQuery(categoryQueries.list({page: 0, size: 30}))
 
   const categories = categoriesData?.content || []
 
-  // Filter categories based on search
   const filteredCategories = categories.filter(category => 
     category.name.toLowerCase().includes(categorySearch.toLowerCase())
   )
 
-  // Helper to update URL
+  // TODO: maybe use zod parser here
   const createQueryString = useCallback(
     (params: Record<string, string | string[] | null>) => {
       const newSearchParams = new URLSearchParams(searchParams.toString())
@@ -49,8 +44,7 @@ export function BookFilters() {
           newSearchParams.set(key, value)
         }
       })
-      
-      // Reset page when filters change
+
       newSearchParams.delete("page")
       
       return newSearchParams.toString()
@@ -132,6 +126,7 @@ export function BookFilters() {
             value={categorySearch}
             onChange={(e) => setCategorySearch(e.target.value)}
             className={cn("h-8 pl-8 text-xs", categorySearch && "pr-8")}
+            name="categorySearch"
           />
           {categorySearch && (
             <Button

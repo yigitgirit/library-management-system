@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-import { Button } from "@/features/common/components/ui/button"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -11,48 +11,38 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/features/common/components/ui/form"
-import { Input } from "@/features/common/components/ui/input"
-import { Textarea } from "@/features/common/components/ui/textarea"
-import { BookCreateRequest, BookDto, CategoryControllerService, AuthorControllerService, BookUpdateRequest } from "@/lib/api"
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Loader2 } from "lucide-react"
-import { AsyncCombobox } from "@/features/common/components/ui/async-combobox"
-import { AsyncMultiCombobox } from "@/features/common/components/ui/async-multi-combobox"
+import { AsyncCombobox } from "@/components/ui/async-combobox"
+import { AsyncMultiCombobox } from "@/components/ui/async-multi-combobox"
+import { Book } from "@/features/books/types/book"
+import { BookCreateInput, BookUpdateInput } from "@/features/books/schemas/book"
+import { categoryService } from "@/features/categories/services/categoryService"
+import { authorService } from "@/features/authors/services/authorService"
 
+// Unified schema for the form
 const bookFormSchema = z.object({
-  title: z.string().min(2, {
-    message: "Title must be at least 2 characters.",
-  }),
-  isbn: z.string().min(10, {
-    message: "ISBN must be at least 10 characters.",
-  }),
-  description: z.string().min(10, {
-    message: "Description must be at least 10 characters.",
-  }),
-  coverImageUrl: z.string().url({
-    message: "Please enter a valid URL.",
-  }).optional().or(z.literal("")),
-  price: z.coerce.number().min(0, {
-    message: "Price must be a positive number.",
-  }),
+  title: z.string().min(2, "Title must be at least 2 characters"),
+  isbn: z.string().min(10, "ISBN must be at least 10 characters"),
+  description: z.string().min(10, "Description must be at least 10 characters"),
+  coverImageUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
+  price: z.coerce.number().min(0, "Price must be positive"),
   publisher: z.string().optional(),
   publishedDate: z.string().optional(),
   pageCount: z.coerce.number().min(1).optional(),
   language: z.string().optional(),
   format: z.string().optional(),
-  categoryId: z.coerce.number({
-    required_error: "Please select a category.",
-  }),
-  authorIds: z.array(z.coerce.number()).min(1, {
-    message: "Please select at least one author.",
-  }),
+  categoryId: z.coerce.number({ required_error: "Please select a category" }),
+  authorIds: z.array(z.coerce.number()).min(1, "Please select at least one author"),
 })
 
 type BookFormValues = z.infer<typeof bookFormSchema>
 
 interface BookFormProps {
-  initialData?: BookDto
-  onSubmit: (data: BookCreateRequest | BookUpdateRequest) => void
+  initialData?: Book
+  onSubmit: (data: BookCreateInput | BookUpdateInput) => void
   isLoading?: boolean
 }
 
@@ -78,7 +68,7 @@ export function BookForm({ initialData, onSubmit, isLoading }: BookFormProps) {
   function handleSubmit(data: BookFormValues) {
     const payload = {
       ...data,
-      coverImageUrl: data.coverImageUrl || "",
+      coverImageUrl: data.coverImageUrl || undefined,
       publisher: data.publisher || undefined,
       publishedDate: data.publishedDate || undefined,
       pageCount: data.pageCount || undefined,
@@ -130,8 +120,8 @@ export function BookForm({ initialData, onSubmit, isLoading }: BookFormProps) {
                     value={field.value}
                     onChange={(val) => field.onChange(Number(val))}
                     fetchOptions={async (search) => {
-                      const res = await CategoryControllerService.getCategories({name: search})
-                      return res.data?.content || []
+                      const res = await categoryService.getAll({name: search})
+                      return res.content || []
                     }}
                     mapOption={(item) => ({
                       value: item.id!,
@@ -158,8 +148,8 @@ export function BookForm({ initialData, onSubmit, isLoading }: BookFormProps) {
                     value={field.value}
                     onChange={(val) => field.onChange(val.map(Number))}
                     fetchOptions={async (search) => {
-                      const res = await AuthorControllerService.getAllAuthors({name: search})
-                      return res.data?.content || []
+                      const res = await authorService.getAll({name: search})
+                      return res.content || []
                     }}
                     mapOption={(item) => ({
                       value: item.id!,

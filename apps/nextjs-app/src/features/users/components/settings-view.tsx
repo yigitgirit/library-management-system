@@ -1,21 +1,22 @@
 "use client"
 
-import { useState } from "react"
-import { UserPrivateProfile, UserEditProfileRequest } from "@/features/users/services/types"
-import { NotificationCategory, NotificationChannel, UserNotificationPreferenceDto } from "@/features/notification/services/types"
-import { profileService } from "@/lib/profile/service"
-import { Button } from "@/features/common/components/ui/button"
-import { Input } from "@/features/common/components/ui/input"
-import { Label } from "@/features/common/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/features/common/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/features/common/components/ui/avatar"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/features/common/components/ui/tabs"
-import { useToast } from "@/features/common/components/ui/use-toast"
-import { Loader2, Bell, Mail, MessageSquare, Smartphone } from "lucide-react"
+import React, { useState } from "react"
+import { UserPrivateProfile, UserEditProfileRequest } from "@/features/users/types/user"
+import { NotificationCategory, NotificationChannel } from "@/features/notification/types/notification-preference"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useToast } from "@/features/common/hooks/use-toast"
+import { Loader2, Mail, MessageSquare } from "lucide-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { handleApiError } from "@/lib/api-client/api-utils"
-import { Switch } from "@/features/common/components/ui/switch"
-import { Skeleton } from "@/features/common/components/ui/skeleton"
+import { handleApiError } from "@/lib/api-client/error-utils"
+import { Switch } from "@/components/ui/switch"
+import { Skeleton } from "@/components/ui/skeleton"
+import { userService } from "@/features/users/services/userService"
+import { notificationPreferenceQueries, useUpdateNotificationPreference } from "@/features/notification/api/notificationPreferenceQueries"
 
 interface SettingsViewProps {
   initialProfile: UserPrivateProfile
@@ -35,7 +36,7 @@ export function SettingsView({ initialProfile }: SettingsViewProps) {
 
   // Update Profile Mutation
   const updateProfileMutation = useMutation({
-    mutationFn: profileService.editMyProfile,
+    mutationFn: userService.editMyProfile,
     onSuccess: (updatedData) => {
       setProfile(prev => ({
         ...prev,
@@ -182,30 +183,8 @@ export function SettingsView({ initialProfile }: SettingsViewProps) {
 
 function NotificationSettings() {
     const { toast } = useToast()
-    const queryClient = useQueryClient()
-
-    const { data: preferences, isLoading } = useQuery({
-        queryKey: ['notification-preferences'],
-        queryFn: profileService.getNotificationPreferences
-    })
-
-    const updatePreferenceMutation = useMutation({
-        mutationFn: profileService.updateNotificationPreference,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['notification-preferences'] })
-            toast({
-                title: "Preferences updated",
-                description: "Your notification settings have been saved.",
-            })
-        },
-        onError: (error: Error) => {
-            toast({
-                title: "Error",
-                description: error.message,
-                variant: "destructive",
-            })
-        }
-    })
+    const { data: preferences, isLoading } = useQuery(notificationPreferenceQueries.list())
+    const updatePreferenceMutation = useUpdateNotificationPreference()
 
     const handleToggle = (category: NotificationCategory, channel: NotificationChannel, isChecked: boolean) => {
         const currentPref = preferences?.find(p => p.category === category)
@@ -221,6 +200,21 @@ function NotificationSettings() {
         updatePreferenceMutation.mutate({
             category,
             channels: newChannels
+        }, {
+            onSuccess: () => {
+                toast({
+                    title: "Preferences updated",
+                    description: "Your notification settings have been saved.",
+                })
+            },
+            onError: (error: unknown) => {
+                const { message } = handleApiError(error)
+                toast({
+                    title: "Error",
+                    description: message,
+                    variant: "destructive",
+                })
+            }
         })
     }
 

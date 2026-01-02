@@ -1,31 +1,27 @@
 import { CopiesManagementView } from "@/features/copies/components/copies-management-view"
 import { getCurrentUser } from "@/features/auth/utils"
 import { redirect } from "next/navigation"
-import { ROLES } from "@/lib/constants"
+import { ROLES } from "@/constants"
+import { copySearchParamsSchema } from "@/features/copies/schemas/copy-search"
+import { DashboardPageHeader } from "@/features/common/components/ui/dashboard-page-header"
+import { parseSearchParams } from "@/lib/search-params-utils"
+import { NextPageSearchParams } from "@/features/common/types/search-params"
 
-export default async function CopiesManagementPage() {
-  const user = await getCurrentUser();
-  
-  if (!user) {
-    redirect("/login");
-  }
+type CopiesManagementPageProps = {
+    searchParams: Promise<NextPageSearchParams>
+}
 
-  if (!user.roles?.some(role => role === ROLES.ADMIN || role === ROLES.LIBRARIAN)) {
-      redirect("/dashboard");
-  }
+export default async function CopiesManagementPage(props: CopiesManagementPageProps) {
+    const parsedParams = await parseSearchParams(props.searchParams, copySearchParamsSchema);
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Copy Management</h2>
-          <p className="text-muted-foreground">
-            Manage physical book copies, barcodes, and status.
-          </p>
-        </div>
-      </div>
+      <DashboardPageHeader 
+        heading="Copy Management" 
+        text="Manage physical book copies, barcodes, and status." 
+      />
 
-      <CopiesManagementView />
+      <CopiesManagementView initialFilters={parsedParams} />
     </div>
   )
 }

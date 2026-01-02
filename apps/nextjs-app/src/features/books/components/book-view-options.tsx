@@ -1,13 +1,13 @@
 "use client"
 
-import { Button } from "@/features/common/components/ui/button"
+import { Button } from "@/components/ui/button"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/features/common/components/ui/select"
+} from "@/components/ui/select"
 import { LayoutGrid, Grid3X3, Grid2X2 } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"

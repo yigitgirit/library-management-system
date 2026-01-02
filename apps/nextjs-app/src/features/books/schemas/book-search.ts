@@ -1,11 +1,7 @@
 import { z } from "zod"
+import { paginationSchema } from "@/features/common/schemas/pagination-schema"
 
-export const bookSearchParamsSchema = z.object({
-    page: z.coerce.number().min(0).default(0),
-    size: z.coerce.number().min(1).default(20),
-    sort: z
-        .preprocess((val) => (Array.isArray(val) ? val[0] : val), z.string())
-        .optional(), // API wants Array<string>, we'll wrap this later
+export const bookSearchParamsSchema = paginationSchema.extend({
     search: z.string().optional(),
     isbn: z.string().optional(),
     title: z.string().optional(),

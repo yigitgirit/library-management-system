@@ -1,5 +1,5 @@
-import { Card, CardContent } from "@/features/common/components/ui/card"
-import { Button } from "@/features/common/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { 
     BookOpen, 
     Users, 

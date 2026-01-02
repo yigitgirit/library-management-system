@@ -4,14 +4,14 @@ import * as React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ChevronLeft, ChevronRight, Star } from "lucide-react"
-import { Button } from "@/features/common/components/ui/button"
-import { BookDto } from "@/lib/api"
+import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { Book } from "@/features/books/types/book"
 
 interface BookCarouselProps {
   title: string
   subtitle?: string
-  books: BookDto[]
+  books: Book[]
   className?: string
 }
 

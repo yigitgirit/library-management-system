@@ -1,9 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { Button } from "@/features/common/components/ui/button"
-import { Card, CardContent } from "@/features/common/components/ui/card"
-import { Avatar, AvatarFallback } from "@/features/common/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Star, ChevronDown } from "lucide-react"
 
 interface Review {
@@ -14,7 +14,7 @@ interface Review {
   date: string
 }
 
-interface BookReviewsProps {
+type BookReviewsProps = {
   reviews: Review[]
 }
 

@@ -1,43 +1,43 @@
 "use client"
 
 import { BookForm } from "@/features/books/components/dashboard/book-form"
-import { BookDto, BookManagementControllerService } from "@/lib/api"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useRouter } from "next/navigation"
-import { useToast } from "@/features/common/components/ui/use-toast"
+import { useToast } from "@/features/common/hooks/use-toast"
+import { Book } from "@/features/books/types/book"
+import { useUpdateBook } from "@/features/books/api/bookQueries"
+import { BookCreateInput, BookUpdateInput } from "@/features/books/schemas/book"
+import { handleApiError } from "@/lib/api-client/error-utils"
 
 interface EditBookFormProps {
-  book: BookDto
+  book: Book
 }
 
 export function EditBookForm({ book }: EditBookFormProps) {
-  const router = useRouter()
   const { toast } = useToast()
-  const queryClient = useQueryClient()
+  const updateBookMutation = useUpdateBook()
 
-  const updateBookMutation = useMutation({
-    mutationFn: (data: any) => BookManagementControllerService.updateBook({id: book.id!, requestBody: data}),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['books'] })
-      queryClient.invalidateQueries({ queryKey: ['book', book.id] })
-      toast({
-        title: "Success",
-        description: "Book updated successfully",
-      })
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      })
-    },
-  })
+  const handleSubmit = (data: BookCreateInput | BookUpdateInput) => {
+    updateBookMutation.mutate({ id: book.id, data: data as BookUpdateInput }, {
+      onSuccess: () => {
+        toast({
+          title: "Success",
+          description: "Book updated successfully",
+        })
+      },
+      onError: (error: unknown) => {
+        const { message } = handleApiError(error)
+        toast({
+          title: "Error",
+          description: message,
+          variant: "destructive",
+        })
+      },
+    })
+  }
 
   return (
     <BookForm 
       initialData={book}
-      onSubmit={(data) => updateBookMutation.mutate(data)}
+      onSubmit={handleSubmit}
       isLoading={updateBookMutation.isPending}
     />
   )

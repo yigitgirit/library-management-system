@@ -1,14 +1,14 @@
 "use client"
 
 import Link from "next/link"
-import { Button } from "@/features/common/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/layout/mode-toggle"
 import { UserNav } from "@/components/layout/user-nav"
 import { BookOpen } from "lucide-react"
 import { MainNav } from "@/components/layout/main-nav"
 import { MobileNav } from "@/components/layout/mobile-nav"
 import { useAuth } from "@/features/auth/hooks/use-auth"
-import { Skeleton } from "@/features/common/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export function SiteHeader() {
   const { user, isLoading } = useAuth()

@@ -2,15 +2,12 @@
 
 import React, { useEffect, useRef } from "react"
 import { useAuthStore } from "@/features/auth/store"
-import { UserControllerService, UserDto } from "@/lib/api"
-import { OpenAPI } from "@/lib/api/core/OpenAPI"
 import { logoutAction } from "@/app/actions/auth"
 import { useRouter } from "next/navigation"
-import { setupAxiosInterceptors } from "@/lib/api-client/axios-interceptor"
 import {useQuery} from "@tanstack/react-query";
-
-// Set base URL immediately
-OpenAPI.BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+import { userService } from "@/features/users/services/userService"
+import { apiClient } from "@/lib/api-client"
+import { User } from "@/features/users/types/user"
 
 interface AuthProviderProps {
   children: React.ReactNode
@@ -21,34 +18,26 @@ export function AuthProvider({ children, accessToken }: AuthProviderProps) {
   const setUser = useAuthStore((state) => state.setUser)
   const setIsLoading = useAuthStore((state) => state.setIsLoading)
   const router = useRouter()
-  
-  // Initialize loading state based on token presence immediately
-  // This prevents flickering of "Loading" state when we know there is no token
+
   const initialized = useRef(false)
   if (!initialized.current) {
       useAuthStore.setState({ isLoading: !!accessToken, isAuthenticated: !!accessToken })
       initialized.current = true
   }
 
-  // Setup Axios Interceptors once on mount
-  useEffect(() => {
-    setupAxiosInterceptors();
-  }, []);
-
-  // Wrapper function to set token just before the API call
   const fetchProfile = () => {
     if (accessToken) {
-      OpenAPI.TOKEN = accessToken;
+      apiClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
     }
-    return UserControllerService.getMyProfile();
+    return userService.getMyProfile();
   };
 
   const { data: userProfile, isError, isLoading: isQueryLoading } = useQuery({
-    queryKey: ['my-profile', accessToken], // Add accessToken to the query key
+    queryKey: ['my-profile', accessToken],
     queryFn: fetchProfile,
-    enabled: !!accessToken, // Only fetch if token exists
-    retry: false, // Don't retry if 401/403
-    staleTime: 1000 * 60 * 5 // Cache profile for 5 minutes
+    enabled: !!accessToken,
+    retry: false,
+    staleTime: 1000 * 60 * 5
   })
 
   useEffect(() => {
@@ -58,20 +47,16 @@ export function AuthProvider({ children, accessToken }: AuthProviderProps) {
       return
     }
 
-    if (userProfile?.data) {
-      setUser(userProfile.data as unknown as UserDto)
+    if (userProfile) {
+      setUser(userProfile as unknown as User)
       setIsLoading(false)
     } else if (isError) {
       setUser(null)
       setIsLoading(false)
-      // If fetch fails (likely 401), logout
       logoutAction().then(() => router.refresh())
     } else if (!isQueryLoading) {
-        // Case where query finished but no data (shouldn't happen with successful response)
-        // or initial state
     }
 
-    // Sync loading state
     setIsLoading(isQueryLoading)
 
   }, [accessToken, userProfile, isError, isQueryLoading, setUser, setIsLoading, router])

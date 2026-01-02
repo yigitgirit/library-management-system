@@ -1,11 +1,9 @@
 "use server"
 
-import "@/lib/api-client/api-config" // Import configuration to set API base URL
 import { cookies } from "next/headers"
-import { AuthControllerService } from "@/lib/api"
 import { loginSchema, registerSchema, LoginInput, RegisterInput } from "@/features/auth/schemas"
-import { OpenAPI } from "@/lib/api/core/OpenAPI"
-import { handleApiError } from "@/lib/api-client/api-utils"
+import { authService } from "@/features/auth/services/authService"
+import { AppError } from "@/types/api"
 
 export type ActionResponse = {
   success: boolean
@@ -14,57 +12,63 @@ export type ActionResponse = {
   accessToken?: string
 }
 
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax" as const,
+  path: "/",
+}
+
+async function setAuthCookies(accessToken: string, refreshToken?: string) {
+  const cookieStore = await cookies()
+  
+  cookieStore.set("accessToken", accessToken, COOKIE_OPTIONS)
+  
+  if (refreshToken) {
+    cookieStore.set("refreshToken", refreshToken, COOKIE_OPTIONS)
+  }
+}
+
+async function clearAuthCookies() {
+  const cookieStore = await cookies()
+  cookieStore.delete("accessToken")
+  cookieStore.delete("refreshToken")
+}
+
+function handleActionError(error: unknown): ActionResponse {
+  if (error instanceof AppError) {
+    const validationErrors: Record<string, string> = {}
+    if (error.details) {
+      error.details.forEach(d => {
+        validationErrors[d.field] = d.message
+      })
+    }
+    return { success: false, error: error.message, validationErrors }
+  }
+  return { success: false, error: (error as Error).message || "An unexpected error occurred" }
+}
+
 export async function loginAction(data: LoginInput): Promise<ActionResponse> {
-  console.log("Login action started with email:", data.email)
   const result = loginSchema.safeParse(data)
 
   if (!result.success) {
-    console.error("Login validation failed:", result.error)
     return { success: false, error: "Invalid input" }
   }
 
   try {
-    // Ensure we are NOT sending any stale token from the server's global state
-    OpenAPI.TOKEN = undefined; 
+    const response = await authService.login({
+      email: result.data.email,
+      password: result.data.password,
+    })
 
-    console.log("Calling AuthControllerService.login...")
-    const response = await AuthControllerService.login({
-      requestBody: {
-        email: result.data.email,
-        password: result.data.password,
-      }})
-    console.log("Login API response received:", response)
-
-    if (response.data?.accessToken) {
-      console.log("Access token found, setting cookies...")
-      const cookieStore = await cookies()
-      
-      cookieStore.set("accessToken", response.data.accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-      })
-      console.log("accessToken cookie set")
-      
-      if (response.data.refreshToken) {
-         cookieStore.set("refreshToken", response.data.refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            path: "/",
-         })
-         console.log("refreshToken cookie set")
-      }
+    if (response.accessToken) {
+      await setAuthCookies(response.accessToken, response.refreshToken)
       return { success: true }
     }
 
-    console.error("Login failed: No access token in response data")
     return { success: false, error: "Login failed: No access token received" }
   } catch (error) {
-    console.error("Login action error:", error)
-    const { message, validationErrors } = handleApiError(error);
-    return { success: false, error: message, validationErrors }
+    return handleActionError(error)
   }
 }
 
@@ -76,22 +80,16 @@ export async function registerAction(data: RegisterInput): Promise<ActionRespons
   }
 
   try {
-    // Ensure we are NOT sending any stale token from the server's global state
-    OpenAPI.TOKEN = undefined;
-
-    await AuthControllerService.register({
-      requestBody: {
-         firstName: result.data.firstName,
-         lastName: result.data.lastName,
-         email: result.data.email,
-         password: result.data.password,
-        }
+    await authService.register({
+      firstName: result.data.firstName,
+      lastName: result.data.lastName,
+      email: result.data.email,
+      password: result.data.password,
     })
 
     return { success: true }
   } catch (error) {
-    const { message, validationErrors } = handleApiError(error);
-    return { success: false, error: message, validationErrors }
+    return handleActionError(error)
   }
 }
 
@@ -102,18 +100,13 @@ export async function logoutAction(): Promise<void> {
 
   if (accessToken && refreshToken) {
     try {
-        OpenAPI.TOKEN = accessToken;
-        
-        await AuthControllerService.logout({
-          requestBody: {refreshToken: refreshToken
-        }})
+      await authService.logout({ refreshToken }, accessToken)
     } catch (error) {
-        console.error("Logout failed on server:", error)
+      // Ignore logout errors
     }
   }
 
-  cookieStore.delete("accessToken")
-  cookieStore.delete("refreshToken")
+  await clearAuthCookies()
 }
 
 export async function refreshSessionAction(): Promise<ActionResponse> {
@@ -125,39 +118,16 @@ export async function refreshSessionAction(): Promise<ActionResponse> {
   }
 
   try {
-    // We don't need the access token to call refresh endpoint, usually it's public or requires only refresh token
-    OpenAPI.TOKEN = undefined;
+    const response = await authService.refresh({ refreshToken })
 
-    const response = await AuthControllerService.refresh({
-      requestBody: {refreshToken: refreshToken}
-    })
-
-    if (response.data?.accessToken) {
-      cookieStore.set("accessToken", response.data.accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-      })
-      
-      if (response.data.refreshToken) {
-         cookieStore.set("refreshToken", response.data.refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            path: "/",
-         })
-      }
-      
-      return { success: true, accessToken: response.data.accessToken }
+    if (response.accessToken) {
+      await setAuthCookies(response.accessToken, response.refreshToken)
+      return { success: true, accessToken: response.accessToken }
     }
     
     return { success: false, error: "Refresh failed" }
   } catch (error) {
-    console.error("Refresh action error:", error)
-    // If refresh fails, clear cookies
-    cookieStore.delete("accessToken")
-    cookieStore.delete("refreshToken")
+    await clearAuthCookies()
     return { success: false, error: "Refresh failed" }
   }
 }

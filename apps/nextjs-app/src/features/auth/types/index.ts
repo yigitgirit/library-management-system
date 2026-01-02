@@ -1,10 +1,10 @@
-import { UserDto } from '@/lib/api'
+import { User } from '@/features/users/types/user'
 
 export interface AuthState {
-  user: UserDto | null
+  user: User | null
   isAuthenticated: boolean
   isLoading: boolean
-  setUser: (user: UserDto | null) => void
+  setUser: (user: User | null) => void
   setIsLoading: (isLoading: boolean) => void
   logout: () => void
 }

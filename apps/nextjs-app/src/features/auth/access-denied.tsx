@@ -1,7 +1,7 @@
 import Link from "next/link"
-import { Button } from "@/features/common/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Lock } from "lucide-react"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/features/common/components/ui/card"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface AccessDeniedProps {
   title?: string

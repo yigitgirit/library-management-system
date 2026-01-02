@@ -2,8 +2,8 @@
 
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Input } from "@/features/common/components/ui/input"
-import { Button } from "@/features/common/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import {Search} from "lucide-react"
 
 export function HeroSearch() {

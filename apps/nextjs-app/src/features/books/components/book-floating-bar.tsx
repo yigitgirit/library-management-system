@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Image from "next/image"
-import { Button } from "@/features/common/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Heart, MapPin, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -41,7 +41,7 @@ export function BookFloatingBar({ title, coverUrl, location }: BookFloatingBarPr
   return (
     <div className={cn(
         "fixed bottom-6 right-6 z-50 w-full max-w-sm animate-in fade-in slide-in-from-bottom-10 duration-500",
-        "hidden md:block" // Hide on mobile if it takes too much space
+        "hidden md:block"
     )}>
       <div className="bg-background/80 backdrop-blur-md border rounded-xl shadow-2xl p-4 flex items-center gap-4 relative overflow-hidden">
         

@@ -1,9 +1,9 @@
 "use client"
 
-import { Card, CardContent } from "@/features/common/components/ui/card"
-import { Badge } from "@/features/common/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { Calendar, Clock, BookOpen } from "lucide-react"
-import { LoanUserSummaryDto } from "@/lib/api"
+import { LoanUserSummaryDto, LoanStatus } from "../types/loan"
 import Image from "next/image"
 import { format, differenceInDays, parseISO } from "date-fns"
 import { formatDate } from "@/lib/utils"
@@ -15,7 +15,7 @@ interface ActiveLoanCardProps {
 export function ActiveLoanCard({ loan }: ActiveLoanCardProps) {
     const dueDate = loan.dueDate ? parseISO(loan.dueDate) : new Date()
     const daysLeft = differenceInDays(dueDate, new Date())
-    const isOverdue = loan.status === LoanUserSummaryDto.status.OVERDUE || daysLeft < 0
+    const isOverdue = loan.status === LoanStatus.OVERDUE || daysLeft < 0
     const isDueSoon = !isOverdue && daysLeft >= 0 && daysLeft <= 3
 
     return (

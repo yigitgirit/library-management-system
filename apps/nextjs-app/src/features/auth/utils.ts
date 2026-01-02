@@ -1,9 +1,9 @@
 import { cookies } from "next/headers"
 import { decodeJwt } from "jose"
-import { UserDto } from "@/lib/api"
+import { User } from "@/features/users/types/user"
 import { CustomJwtPayload } from "@/lib/types"
 
-export async function getCurrentUser(): Promise<UserDto | null> {
+export async function getCurrentUser(): Promise<User | null> {
   const cookieStore = await cookies()
   const accessToken = cookieStore.get("accessToken")?.value
 
@@ -14,14 +14,18 @@ export async function getCurrentUser(): Promise<UserDto | null> {
   try {
     // Decode token to get user info
     // We don't verify signature here for performance, middleware/backend handles security
-    const payload: CustomJwtPayload = decodeJwt(accessToken) as CustomJwtPayload
+    const payload = decodeJwt(accessToken) as unknown as CustomJwtPayload
     
-    // Map JWT payload to UserDto
+    // Map JWT payload to User
     return {
-      email: payload.email || payload.sub,
-      firstName: payload.firstName || "User",
-      lastName: payload.lastName || "",
-      roles: (payload.roles as Array<'MEMBER' | 'LIBRARIAN' | 'ADMIN'>) || []
+      id: Number(payload.sub), // 'sub' claim contains the User ID
+      email: payload.email,
+      firstName: payload.firstName,
+      lastName: payload.lastName,
+      roles: payload.roles,
+      status: 'ACTIVE', // Default assumption for logged in user, token implies active session
+      createdAt: undefined,
+      updatedAt: undefined
     }
   } catch (e) {
     console.error("Failed to decode token", e)

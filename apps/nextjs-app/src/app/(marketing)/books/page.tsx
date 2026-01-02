@@ -1,14 +1,19 @@
 import { Suspense } from "react"
-import { Button } from "@/features/common/components/ui/button"
-import { Skeleton } from "@/features/common/components/ui/skeleton"
+import { QueryClient, dehydrate, HydrationBoundary } from "@tanstack/react-query"
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Filter } from "lucide-react"
 import { BookFilters } from "@/features/books/components/book-filters"
 import { BookSort } from "@/features/books/components/book-sort"
 import { BookSearch } from "@/features/books/components/book-search"
 import { BookViewOptions } from "@/features/books/components/book-view-options"
-import { Sheet, SheetContent, SheetTrigger } from "@/features/common/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { BookList } from "@/features/books/components/book-list"
 import { cn } from "@/lib/utils"
+import { bookQueries } from "@/features/books/api/bookQueries"
+import { BookSearchParams } from "@/features/books/types/book"
+import { categoryQueries } from "@/features/categories/api/categoryQueries"
+import { BookListSkeleton, FiltersSkeleton } from "@/features/books/components/book-skeletons"
 
 export const dynamic = 'force-dynamic'
 
@@ -24,8 +29,28 @@ export default async function CatalogPage(props: CatalogPageProps) {
     const cols = Number(searchParams.cols) || 4;
     const size = Number(searchParams.size) || 12;
 
-    // 2. The unique key for the list
-    const filterKey = JSON.stringify(searchParams);
+    // 2. Server-Side Prefetching
+    const queryClient = new QueryClient()
+    
+    // Parse params to match what the API expects
+    const apiParams: BookSearchParams = {
+        search,
+        page: Number(searchParams.page) || 0,
+        size,
+        sort: typeof searchParams.sort === 'string' ? [searchParams.sort] : Array.isArray(searchParams.sort) ? searchParams.sort : undefined,
+        categoryIds: searchParams.categoryIds 
+            ? (Array.isArray(searchParams.categoryIds) ? searchParams.categoryIds.map(Number) : [Number(searchParams.categoryIds)])
+            : undefined,
+        available: searchParams.available === 'true',
+        minPrice: searchParams.minPrice ? Number(searchParams.minPrice) : undefined,
+        maxPrice: searchParams.maxPrice ? Number(searchParams.maxPrice) : undefined,
+    }
+
+    // Prefetch Books AND Categories in parallel
+    await Promise.all([
+        queryClient.prefetchQuery(bookQueries.list(apiParams)),
+        queryClient.prefetchQuery(categoryQueries.list({ page: 0, size: 30 }))
+    ])
 
     return (
         <div className="flex min-h-screen flex-col">
@@ -76,81 +101,18 @@ export default async function CatalogPage(props: CatalogPageProps) {
                                 </div>
                             </div>
 
-                            {/* 3. The Refined Async List with Prop Sync */}
+                            {/* 3. Hydration Boundary passes server data to client cache */}
                             <Suspense
-                                key={filterKey}
                                 fallback={<BookListSkeleton cols={cols} count={size} />}
                             >
-                                <BookList searchParams={searchParams} />
+                                <HydrationBoundary state={dehydrate(queryClient)}>
+                                    <BookList />
+                                </HydrationBoundary>
                             </Suspense>
                         </div>
                     </div>
                 </div>
             </main>
-        </div>
-    )
-}
-
-// --- Skeletons ---
-
-function FiltersSkeleton() {
-    return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between h-8">
-                <Skeleton className="h-6 w-16" />
-            </div>
-            <div className="h-px bg-muted" />
-            <div className="space-y-3">
-                <Skeleton className="h-5 w-24" />
-                <div className="space-y-2">
-                    <Skeleton className="h-4 w-32" />
-                </div>
-            </div>
-            <div className="h-px bg-muted" />
-            <div className="space-y-3">
-                <Skeleton className="h-5 w-24" />
-                <div className="space-y-2">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                        <Skeleton key={i} className="h-4 w-full" />
-                    ))}
-                </div>
-            </div>
-        </div>
-    )
-}
-
-function BookListSkeleton({ cols = 4, count = 8 }: { cols?: number, count?: number }) {
-    const gridClass = cn(
-        "grid gap-6",
-        cols === 2 && "grid-cols-1 sm:grid-cols-2",
-        cols === 3 && "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
-        cols === 4 && "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-    )
-
-    return (
-        <div className="space-y-6">
-            {/* Sync with Results Count Indicator */}
-            <Skeleton className="h-5 w-48" />
-
-            <div className={gridClass}>
-                {Array.from({ length: count }).map((_, i) => (
-                    <div key={i} className="flex flex-col h-full overflow-hidden border rounded-lg bg-card">
-                        {/* 4. Aspect Ratio Lock */}
-                        <Skeleton className="aspect-[2/3] w-full rounded-none" />
-                        <div className="p-4 space-y-3">
-                            <Skeleton className="h-5 w-3/4" />
-                            <Skeleton className="h-4 w-1/2" />
-                            <div className="flex gap-2 pt-2">
-                                <Skeleton className="h-5 w-16 rounded-full" />
-                                <Skeleton className="h-5 w-12" />
-                            </div>
-                            <Skeleton className="h-9 w-full mt-2" />
-                        </div>
-                    </div>
-                ))}
-            </div>
-            {/* Pagination Skeleton */}
-            <Skeleton className="h-10 w-full mt-8" />
         </div>
     )
 }

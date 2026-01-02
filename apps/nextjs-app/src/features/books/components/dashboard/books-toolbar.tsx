@@ -1,8 +1,8 @@
 "use client"
 
-import {useCallback, useRef, useState} from "react"
-import { Button } from "@/features/common/components/ui/button"
-import { Input } from "@/features/common/components/ui/input"
+import { useRef } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import {
   Plus,
   Search,
@@ -15,98 +15,57 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/features/common/components/ui/dropdown-menu"
-import { CategoryControllerService } from "@/lib/api"
+} from "@/components/ui/dropdown-menu"
+import { categoryService } from "@/features/categories/services/categoryService"
 import { cn } from "@/lib/utils"
-import { useRouter, usePathname, useSearchParams } from "next/navigation"
-import { useDebounce } from "@/features/common/hooks/use-debounce"
-import { useEffect } from "react"
-import {BookSearchParams} from "@/features/books/schemas/book-search";
-import { Toggle } from "@/features/common/components/ui/toggle"
+import { BookSearchParams } from "@/features/books/schemas/book-search"
+import { Toggle } from "@/components/ui/toggle"
 import Link from "next/link"
-import { AsyncMultiCombobox } from "@/features/common/components/ui/async-multi-combobox"
+import { AsyncMultiCombobox } from "@/components/ui/async-multi-combobox"
+import { ToolbarLayout } from "@/components/ui/toolbar-layout"
 
 type BooksToolbarProps = {
   initialFilters: BookSearchParams
+  searchQuery: string
+  setSearchQueryAction: (val: string) => void
+  minPrice: string
+  setMinPriceAction: (val: string) => void
+  maxPrice: string
+  setMaxPriceAction: (val: string) => void
+  setCategoryIdsAction: (ids: number[]) => void
+  setAvailableAction: (val: boolean | null) => void
+  applyPriceFilterAction: () => void
+  resetFiltersAction: () => void
+  hasActiveFilters: boolean
 }
 
-export function BooksToolbar({ initialFilters }: BooksToolbarProps) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-
-  // Local state for inputs
-  const [searchQuery, setSearchQuery] = useState(initialFilters.search || "")
-  const [localMinPrice, setLocalMinPrice] = useState(initialFilters.minPrice?.toString() || "")
-  const [localMaxPrice, setLocalMaxPrice] = useState(initialFilters.maxPrice?.toString() || "")
-
-  // Refs for focus management
+export function BooksToolbar({ 
+  initialFilters,
+  searchQuery,
+  setSearchQueryAction,
+  minPrice,
+  setMinPriceAction,
+  maxPrice,
+  setMaxPriceAction,
+  setCategoryIdsAction,
+  setAvailableAction,
+  applyPriceFilterAction,
+  resetFiltersAction,
+  hasActiveFilters
+}: BooksToolbarProps) {
   const maxPriceInputRef = useRef<HTMLInputElement>(null)
 
-  // Debounce search update to URL
-  const debouncedSearch = useDebounce(searchQuery, 500)
-
-  // Handlers
-  const updateFilters = useCallback((updates: Record<string, string | string[] | number | number[] | null>) => {
-    const params = new URLSearchParams(searchParams.toString())
-
-    Object.entries(updates).forEach(([key, value]) => {
-      if (value === null || value === "" || (Array.isArray(value) && value.length === 0)) {
-        params.delete(key)
-      } else if (Array.isArray(value)) {
-        params.delete(key)
-        value.forEach(v => params.append(key, v.toString()))
-      } else {
-        params.set(key, value.toString())
-      }
-    })
-
-    params.delete("page")
-    router.push(`${pathname}?${params.toString()}`, { scroll: false })
-  }, [searchParams, router, pathname])
-
-  // Sync URL with debounced search
-  useEffect(() => {
-    if (debouncedSearch !== (initialFilters.search ?? "")) {
-      updateFilters({ search: debouncedSearch || null });
-    }
-  }, [debouncedSearch, initialFilters.search, updateFilters]);
-
-  const handleCategoryChange = (categoryIds: (string | number)[]) => {
-    updateFilters({ categoryIds: categoryIds.map(Number) })
-  }
-
-  const applyPriceFilter = () => {
-    updateFilters({
-      minPrice: localMinPrice || null,
-      maxPrice: localMaxPrice || null
-    })
-  }
-
-  const clearAllFilters = () => {
-    setSearchQuery("")
-    setLocalMinPrice("")
-    setLocalMaxPrice("")
-
-    router.push(pathname, { scroll: false })
-  }
-
-  const hasActiveFilters = (initialFilters.categoryIds?.length ?? 0) > 0 ||
-      initialFilters.available ||
-      initialFilters.minPrice ||
-      initialFilters.maxPrice;
-
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-2 w-full sm:w-auto flex-wrap">
+    <ToolbarLayout
+      filters={
+        <>
           <div className="relative w-full sm:w-64 h-9">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search books..."
               className="pl-9 h-9"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => setSearchQueryAction(e.target.value)}
             />
           </div>
 
@@ -116,7 +75,7 @@ export function BooksToolbar({ initialFilters }: BooksToolbarProps) {
               size="sm"
               className={cn("h-9 gap-2", initialFilters.available ? "border-primary bg-primary/10 hover:bg-primary/20" : "hover:bg-muted")}
               pressed={initialFilters.available}
-              onPressedChange={(pressed) => updateFilters({ available: pressed ? "true" : null })}
+              onPressedChange={(pressed) => setAvailableAction(pressed ? true : null)}
           >
             {initialFilters.available ? (
                 <CheckCircle2 className="h-4 w-4" />
@@ -137,7 +96,7 @@ export function BooksToolbar({ initialFilters }: BooksToolbarProps) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-80 p-4">
-              <div className="grid gap-4" onKeyDown={(e) => e.key === 'Enter' && applyPriceFilter()}>
+              <div className="grid gap-4" onKeyDown={(e) => e.key === 'Enter' && applyPriceFilterAction()}>
                 <div className="space-y-1">
                   <h4 className="font-medium">Price Range</h4>
                   <p className="text-xs text-muted-foreground">Press Enter to apply</p>
@@ -146,8 +105,8 @@ export function BooksToolbar({ initialFilters }: BooksToolbarProps) {
                   <Input
                       type="number"
                       placeholder="Min"
-                      value={localMinPrice}
-                      onChange={(e) => setLocalMinPrice(e.target.value)}
+                      value={minPrice}
+                      onChange={(e) => setMinPriceAction(e.target.value)}
                       className="h-8"
                       onKeyDown={(e) => {
                         if (e.key === 'Tab' && !e.shiftKey) {
@@ -161,18 +120,18 @@ export function BooksToolbar({ initialFilters }: BooksToolbarProps) {
                       ref={maxPriceInputRef}
                       type="number"
                       placeholder="Max"
-                      value={localMaxPrice}
-                      onChange={(e) => setLocalMaxPrice(e.target.value)}
+                      value={maxPrice}
+                      onChange={(e) => setMaxPriceAction(e.target.value)}
                       className="h-8"
                   />
                 </div>
                 <div className="flex justify-between gap-2">
                   <Button variant="ghost" size="sm" onClick={() => {
-                    setLocalMinPrice("")
-                    setLocalMaxPrice("")
-                    updateFilters({ minPrice: null, maxPrice: null })
+                    setMinPriceAction("")
+                    setMaxPriceAction("")
+                    applyPriceFilterAction()
                   }}>Reset</Button>
-                  <Button size="sm" onClick={applyPriceFilter}>Apply</Button>
+                  <Button size="sm" onClick={applyPriceFilterAction}>Apply</Button>
                 </div>
               </div>
             </DropdownMenuContent>
@@ -182,10 +141,10 @@ export function BooksToolbar({ initialFilters }: BooksToolbarProps) {
           <div className="w-full sm:w-72">
             <AsyncMultiCombobox
               value={initialFilters.categoryIds || []}
-              onChange={handleCategoryChange}
+              onChange={(ids) => setCategoryIdsAction(ids.map(Number))}
               fetchOptions={async (search) => {
-                const res = await CategoryControllerService.getCategories({name: search})
-                return res.data?.content || []
+                const res = await categoryService.getAll({ name: search })
+                return res.content || []
               }}
               mapOption={(item) => ({
                 value: item.id!,
@@ -203,20 +162,21 @@ export function BooksToolbar({ initialFilters }: BooksToolbarProps) {
                 variant="ghost"
                 size="sm"
                 className="h-9 px-2 text-xs text-muted-foreground hover:text-foreground"
-                onClick={clearAllFilters}
+                onClick={resetFiltersAction}
             >
               Clear all
               <X className="ml-2 h-3 w-3" />
             </Button>
           )}
-        </div>
-
+        </>
+      }
+      actions={
         <Button asChild className="h-9">
           <Link href="/dashboard/books/new">
             <Plus className="mr-2 h-4 w-4" /> Add Book
           </Link>
         </Button>
-      </div>
-    </div>
+      }
+    />
   )
 }

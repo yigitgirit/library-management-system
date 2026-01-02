@@ -1,31 +1,27 @@
 import { CategoriesManagementView } from "@/features/categories/components/categories-management-view"
 import { getCurrentUser } from "@/features/auth/utils"
 import { redirect } from "next/navigation"
-import { ROLES } from "@/lib/constants"
+import { ROLES } from "@/constants"
+import { categorySearchParamsSchema } from "@/features/categories/schemas/category-search"
+import { DashboardPageHeader } from "@/features/common/components/ui/dashboard-page-header"
+import { parseSearchParams } from "@/lib/search-params-utils"
+import { NextPageSearchParams } from "@/features/common/types/search-params"
 
-export default async function CategoriesManagementPage() {
-  const user = await getCurrentUser();
-  
-  if (!user) {
-    redirect("/login");
-  }
+type CategoriesManagementPageProps = {
+    searchParams: Promise<NextPageSearchParams>
+}
 
-  if (!user.roles?.includes(ROLES.ADMIN)) {
-      redirect("/dashboard");
-  }
+export default async function CategoriesManagementPage(props: CategoriesManagementPageProps) {
+    const parsedParams = await parseSearchParams(props.searchParams, categorySearchParamsSchema);
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Category Management</h2>
-          <p className="text-muted-foreground">
-            Manage book categories.
-          </p>
-        </div>
-      </div>
+      <DashboardPageHeader 
+        heading="Category Management" 
+        text="Manage book categories." 
+      />
 
-      <CategoriesManagementView />
+      <CategoriesManagementView initialFilters={parsedParams} />
     </div>
   )
 }

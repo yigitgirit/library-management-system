@@ -1,5 +1,5 @@
 import { z } from "zod"
-import type { LoginRequest, RegisterRequest } from "@/lib/api"
+import type { LoginRequest, RegisterRequest } from "@/features/auth/types/auth"
 
 export const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),

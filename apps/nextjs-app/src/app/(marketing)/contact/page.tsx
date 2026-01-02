@@ -1,8 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/features/common/components/ui/card"
-import { Input } from "@/features/common/components/ui/input"
-import { Textarea } from "@/features/common/components/ui/textarea"
-import { Button } from "@/features/common/components/ui/button"
-import { Label } from "@/features/common/components/ui/label"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 import { Mail, Phone, MapPin } from "lucide-react"
 
 export default function ContactPage() {

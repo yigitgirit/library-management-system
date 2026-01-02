@@ -6,7 +6,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/features/common/components/ui/select"
+} from "@/components/ui/select"
 import { useRouter, useSearchParams } from "next/navigation"
 
 const sortOptions = [

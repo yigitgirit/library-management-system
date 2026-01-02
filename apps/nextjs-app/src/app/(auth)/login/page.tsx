@@ -4,7 +4,17 @@ import { AuthLayout } from "@/features/auth/auth-layout"
 
 export const metadata: Metadata = {
   title: "Login - Library System",
-  description: "Login to your account",
+  description: "Sign in to your Library System account to manage your loans, browse books, and view your history.",
+  openGraph: {
+    title: "Login - Library System",
+    description: "Sign in to your Library System account to manage your loans, browse books, and view your history.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Login - Library System",
+    description: "Sign in to your Library System account to manage your loans, browse books, and view your history.",
+  },
 }
 
 export default function LoginPage() {

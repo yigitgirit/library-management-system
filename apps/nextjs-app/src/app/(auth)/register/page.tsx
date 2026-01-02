@@ -4,7 +4,17 @@ import { AuthLayout } from "@/features/auth/auth-layout"
 
 export const metadata: Metadata = {
   title: "Register - Library System",
-  description: "Create an account",
+  description: "Create a new Library System account to start borrowing books and accessing our digital collection.",
+  openGraph: {
+    title: "Register - Library System",
+    description: "Create a new Library System account to start borrowing books and accessing our digital collection.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Register - Library System",
+    description: "Create a new Library System account to start borrowing books and accessing our digital collection.",
+  },
 }
 
 export default function RegisterPage() {
