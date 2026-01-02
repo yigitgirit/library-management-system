@@ -7,18 +7,18 @@ import java.time.Instant;
 public record LoanSearchRequest(
         // about the user
         Long userId,
-        String userEmail,
+        String userEmail,  // TODO: remove, but natural id?
 
         // book / copy
         Long copyId, // data ID
         String barcode, // natural ID
         Long bookId, // data ID
-        String isbn, // natural ID
-        String bookTitle,
+        String isbn, // natural ID  // TODO: remove
+        String bookTitle, // TODO: remove
 
         // loan status
         LoanStatus status,
-        Boolean overdue,
+        Boolean overdue, // TODO: already have status
 
         // date range
         Instant loanDateStart,

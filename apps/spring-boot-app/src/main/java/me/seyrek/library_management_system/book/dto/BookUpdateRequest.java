@@ -27,7 +27,6 @@ public record BookUpdateRequest(
         @Size(max = 5000, message = "Description can be at most 5000 characters")
         String description,
 
-        @NotBlank(message = "Cover image URL cannot be blank")
         @URL(message = "Invalid URL format for cover image")
         String coverImageUrl,
 
