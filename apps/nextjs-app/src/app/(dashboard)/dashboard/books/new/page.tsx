@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { BookCreateInput, BookUpdateInput } from "@/features/books/schemas/book"
-import { handleApiError } from "@/lib/api-client/error-utils"
+import { handleApiError } from "@/lib/error-utils"
 
 export default function NewBookPage() {
   const router = useRouter()

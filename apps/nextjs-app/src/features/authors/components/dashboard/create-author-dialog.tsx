@@ -15,7 +15,7 @@ import { useToast } from "@/features/common/hooks/use-toast"
 import { Plus } from "lucide-react"
 import { AuthorForm } from "./author-form"
 import { AuthorCreateInput } from "@/features/authors/schemas/author"
-import { handleApiError } from "@/lib/api-client/error-utils"
+import { handleApiError } from "@/lib/error-utils"
 
 export function CreateAuthorDialog() {
   const [open, setOpen] = useState(false)

@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import { QueryClient, dehydrate, HydrationBoundary } from "@tanstack/react-query"
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Filter } from "lucide-react"
@@ -9,11 +9,11 @@ import { BookSearch } from "@/features/books/components/book-search"
 import { BookViewOptions } from "@/features/books/components/book-view-options"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { BookList } from "@/features/books/components/book-list"
-import { cn } from "@/lib/utils"
 import { bookQueries } from "@/features/books/api/bookQueries"
 import { BookSearchParams } from "@/features/books/types/book"
 import { categoryQueries } from "@/features/categories/api/categoryQueries"
 import { BookListSkeleton, FiltersSkeleton } from "@/features/books/components/book-skeletons"
+import { getQueryClient } from "@/lib/query-client"
 
 export const dynamic = 'force-dynamic'
 
@@ -24,15 +24,12 @@ interface CatalogPageProps {
 export default async function CatalogPage(props: CatalogPageProps) {
     const searchParams = await props.searchParams;
 
-    // 1. Extract view preferences for the skeleton
     const search = typeof searchParams.search === 'string' ? searchParams.search : undefined;
     const cols = Number(searchParams.cols) || 4;
     const size = Number(searchParams.size) || 12;
 
-    // 2. Server-Side Prefetching
-    const queryClient = new QueryClient()
-    
-    // Parse params to match what the API expects
+    const queryClient = getQueryClient()
+
     const apiParams: BookSearchParams = {
         search,
         page: Number(searchParams.page) || 0,
@@ -46,7 +43,6 @@ export default async function CatalogPage(props: CatalogPageProps) {
         maxPrice: searchParams.maxPrice ? Number(searchParams.maxPrice) : undefined,
     }
 
-    // Prefetch Books AND Categories in parallel
     await Promise.all([
         queryClient.prefetchQuery(bookQueries.list(apiParams)),
         queryClient.prefetchQuery(categoryQueries.list({ page: 0, size: 30 }))

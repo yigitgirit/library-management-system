@@ -15,7 +15,7 @@ import { useToast } from "@/features/common/hooks/use-toast"
 import { Plus } from "lucide-react"
 import { CategoryForm } from "./category-form"
 import { CategoryCreateInput } from "@/features/categories/schemas/category"
-import { handleApiError } from "@/lib/api-client/error-utils"
+import { handleApiError } from "@/lib/error-utils"
 
 export function CreateCategoryDialog() {
   const [open, setOpen] = useState(false)

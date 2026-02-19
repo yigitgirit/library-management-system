@@ -5,7 +5,7 @@ import { useToast } from "@/features/common/hooks/use-toast"
 import { Book } from "@/features/books/types/book"
 import { useUpdateBook } from "@/features/books/api/bookQueries"
 import { BookCreateInput, BookUpdateInput } from "@/features/books/schemas/book"
-import { handleApiError } from "@/lib/api-client/error-utils"
+import { handleApiError } from "@/lib/error-utils"
 
 interface EditBookFormProps {
   book: Book

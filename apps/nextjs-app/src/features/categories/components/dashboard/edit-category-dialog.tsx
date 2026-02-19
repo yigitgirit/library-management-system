@@ -12,7 +12,7 @@ import { useToast } from "@/features/common/hooks/use-toast"
 import { CategoryForm } from "./category-form"
 import { CategoryUpdateInput } from "@/features/categories/schemas/category"
 import { Category } from "@/features/categories/types/category"
-import { handleApiError } from "@/lib/api-client/error-utils"
+import { handleApiError } from "@/lib/error-utils"
 
 interface EditCategoryDialogProps {
   category: Category

@@ -12,7 +12,7 @@ import { useToast } from "@/features/common/hooks/use-toast"
 import { AuthorForm } from "./author-form"
 import { AuthorUpdateInput } from "@/features/authors/schemas/author"
 import { Author } from "@/features/authors/types/author"
-import { handleApiError } from "@/lib/api-client/error-utils"
+import { handleApiError } from "@/lib/error-utils"
 
 interface EditAuthorDialogProps {
   author: Author

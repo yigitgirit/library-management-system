@@ -16,7 +16,7 @@ import { useToast } from "@/features/common/hooks/use-toast"
 import { useState } from "react"
 import { EditCategoryDialog } from "./edit-category-dialog"
 import { ConfirmDeleteDialog } from "@/features/common/components/ui/confirm-delete-dialog"
-import { handleApiError } from "@/lib/api-client/error-utils"
+import { handleApiError } from "@/lib/error-utils"
 
 interface CategoriesTableActionsProps {
   category: Category

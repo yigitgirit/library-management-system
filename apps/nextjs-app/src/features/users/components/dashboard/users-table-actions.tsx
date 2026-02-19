@@ -15,7 +15,7 @@ import { useBanUser, useUnbanUser, useDeleteUser } from "@/features/users/api/us
 import { useToast } from "@/features/common/hooks/use-toast"
 import { useState } from "react"
 import { ConfirmDeleteDialog } from "@/features/common/components/ui/confirm-delete-dialog"
-import { handleApiError } from "@/lib/api-client/error-utils"
+import { handleApiError } from "@/lib/error-utils"
 
 interface UsersTableActionsProps {
   user: User

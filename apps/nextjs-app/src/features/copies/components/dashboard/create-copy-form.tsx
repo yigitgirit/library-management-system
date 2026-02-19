@@ -19,7 +19,7 @@ import { CopyCreateInput, copyCreateSchema } from "@/features/copies/schemas/cop
 import { bookService } from "@/features/books/services/bookService"
 import { useToast } from "@/features/common/hooks/use-toast"
 import { Loader2, ExternalLink } from "lucide-react"
-import { handleApiError } from "@/lib/api-client/error-utils"
+import { handleApiError } from "@/lib/error-utils"
 import { useState, useEffect } from "react"
 import { Book } from "@/features/books/types/book"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"

@@ -18,7 +18,7 @@ import { LoanCreateInput, loanCreateSchema } from "@/features/loans/schemas/loan
 import { userService } from "@/features/users/services/userService"
 import { useToast } from "@/features/common/hooks/use-toast"
 import { Loader2, ExternalLink } from "lucide-react"
-import { handleApiError } from "@/lib/api-client/error-utils"
+import { handleApiError } from "@/lib/error-utils"
 import { copyService } from "@/features/copies/services/copyService"
 import { useState, useEffect } from "react"
 import { User } from "@/features/users/types/user"
