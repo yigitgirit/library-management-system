@@ -1,7 +1,4 @@
 import { FinesManagementView } from "@/features/fines/components/fines-management-view"
-import { getCurrentUser } from "@/features/auth/utils"
-import { redirect } from "next/navigation"
-import { ROLES } from "@/constants"
 import { fineSearchParamsSchema } from "@/features/fines/schemas/fine-search"
 import { DashboardPageHeader } from "@/features/common/components/ui/dashboard-page-header"
 import { parseSearchParams } from "@/lib/search-params-utils"
