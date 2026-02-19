@@ -20,6 +20,7 @@ public class JwtService {
     private String secretKey;
     @Value("${application.security.jwt.access-token.expiration}")
     private long accessTokenExpiration;
+    private Key signInKey;
 
     public String extractSubject(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -62,7 +63,7 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts
+        return Jwts 
                 .parserBuilder()
                 .setSigningKey(getSignInKey())
                 .build()
@@ -71,7 +72,10 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
+        if (signInKey == null) {
+            byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+            signInKey = Keys.hmacShaKeyFor(keyBytes);
+        }
+        return signInKey;
     }
 }
