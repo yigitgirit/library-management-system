@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Calendar, CreditCard, AlertCircle } from "lucide-react"
+import { Calendar, CreditCard, AlertCircle, CheckCircle2 } from "lucide-react"
 import { LoanUserSummaryDto, FineStatus } from "../types/loan"
 import Image from "next/image"
 import Link from "next/link"
@@ -13,12 +13,39 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { cn } from "@/lib/utils"
 
 interface HistoryLoanItemProps {
   loan: LoanUserSummaryDto
 }
 
 export function HistoryLoanItem({ loan }: HistoryLoanItemProps) {
+    // Check if there are any unpaid fines
+    const unpaidFines = loan.fines?.filter(fine => fine.status === FineStatus.UNPAID) || [];
+    const hasUnpaidFines = unpaidFines.length > 0;
+    
+    // Determine styles and text based on fine status
+    const accordionStyle = hasUnpaidFines 
+        ? "border-destructive/20 bg-destructive/5" 
+        : "border-orange-200 bg-orange-50 dark:bg-orange-950/20 dark:border-orange-900";
+        
+    const textStyle = hasUnpaidFines 
+        ? "text-destructive" 
+        : "text-orange-600 dark:text-orange-400";
+        
+    // If there are unpaid fines, show count of UNPAID fines. Otherwise show TOTAL count.
+    const countText = hasUnpaidFines ? unpaidFines.length : loan.fines?.length || 0;
+    const headerText = hasUnpaidFines ? "Outstanding Fines" : "Fine History";
+    const Icon = hasUnpaidFines ? AlertCircle : CheckCircle2;
+
+    // Calculate amounts
+    const unpaidAmount = unpaidFines.reduce((sum, f) => sum + (f.amount || 0), 0);
+    const totalHistoryAmount = loan.fines?.reduce((sum, f) => sum + (f.amount || 0), 0) || 0;
+
+    // Determine which amount and label to show
+    const displayAmount = hasUnpaidFines ? unpaidAmount : totalHistoryAmount;
+    const amountLabel = hasUnpaidFines ? "Due" : "Total";
+
     return (
         <div className="flex flex-col py-4 border-b last:border-0">
             <div className="flex items-center justify-between">
@@ -44,20 +71,20 @@ export function HistoryLoanItem({ loan }: HistoryLoanItemProps) {
             {loan.fines && loan.fines.length > 0 && (
                 <div className="mt-4">
                     <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="fines" className="border-b-0 border-destructive/20 rounded-md bg-destructive/5 px-2">
+                        <AccordionItem value="fines" className={cn("border-b-0 rounded-md px-2", accordionStyle)}>
                             <AccordionTrigger className="py-2 hover:no-underline">
-                                <div className="flex items-center gap-2 text-xs font-semibold text-destructive w-full">
-                                    <AlertCircle className="h-3.5 w-3.5" />
-                                    <span>Outstanding Fines ({loan.fines.length})</span>
+                                <div className={cn("flex items-center gap-2 text-xs font-semibold w-full", textStyle)}>
+                                    <Icon className="h-3.5 w-3.5" />
+                                    <span>{headerText} ({countText})</span>
                                     <span className="ml-auto mr-2 text-[10px] font-bold">
-                                        Total: ${loan.fines.reduce((sum, f) => sum + (f.amount || 0), 0).toFixed(2)}
+                                        {amountLabel}: ${displayAmount.toFixed(2)}
                                     </span>
                                 </div>
                             </AccordionTrigger>
                             <AccordionContent>
                                 <div className="space-y-2 pb-2 pt-1">
                                     {loan.fines.map((fine) => (
-                                        <div key={fine.id} className="p-2 text-xs bg-white dark:bg-background rounded-md border border-destructive/20 shadow-sm">
+                                        <div key={fine.id} className="p-2 text-xs bg-white dark:bg-background rounded-md border shadow-sm">
                                             <div className="flex justify-between items-start mb-1">
                                                 <span className="font-medium text-foreground">{fine.reason || "Fine"}</span>
                                                 <span className="font-bold">${fine.amount?.toFixed(2)}</span>
@@ -85,7 +112,7 @@ export function HistoryLoanItem({ loan }: HistoryLoanItemProps) {
                                                     )}
                                                     {fine.status === FineStatus.PAID && (
                                                         <div className="flex items-center gap-1">
-                                                            <Badge variant="outline" className="h-4 px-1.5 text-[10px] border-green-600 text-green-600 bg-green-50">Paid</Badge>
+                                                            <Badge variant="outline" className="h-4 px-1.5 text-[10px] border-green-600 text-green-600 bg-green-50 dark:bg-green-900/20">Paid</Badge>
                                                             <span className="text-[10px]">on {formatDate(fine.paymentDate)}</span>
                                                         </div>
                                                     )}

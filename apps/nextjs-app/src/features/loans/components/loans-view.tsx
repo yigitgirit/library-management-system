@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Library, BookOpenText, History } from "lucide-react"
@@ -13,8 +12,6 @@ import { loanQueries } from "../api/loanQueries"
 import { Skeleton } from "@/components/ui/skeleton"
 
 export function LoansView() {
-  const [activeTab, setActiveTab] = useState("active")
-  
   const { data: loansData, isLoading } = useQuery(loanQueries.myLoans())
   const allLoans = loansData?.content || []
 
@@ -28,7 +25,7 @@ export function LoansView() {
     loan.status !== LoanStatus.ACTIVE && loan.status !== LoanStatus.OVERDUE
   );
 
-  if (isLoading) {
+  if (isLoading && !loansData) {
       return <LoansViewSkeleton />
   }
 
@@ -54,7 +51,7 @@ export function LoansView() {
             </div>
         </div>
 
-        <Tabs defaultValue="active" className="w-full" onValueChange={setActiveTab}>
+        <Tabs defaultValue="active" className="w-full">
             <TabsList className="grid w-full grid-cols-2 max-w-[400px]">
                 <TabsTrigger value="active">Active Loans</TabsTrigger>
                 <TabsTrigger value="history">Loan History</TabsTrigger>
