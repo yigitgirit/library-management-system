@@ -110,15 +110,19 @@ export async function logoutAction(): Promise<void> {
 }
 
 export async function refreshSessionAction(): Promise<ActionResponse> {
+  console.log("[AuthAction] refreshSessionAction called")
   const cookieStore = await cookies()
   const refreshToken = cookieStore.get("refreshToken")?.value
 
   if (!refreshToken) {
+    console.log("[AuthAction] No refresh token found in cookies")
     return { success: false, error: "No refresh token found" }
   }
 
   try {
+    console.log("[AuthAction] Calling authService.refresh...")
     const response = await authService.refresh({ refreshToken })
+    console.log("[AuthAction] Refresh successful, new access token received")
 
     if (response.accessToken) {
       await setAuthCookies(response.accessToken, response.refreshToken)
@@ -127,7 +131,13 @@ export async function refreshSessionAction(): Promise<ActionResponse> {
     
     return { success: false, error: "Refresh failed" }
   } catch (error) {
-    await clearAuthCookies()
+    console.error("[AuthAction] Refresh failed with error:", error)
+    try {
+        await clearAuthCookies()
+    } catch (cookieError) {
+        console.error("Failed to clear cookies during refresh failure:", cookieError)
+    }
+
     return { success: false, error: "Refresh failed" }
   }
 }
