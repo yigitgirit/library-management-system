@@ -1,53 +1,41 @@
-import axios, { AxiosError, ParamsSerializerOptions } from "axios"
-import { AppError, ApiResponse } from "@/types/api"
+"use server"
+
+import { cookies } from "next/headers"
+import { createApiClient } from "./base-client"
+import { AppError } from "@/types/api"
+import { AxiosError } from "axios"
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"
 
-export const serverApiClient = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-  paramsSerializer: {
-    serialize: (params) => {
-      const searchParams = new URLSearchParams()
-      for (const key in params) {
-        const value = params[key]
-        if (Array.isArray(value)) {
-          value.forEach((v) => searchParams.append(key, String(v)))
-        } else if (value !== undefined && value !== null) {
-          searchParams.append(key, String(value))
-        }
-      }
-      return searchParams.toString()
-    },
-  },
-})
-
-serverApiClient.interceptors.request.use((config) => {
-    const baseUrl = config.baseURL || ""
-    const url = config.url || ""
-    const fullUrl = baseUrl + url
-    
-    let query = ""
-    if (config.params) {
-        const serializer = config.paramsSerializer as ParamsSerializerOptions | undefined
-        if (serializer && typeof serializer === 'object' && serializer.serialize) {
-             query = "?" + serializer.serialize(config.params)
-        }
-    }
-    
-    console.log(`[ServerClient] Request: ${config.method?.toUpperCase()} ${fullUrl}${query}`)
-    return config
-})
-
-serverApiClient.interceptors.response.use(
-  (response) => response,
-  (error: AxiosError<ApiResponse<unknown>>) => {
-    if (error.response?.data?.error) {
-      throw new AppError(error.response.data.error)
-    }
-    
-    throw new Error(error.message || "An unexpected error occurred")
+// Server-side token provider using Next.js cookies
+const serverTokenProvider = async () => {
+  try {
+    const cookieStore = await cookies()
+    return cookieStore.get("accessToken")?.value
+  } catch (error) {
+    // This happens if called outside of request context (e.g. static generation)
+    return null
   }
-)
+}
+
+// Server-side error handler
+const serverErrorHandler = async (error: AxiosError) => {
+    // On server side, we usually don't do refresh token logic (it's complex and slows down response).
+    // Instead, we let the error propagate so the page can redirect to login or show error.
+
+    const responseData = error.response?.data;
+    if (responseData && typeof responseData === 'object' && 'error' in responseData) {
+        const apiError = (responseData as { error: unknown }).error;
+        if (apiError && typeof apiError === 'object' && 'code' in apiError && 'message' in apiError) {
+            throw new AppError(apiError as AppError);
+        }
+    }
+
+    throw error
+}
+
+export const serverApiClient = createApiClient({
+  baseURL: API_BASE_URL,
+  tokenProvider: serverTokenProvider,
+  errorHandler: serverErrorHandler
+})
