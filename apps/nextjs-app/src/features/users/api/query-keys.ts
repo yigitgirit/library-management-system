@@ -5,4 +5,5 @@ export const USER_QUERY_KEYS = {
   details: () => [...USER_QUERY_KEYS.all, "detail"],
   detail: (id: number) => [...USER_QUERY_KEYS.details(), id],
   profile: ["my-profile"],
+  publicProfile: (id: number) => ["public-profile", id],
 } as const

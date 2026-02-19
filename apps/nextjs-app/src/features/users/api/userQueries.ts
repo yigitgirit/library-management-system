@@ -25,6 +25,12 @@ export const userQueries = {
       queryKey: USER_QUERY_KEYS.profile,
       queryFn: () => userService.getMyProfile(),
     }),
+
+  publicProfile: (id: number) =>
+    queryOptions({
+      queryKey: USER_QUERY_KEYS.publicProfile(id),
+      queryFn: () => userService.getUserPublicProfile(id),
+    }),
 }
 
 export const useCreateUser = () => {
