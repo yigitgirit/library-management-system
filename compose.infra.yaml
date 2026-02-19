@@ -18,18 +18,5 @@ services:
       timeout: 5s
       retries: 5
 
-  cache:
-    image: redis:7-alpine
-    restart: always
-    container_name: library-cache
-    ports:
-      - "6379:6379"
-    healthcheck:
-      # redis-cli ping returns PONG on success
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
 volumes:
   postgres_data:
