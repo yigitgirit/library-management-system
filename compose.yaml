@@ -25,15 +25,11 @@ services:
     ports:
       - "${BACKEND_PORT:-8080}:8080" # Use BACKEND_PORT from .env, default to 8080 if not set
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/${POSTGRES_DB:-library}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
-      SPRING_DATA_REDIS_HOST: cache
-      SPRING_DATA_REDIS_PORT: 6379
     depends_on:
       database:
-        condition: service_healthy
-      cache:
         condition: service_healthy
     healthcheck:
       # This command uses curl (installed in most base images) to check the actuator health endpoint.
@@ -43,17 +39,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s # Give the app time to start before the first check
-
-  cache:
-    image: redis:7-alpine
-    restart: always
-    container_name: library-cache
-    healthcheck:
-      # redis-cli ping returns PONG on success
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   frontend:
     build:
