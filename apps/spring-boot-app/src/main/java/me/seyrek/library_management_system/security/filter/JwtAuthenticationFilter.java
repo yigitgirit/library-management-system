@@ -35,6 +35,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
 
+        // Skip JWT validation for auth endpoints (login, register, refresh)
+        // This allows the controller to handle the logic (e.g. validating refresh token body)
+        // even if an expired access token is present in the header.
+        if (request.getServletPath().contains("/api/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
