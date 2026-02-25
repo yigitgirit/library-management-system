@@ -45,11 +45,11 @@ nbdist/
 # Application-Specific Ignores
 # ===================================================================
 
-### Spring Boot Backend (apps/spring-boot-app) ###
+### Spring Boot App (apps/spring-boot-app) ###
 apps/spring-boot-app/target/
 apps/spring-boot-app/.mvn/wrapper/maven-wrapper.jar
 
-### Next.js Frontend (apps/nextjs-app) ###
+### Next.js App (apps/nextjs-app) ###
 apps/nextjs-app/node_modules/
 apps/nextjs-app/.next/
 apps/nextjs-app/out/
@@ -65,3 +65,10 @@ yarn-error.log*
 pnpm-debug.log*
 
 .gitattributes
+
+### TanStack App (apps/tanstack-app) ###
+apps/tanstack-app/node_modules/
+apps/tanstack-app/.vinxi/
+apps/tanstack-app/.output/
+apps/tanstack-app/dist/
+apps/tanstack-app/build/
