@@ -49,7 +49,7 @@ public class JpaUserService implements UserService {
     @Override
     public UserDto findUserByEmail(String email) {
         var user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with userEmail: " + email, ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email, ErrorCode.USER_NOT_FOUND));
         return userMapper.toUserDto(user);
     }
 

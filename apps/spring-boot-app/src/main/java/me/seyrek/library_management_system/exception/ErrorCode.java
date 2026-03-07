@@ -17,7 +17,7 @@ public enum ErrorCode {
     // 2. AUTHENTICATION & SECURITY (E2xxx)
     // =====================================================================
     UNAUTHORIZED("E2001", "Authentication failed. Please provide a valid token.", HttpStatus.UNAUTHORIZED),
-    INVALID_CREDENTIALS("E2002", "Invalid userEmail or password.", HttpStatus.UNAUTHORIZED),
+    INVALID_CREDENTIALS("E2002", "Invalid email or password.", HttpStatus.UNAUTHORIZED),
     FORBIDDEN("E2003", "You do not have permission to access this resource.", HttpStatus.FORBIDDEN),
     TOKEN_EXPIRED("E2004", "Access token has expired.", HttpStatus.UNAUTHORIZED),
     REFRESH_TOKEN_EXPIRED("E2005", "Refresh token expired. Please login again.", HttpStatus.FORBIDDEN),
