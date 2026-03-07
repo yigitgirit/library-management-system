@@ -1,87 +1,499 @@
-# library-management-system
-Library Management System is a full-stack application built with Next.js and Spring Boot. It automates core library tasks, featuring secure JWT authentication, efficient book/user management.
+# Library Management System
+
+![Java](https://img.shields.io/badge/Java-21-orange)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.7-green)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-blue)
+![Docker](https://img.shields.io/badge/Docker-Enabled-blue)
+![Next.js](https://img.shields.io/badge/Next.js-16.1-black)
+
+Welcome to the **Library Management System**! 📚✨
+
+This is a comprehensive, full-stack solution designed to modernize library operations. Built with the robust power of **Spring Boot** and the dynamic interactivity of **Next.js**, it streamlines everything from book tracking and user management to loan processing and fine calculations. Whether you're a librarian managing a vast catalog or a user looking for your next great read, this system offers a secure, responsive, and intuitive experience.
+
+## Table of Contents
+
+- [Features](#features)
+- [Gallery](#gallery)
+- [Getting Started](#getting-started)
+- [Project Architecture](#project-architecture)
+- [Technologies Used](#technologies-used)
+- [Configuration](#configuration)
+- [Security & Authentication](#security--authentication)
+- [API Reference](#api-reference)
+- [API Response Format](#api-response-format)
 
 ## Features
 
-- **Backend:** A robust REST API built with Spring Boot that handles all the business logic of the library management system.
-- **Frontend:** A modern and responsive user interface built with Next.js.
-- **Database:** PostgreSQL is used for persistent data storage.
-- **Cache:** Redis is used for caching to improve performance.
-- **Containerization:** The entire application is containerized using Docker for easy setup and deployment.
+### Authentication & Security
+- **Secure Login/Register:** JWT-based stateless authentication.
+- **Role-Based Access Control (RBAC):** Distinct permissions for **Users** and **Admins**.
+- **Token Management:** Access and Refresh token rotation for enhanced security.
+
+### Catalog Management
+- **Book Management:** Create, update, and delete books with rich metadata (ISBN, Publisher, Year).
+- **Author & Category Management:** Organize books by authors and categories.
+- **Copy Management:** Track individual physical copies of books and their status (Available, Loaned, Lost).
+- **Advanced Search:** Filter books by title, author, category, or ISBN.
+
+### Circulation & Loans
+- **Borrowing System:** Users can borrow available copies with automated due date calculation.
+- **Return Process:** Streamlined return workflow with automatic fine calculation for overdue items.
+- **Loan History:** Users can view their current and past loans.
+- **Fine Management:** Automated fine generation for overdue books, with admin capabilities to waive or adjust fines.
+- **Payment Processing:** Integrated mock payment service for fine settlements (simulates 3-second processing delay).
+
+### Intelligent Fine Calculation
+The system uses a smart, adaptive approach to calculate overdue fines, ensuring fairness based on user history.
+
+- **Standard Policy:**
+  - Applies a fixed daily fine for overdue items.
+  - Used for users in good standing.
+
+- **Progressive Policy:**
+  - Implements a tiered fine structure where the daily rate increases the longer a book remains overdue.
+  - Encourages timely returns for long-overdue items.
+
+- **Dynamic Adaptation:**
+  - The system automatically switches between policies based on the user's history.
+  - Users with a history of frequent overdue items (e.g., more than 5 past fines) are subject to the stricter Progressive Policy, while responsible users remain on the Standard Policy.
+
+### User Management
+- **Profile Management:** Users can update their personal information and notification preferences.
+- **Admin Dashboard:** Comprehensive view of system statistics (Total Users, Active Loans, Overdue Books).
+- **User Administration:** Admins can view user lists, ban/unban users, and manage their active loans.
+
+### Notifications
+- **Email Alerts:** Automated email notifications for:
+    - Loan confirmations
+    - Due date reminders
+    - Overdue alerts
+    - Fine issuance
+- **Preferences:** Users can customize which notifications they receive.
+
+## Gallery
+
+Explore the user interface and key features of the Library Management System.
+
+### Dashboard Overview
+*Comprehensive admin dashboard showing real-time statistics and recent activities.*
+![Dashboard Overview](https://placehold.co/1200x675/png?text=Dashboard+Overview)
+
+### Book Catalog & Search
+*Interactive book catalog with advanced filtering and search capabilities.*
+![Book Catalog](https://placehold.co/1200x675/png?text=Book+Catalog)
+
+### Loan Management
+*Streamlined interface for managing active loans and processing returns.*
+![Loan Management](https://placehold.co/1200x675/png?text=Loan+Management)
+
+### User Profile & Settings
+*User-friendly profile management and notification preferences.*
+![User Profile](https://placehold.co/1200x675/png?text=User+Profile)
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+### 1. Clone the Repository
 
-### Prerequisites
+```bash
+git clone https://github.com/yigitgirit/library-management-system.git
+cd library-management-system
+```
 
-- [Docker](https://www.docker.com/get-started) and [Docker Compose](https://docs.docker.com/compose/install/)
+### 2. Choose Your Setup Method
 
-### Setup
+You can run the project using **Docker** (Recommended) or from **Source**.
 
-1.  **Clone the repository:**
+#### Option A: Docker (Recommended)
+*Best for running the app quickly without installing Java or Node.js locally.*
 
-    ```bash
-    git clone https://github.com/yigit-7/library-management-system.git
-    cd library-management-system
-    ```
+**Prerequisites:**
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-2.  **Configure environment variables:**
+**Steps:**
 
-    Create a `.env` file in the root of the project by copying the example file:
-
+1.  Copy the environment file:
     ```bash
     cp .env.example .env
     ```
-
-    Now, open the `.env` file and fill in the required environment variables:
-
-    - `POSTGRES_USER`: The username for the PostgreSQL database.
-    - `POSTGRES_PASSWORD`: The password for the PostgreSQL database.
-    - `POSTGRES_DB`: The name of the PostgreSQL database.
-    - `BACKEND_PORT`: The port on which the backend server will run (defaults to 8080).
-
-3.  **Run the application with Docker Compose:**
-
+2.  Start the services:
     ```bash
-    docker-compose -f compose.yaml up --build
+    docker-compose up --build
     ```
 
-    This command will build the Docker images for the frontend and backend services and start all the services defined in the `compose.yaml` file.
+---
 
-    The services include:
-    - `database`: The PostgreSQL database.
-    - `backend`: The Spring Boot application.
-    - `cache`: The Redis cache.
-    - `frontend`: The Next.js application.
+#### Option B: From Source
+*Best for development and debugging. The database will still run in Docker to ensure consistency.*
 
-4.  **Access the application:**
+**Prerequisites:**
+- **Java 21** (JDK 21)
+- **Node.js 24+**
+- **Docker Desktop** (for Database)
 
-    - The frontend will be available at [http://localhost:3000](http://localhost:3000).
-    - The backend API will be available at [http://localhost:8080](http://localhost:8080).
+**Steps:**
 
-## Project Structure
+1.  **Environment Setup:**
+    ```bash
+    # Backend
+    cp apps/spring-boot-app/.env.example apps/spring-boot-app/.env
 
-This project is a monorepo containing two main applications:
+    # Frontend
+    cp apps/nextjs-app/.env.example apps/nextjs-app/.env.local
+    ```
 
-- `apps/spring-boot-app`: The backend application, built with Spring Boot.
-- `apps/nextjs-app`: The frontend application, built with Next.js.
+2.  **Start Database in Docker:**
+    Open a terminal and run:
+    ```bash
+    docker-compose -f docker-compose.db.yaml up -d
+    ```
+
+3.  **Start Backend:**
+    In the same or a new terminal, run:
+    ```bash
+    cd apps/spring-boot-app
+    ./mvnw spring-boot:run
+    ```
+    *Wait until you see "Started LibraryManagementSystemApplication" in the logs.*
+
+4.  **Start Frontend:**
+    Open a **new terminal** and run:
+    ```bash
+    cd apps/nextjs-app
+    npm install
+    npm run dev
+    ```
+
+---
+
+### Access the Application
+
+- **Frontend:** [http://localhost:3000](http://localhost:3000)
+- **Backend API:** [http://localhost:8080](http://localhost:8080)
+- **API Docs:** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+## Project Architecture
+
+The project follows a **Monorepo** structure, separating the frontend and backend into distinct applications that communicate via REST API.
+
+### 1. Backend (`apps/spring-boot-app`)
+The backend is built with **Spring Boot** and follows a **Modular Monolith** architecture. Code is organized by domain features rather than technical layers.
+
+```
+src/main/java/me/seyrek/library_management_system/
+├── auth/           # Authentication & JWT logic
+├── author/         # Author management
+├── book/           # Book management (CRUD, Search)
+├── category/       # Category management
+├── common/         # Shared utilities & exceptions
+├── config/         # App-wide configurations (Swagger, CORS)
+├── copy/           # Book copy management
+├── dashboard/      # Dashboard statistics
+├── exception/      # Global exception handling
+├── fine/           # Fine calculation & payment logic
+├── loan/           # Loan processing & business rules
+├── notification/   # Email notification services
+├── payment/        # Payment processing
+├── security/       # Spring Security configuration
+└── user/           # User management & profiles
+```
+
+### 2. Frontend (`apps/nextjs-app`)
+The frontend is built with **Next.js 16 (App Router)** and follows a feature-based structure.
+
+```
+src/
+├── app/               # Next.js App Router pages & layouts
+│   ├── (auth)/        # Auth-related pages (Login, Register)
+│   ├── (dashboard)/   # Protected dashboard pages
+│   └── (marketing)/   # Public marketing pages
+├── components/        # Shared UI components (Shadcn UI)
+├── features/          # Feature-specific components & logic
+│   ├── auth/          # Login/Register forms & hooks
+│   ├── authors/       # Author management
+│   ├── books/         # Book list, details, & search
+│   ├── categories/    # Category management
+│   ├── common/        # Shared feature components
+│   ├── copies/        # Book copy management
+│   ├── dashboard/     # Dashboard widgets & charts
+│   ├── fines/         # Fine management
+│   ├── loans/         # Loan history & active loans
+│   ├── notification/  # Notification preferences
+│   └── users/         # User management
+├── lib/               # Utilities & Configuration
+├── config/            # App configuration & constants
+└── types/             # TypeScript interfaces & types
+```
 
 ## Technologies Used
 
-### Backend
+### Frontend Layer
+- **Framework:** Next.js 16.1 (App Router)
+- **Language:** TypeScript
+- **UI Library:** React 19
+- **Styling:** Tailwind CSS
+- **Components:** Shadcn UI (Radix UI)
+- **State Management:** Zustand (Client), TanStack Query (Server/Async)
+- **Form Handling:** React Hook Form + Zod
+- **HTTP Client:** Axios
 
-- Java 21
-- Spring Boot
-- Spring Data JPA
-- PostgreSQL
-- Redis
-- Lombok
-- Maven
+### Backend Layer
+- **Framework:** Spring Boot 3.5.7
+- **Language:** Java 21
+- **ORM:** Spring Data JPA (Hibernate)
+- **Security:** Spring Security (JWT)
+- **Documentation:** SpringDoc OpenAPI (Swagger UI)
+- **Utilities:** Lombok, MapStruct, Apache Commons
 
-### Frontend
+### Database & Infrastructure
+- **Database:** PostgreSQL 17
+- **Containerization:** Docker & Docker Compose
+- **Build Tools:** Maven (Backend), NPM (Frontend)
 
-- Next.js
-- React
-- TypeScript
-- Tailwind CSS
+## Configuration
+
+The project uses environment variables for configuration across different environments.
+
+### 1. Docker Environment (Root `.env`)
+Used when running the project via `docker-compose up`.
+
+| Variable | Description | Default      |
+|----------|-------------|--------------|
+| `JWT_SECRET_KEY` | Shared secret for signing tokens | *Required*   |
+| `POSTGRES_DB` | Database name | `library`    |
+| `POSTGRES_USER` | Database username | `postgres`   |
+| `POSTGRES_PASSWORD` | Database password | `secretbook` |
+| `SPRING_MAIL_USERNAME` | SMTP Username | -            |
+| `SPRING_MAIL_PASSWORD` | SMTP Password | -            |
+| `BACKEND_PORT` | Host port for Backend | `8080`       |
+| `FRONTEND_PORT` | Host port for Frontend | `3000`       |
+| `DATABASE_PORT` | Host port for Database | `5433`       |
+
+### 2. Local Environment (App-Specific)
+Used when running applications from source (`mvnw` or `npm run dev`).
+
+**Backend (`apps/spring-boot-app/.env`):**
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `SPRING_DATASOURCE_URL` | JDBC URL | `jdbc:postgresql://localhost:5432/library` |
+| `SPRING_DATASOURCE_USERNAME` | DB User | `postgres` |
+| `SPRING_DATASOURCE_PASSWORD` | DB Password | `secretbook` |
+| `JWT_SECRET_KEY` | Must match the frontend's secret | *Required* |
+| `SPRING_MAIL_USERNAME` | SMTP Username | - |
+| `SPRING_MAIL_PASSWORD` | SMTP Password | - |
+
+**Frontend (`apps/nextjs-app/.env.local`):**
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `NEXT_PUBLIC_API_URL` | Backend API URL | `http://localhost:8080` |
+| `JWT_SECRET_KEY` | Must match the backend's secret | *Required* |
+
+### Spring Boot Configuration (`application.properties`)
+Key settings in `src/main/resources/application.properties`:
+- **Database Initialization:** `spring.sql.init.mode=never` (Relies on Docker init scripts).
+- **Hibernate DDL:** `spring.jpa.hibernate.ddl-auto=validate` (Validates schema only).
+- **JWT Expiration:** Access Token (15m), Refresh Token (30d).
+
+## Security & Authentication
+
+The application implements a robust security architecture to handle credentials and sessions securely.
+
+### 1. JWT Authentication Flow
+- **Stateless:** The server does not store session state. Identity is verified via **JSON Web Tokens (JWT)**.
+- **Dual Token System:**
+  - **Access Token:** Short-lived (15 mins), used for API requests.
+  - **Refresh Token:** Long-lived (30 days), stored in the database, used to obtain new access tokens.
+
+### 2. Frontend-Backend Communication
+- **Browser Client (`browser-client.ts`):**
+  - Intercepts 401 responses.
+  - Automatically attempts to refresh the session using the Refresh Token.
+  - Queues concurrent requests during refresh to prevent race conditions.
+  - Logs the user out if refresh fails.
+- **Server Client (`server-client.ts`):**
+  - Used by Next.js Server Components.
+  - Retrieves the Access Token directly from `HttpOnly` cookies for secure server-side data fetching.
+
+### 3. Credential Safety
+- **Passwords:** Hashed using **BCrypt** before storage.
+- **Secrets:** Sensitive keys (JWT Secret, DB Password) are injected via environment variables, never hardcoded.
+- **CORS:** Configured to allow requests only from the trusted frontend origin.
+
+
+## API Reference
+
+The API is organized around RESTful principles. Below are the key endpoints categorized by resource.
+
+### Authentication
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/auth/register` | Register a new user |
+| `POST` | `/api/auth/login` | Authenticate and receive tokens |
+| `POST` | `/api/auth/refresh` | Refresh access token |
+| `POST` | `/api/auth/logout` | Invalidate session |
+
+### Books Management
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/books` | List books (with pagination & search) |
+| `GET` | `/api/books/{id}` | Get book details by ID |
+| `POST` | `/api/books` | Create a new book (Admin only) |
+| `PUT` | `/api/books/{id}` | Update book details (Admin only) |
+| `DELETE` | `/api/books/{id}` | Delete a book (Admin only) |
+
+### Authors Management
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/authors` | List all authors |
+| `GET` | `/api/authors/{id}` | Get author details by ID |
+| `POST` | `/api/authors` | Create a new author (Admin only) |
+| `PUT` | `/api/authors/{id}` | Update author details (Admin only) |
+| `DELETE` | `/api/authors/{id}` | Delete an author (Admin only) |
+
+### Categories Management
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/categories` | List all categories |
+| `GET` | `/api/categories/{id}` | Get category details by ID |
+| `POST` | `/api/categories` | Create a new category (Admin only) |
+| `PUT` | `/api/categories/{id}` | Update category details (Admin only) |
+| `DELETE` | `/api/categories/{id}` | Delete a category (Admin only) |
+
+### Book Copies Management
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/copies` | List book copies (with pagination) |
+| `GET` | `/api/copies/{id}` | Get copy details by ID |
+| `POST` | `/api/copies` | Create a new book copy (Admin only) |
+| `PUT` | `/api/copies/{id}` | Update copy details (Admin only) |
+| `DELETE` | `/api/copies/{id}` | Delete a book copy (Admin only) |
+
+### Loans Management
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/loans` | List all loans (Admin only) |
+| `GET` | `/api/loans/my-loans` | Get current user's loans |
+| `GET` | `/api/loans/{id}` | Get loan details by ID |
+| `POST` | `/api/loans` | Borrow a book copy |
+| `POST` | `/api/loans/{id}/return` | Return a borrowed book |
+| `PUT` | `/api/loans/{id}` | Update loan details (Admin only) |
+
+### Fines Management
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/fines` | List all fines (Admin only) |
+| `GET` | `/api/fines/my-fines` | Get current user's fines |
+| `GET` | `/api/fines/{id}` | Get fine details by ID |
+| `POST` | `/api/fines/{id}/pay` | Pay a fine |
+| `POST` | `/api/fines/{id}/waive` | Waive a fine (Admin only) |
+
+### User Management
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/users/me` | Get current user profile |
+| `PUT` | `/api/users/me` | Update current user profile |
+| `GET` | `/api/users` | List all users (Admin only) |
+| `GET` | `/api/users/{id}` | Get user details by ID (Admin only) |
+| `PUT` | `/api/users/{id}` | Update user details (Admin only) |
+| `POST` | `/api/users/{id}/ban` | Ban a user (Admin only) |
+| `POST` | `/api/users/{id}/unban` | Unban a user (Admin only) |
+
+### Dashboard
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/dashboard/stats` | Get system statistics (Admin only) |
+
+### Notifications
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/notifications` | Get user notifications |
+| `PUT` | `/api/notifications/preferences` | Update notification preferences |
+| `POST` | `/api/notifications/send` | Send notification (Admin only) |
+
+*For a complete and interactive list of endpoints, visit the **Swagger UI** at `http://localhost:8080/swagger-ui.html` after starting the backend.*
+
+
+## Response Format
+
+The backend uses a standardized JSON structure for all API responses, ensuring consistency and ease of consumption for the frontend.
+
+### 1. Success Response
+All successful requests return an `ApiResponse<T>` object.
+
+```json
+{
+  "success": true,
+  "timestamp": "2023-10-27T10:00:00Z",
+  "message": "Operation successful",
+  "data": {
+    "id": 1,
+    "name": "Example Item"
+  }
+}
+```
+
+### 2. Error Response
+Failed requests return a structured error object within the `ApiResponse`.
+
+```json
+{
+  "success": false,
+  "timestamp": "2023-10-27T10:05:00Z",
+  "error": {
+    "code": "RESOURCE_NOT_FOUND",
+    "message": "Book not found with id: 1",
+    "details": null
+  }
+}
+```
+
+**Error Codes:**
+The `code` field in error responses corresponds to predefined error codes in the `ErrorCode.java` enum file. These codes are systematically categorized:
+- `E1xxx`: User and generic business logic errors
+- `E2xxx`: Authentication and security errors
+- `E3xxx`: Data validation and request format errors
+- `E4xxx`: Library domain-specific business logic errors
+- `E5xxx`: Generic system errors
+
+**Validation Errors:**
+For validation failures (e.g., invalid form data), the `details` field contains specific field errors.
+
+```json
+{
+  "success": false,
+  "timestamp": "2023-10-27T10:10:00Z",
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Validation failed",
+    "details": [
+      {
+        "field": "email",
+        "message": "must be a well-formed email address"
+      }
+    ]
+  }
+}
+```
+
+### 3. Paginated Response
+Endpoints returning lists of data use a `PagedData<T>` wrapper to provide pagination metadata.
+
+```json
+{
+  "success": true,
+  "timestamp": "2023-10-27T10:15:00Z",
+  "data": {
+    "content": [
+      { "id": 1, "title": "Book 1" },
+      { "id": 2, "title": "Book 2" }
+    ],
+    "page": {
+      "size": 20,
+      "totalElements": 100,
+      "totalPages": 5,
+      "number": 0
+    }
+  }
+}
+```
