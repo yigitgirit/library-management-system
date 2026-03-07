@@ -3,11 +3,13 @@
 import { cookies } from "next/headers"
 import { loginSchema, registerSchema, LoginInput, RegisterInput } from "@/features/auth/schemas"
 import { authService } from "@/features/auth/services/authService"
-import { AppError } from "@/types/api"
+import {AppError, ErrorCodes} from "@/types/api"
+import {AuthResponse} from "@/features/auth/types/auth";
 
 export type ActionResponse = {
   success: boolean
   error?: string
+  errorCode?: string
   validationErrors?: Record<string, string>
   accessToken?: string
 }
@@ -21,9 +23,7 @@ const COOKIE_OPTIONS = {
 
 async function setAuthCookies(accessToken: string, refreshToken?: string) {
   const cookieStore = await cookies()
-  
   cookieStore.set("accessToken", accessToken, COOKIE_OPTIONS)
-  
   if (refreshToken) {
     cookieStore.set("refreshToken", refreshToken, COOKIE_OPTIONS)
   }
@@ -43,20 +43,33 @@ function handleActionError(error: unknown): ActionResponse {
         validationErrors[d.field] = d.message
       })
     }
-    return { success: false, error: error.message, validationErrors }
+    return {
+      success: false,
+      error: error.message,
+      errorCode: error.code,
+      validationErrors
+    }
   }
-  return { success: false, error: (error as Error).message || "An unexpected error occurred" }
+  return {
+    success: false,
+    error: (error as Error).message || "An unexpected error occurred",
+    errorCode: ErrorCodes.INTERNAL_SERVER_ERROR
+  }
 }
 
 export async function loginAction(data: LoginInput): Promise<ActionResponse> {
   const result = loginSchema.safeParse(data)
 
   if (!result.success) {
-    return { success: false, error: "Invalid input" }
+    return {
+      success: false,
+      error: "Invalid input",
+      errorCode: ErrorCodes.VALIDATION_ERROR
+    }
   }
 
   try {
-    const response = await authService.login({
+    const response: AuthResponse = await authService.login({
       email: result.data.email,
       password: result.data.password,
     })
@@ -66,7 +79,11 @@ export async function loginAction(data: LoginInput): Promise<ActionResponse> {
       return { success: true }
     }
 
-    return { success: false, error: "Login failed: No access token received" }
+    return {
+      success: false,
+      error: "Login failed: No access token received",
+      errorCode: ErrorCodes.INVALID_CREDENTIALS
+    }
   } catch (error) {
     return handleActionError(error)
   }
@@ -76,7 +93,11 @@ export async function registerAction(data: RegisterInput): Promise<ActionRespons
   const result = registerSchema.safeParse(data)
 
   if (!result.success) {
-    return { success: false, error: "Invalid input" }
+    return {
+      success: false,
+      error: "Invalid input",
+      errorCode: ErrorCodes.VALIDATION_ERROR
+    }
   }
 
   try {
@@ -110,28 +131,31 @@ export async function logoutAction(): Promise<void> {
 }
 
 export async function refreshSessionAction(): Promise<ActionResponse> {
-  console.log("[AuthAction] refreshSessionAction called")
   const cookieStore = await cookies()
   const refreshToken = cookieStore.get("refreshToken")?.value
 
   if (!refreshToken) {
-    console.log("[AuthAction] No refresh token found in cookies")
-    return { success: false, error: "No refresh token found" }
+    return {
+      success: false,
+      error: "No refresh token found",
+      errorCode: ErrorCodes.REFRESH_TOKEN_NOT_FOUND
+    }
   }
 
   try {
-    console.log("[AuthAction] Calling authService.refresh...")
     const response = await authService.refresh({ refreshToken })
-    console.log("[AuthAction] Refresh successful, new access token received")
 
     if (response.accessToken) {
       await setAuthCookies(response.accessToken, response.refreshToken)
       return { success: true, accessToken: response.accessToken }
     }
-    
-    return { success: false, error: "Refresh failed" }
+
+    return {
+      success: false,
+      error: "Refresh failed: No access token received",
+      errorCode: ErrorCodes.REFRESH_TOKEN_EXPIRED
+    }
   } catch (error) {
-    console.error("[AuthAction] Refresh failed with error:", error)
     try {
         await clearAuthCookies()
     } catch (cookieError) {
