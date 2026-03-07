@@ -6,7 +6,7 @@
 ![Docker](https://img.shields.io/badge/Docker-Enabled-blue)
 ![Next.js](https://img.shields.io/badge/Next.js-16.1-black)
 
-Welcome to the **Library Management System**! 📚✨
+Welcome to the **Library Management System**!
 
 This is a comprehensive, full-stack solution designed to modernize library operations. Built with the robust power of **Spring Boot** and the dynamic interactivity of **Next.js**, it streamlines everything from book tracking and user management to loan processing and fine calculations. Whether you're a librarian managing a vast catalog or a user looking for your next great read, this system offers a secure, responsive, and intuitive experience.
 
@@ -46,16 +46,16 @@ This is a comprehensive, full-stack solution designed to modernize library opera
 The system uses a smart, adaptive approach to calculate overdue fines, ensuring fairness based on user history.
 
 - **Standard Policy:**
-  - Applies a fixed daily fine for overdue items.
-  - Used for users in good standing.
+    - Applies a fixed daily fine for overdue items.
+    - Used for users in good standing.
 
 - **Progressive Policy:**
-  - Implements a tiered fine structure where the daily rate increases the longer a book remains overdue.
-  - Encourages timely returns for long-overdue items.
+    - Implements a tiered fine structure where the daily rate increases the longer a book remains overdue.
+    - Encourages timely returns for long-overdue items.
 
 - **Dynamic Adaptation:**
-  - The system automatically switches between policies based on the user's history.
-  - Users with a history of frequent overdue items (e.g., more than 5 past fines) are subject to the stricter Progressive Policy, while responsible users remain on the Standard Policy.
+    - The system automatically switches between policies based on the user's history.
+    - Users with a history of frequent overdue items (e.g., more than 5 past fines) are subject to the stricter Progressive Policy, while responsible users remain on the Standard Policy.
 
 ### User Management
 - **Profile Management:** Users can update their personal information and notification preferences.
@@ -74,21 +74,33 @@ The system uses a smart, adaptive approach to calculate overdue fines, ensuring 
 
 Explore the user interface and key features of the Library Management System.
 
-### Dashboard Overview
-*Comprehensive admin dashboard showing real-time statistics and recent activities.*
-![Dashboard Overview](https://placehold.co/1200x675/png?text=Dashboard+Overview)
+### Dashboard
+![Dashboard Overview](docs/screenshots/dashboard.png)
 
-### Book Catalog & Search
-*Interactive book catalog with advanced filtering and search capabilities.*
-![Book Catalog](https://placehold.co/1200x675/png?text=Book+Catalog)
+### Book Catalog
+![Book Catalog](docs/screenshots/books.png)
 
-### Loan Management
-*Streamlined interface for managing active loans and processing returns.*
-![Loan Management](https://placehold.co/1200x675/png?text=Loan+Management)
+### Loan Operations
+**Create Loan**
+![Loan Creation](docs/screenshots/create-loan.png)
 
-### User Profile & Settings
-*User-friendly profile management and notification preferences.*
-![User Profile](https://placehold.co/1200x675/png?text=User+Profile)
+**Active Loans**
+![Active Loans](docs/screenshots/active-loans.png)
+
+**Loan History**
+![Loan History](docs/screenshots/loan-history.png)
+
+**Report Damaged Book**
+![Report Damaged Book](docs/screenshots/report-damaged-book.png)
+
+### Settings
+**General Settings**
+![General Settings](docs/screenshots/settings-general.png)
+
+**Notification Preferences**
+![Notification Settings](docs/screenshots/settings-notification.png)
+
+Go to `docs/screenshots` for more.
 
 ## Getting Started
 
@@ -302,18 +314,18 @@ The application implements a robust security architecture to handle credentials 
 ### 1. JWT Authentication Flow
 - **Stateless:** The server does not store session state. Identity is verified via **JSON Web Tokens (JWT)**.
 - **Dual Token System:**
-  - **Access Token:** Short-lived (15 mins), used for API requests.
-  - **Refresh Token:** Long-lived (30 days), stored in the database, used to obtain new access tokens.
+    - **Access Token:** Short-lived (15 mins), used for API requests.
+    - **Refresh Token:** Long-lived (30 days), stored in the database, used to obtain new access tokens.
 
 ### 2. Frontend-Backend Communication
 - **Browser Client (`browser-client.ts`):**
-  - Intercepts 401 responses.
-  - Automatically attempts to refresh the session using the Refresh Token.
-  - Queues concurrent requests during refresh to prevent race conditions.
-  - Logs the user out if refresh fails.
+    - Intercepts 401 responses.
+    - Automatically attempts to refresh the session using the Refresh Token.
+    - Queues concurrent requests during refresh to prevent race conditions.
+    - Logs the user out if refresh fails.
 - **Server Client (`server-client.ts`):**
-  - Used by Next.js Server Components.
-  - Retrieves the Access Token directly from `HttpOnly` cookies for secure server-side data fetching.
+    - Used by Next.js Server Components.
+    - Retrieves the Access Token directly from `HttpOnly` cookies for secure server-side data fetching.
 
 ### 3. Credential Safety
 - **Passwords:** Hashed using **BCrypt** before storage.
@@ -333,71 +345,83 @@ The API is organized around RESTful principles. Below are the key endpoints cate
 | `POST` | `/api/auth/refresh` | Refresh access token |
 | `POST` | `/api/auth/logout` | Invalidate session |
 
+### User Management
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/users/me` | Get current user profile |
+| `PUT` | `/api/users/me` | Update current user profile |
+| `GET` | `/api/users/{id}` | Get public user profile |
+| `GET` | `/api/management/users` | List all users (Admin only) |
+| `POST` | `/api/management/users` | Create a new user (Admin only) |
+| `GET` | `/api/management/users/{id}` | Get user details by ID (Admin only) |
+| `PUT` | `/api/management/users/{id}` | Update user details (Admin only) |
+| `DELETE` | `/api/management/users/{id}` | Delete a user (Admin only) |
+| `POST` | `/api/management/users/{id}/ban` | Ban a user (Admin only) |
+| `POST` | `/api/management/users/{id}/unban` | Unban a user (Admin only) |
+
 ### Books Management
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/api/books` | List books (with pagination & search) |
 | `GET` | `/api/books/{id}` | Get book details by ID |
-| `POST` | `/api/books` | Create a new book (Admin only) |
-| `PUT` | `/api/books/{id}` | Update book details (Admin only) |
-| `DELETE` | `/api/books/{id}` | Delete a book (Admin only) |
+| `POST` | `/api/management/books` | Create a new book (Admin only) |
+| `PUT` | `/api/management/books/{id}` | Update book details (Admin only) |
+| `PATCH` | `/api/management/books/{id}` | Patch book details (Admin only) |
+| `DELETE` | `/api/management/books/{id}` | Delete a book (Admin only) |
 
 ### Authors Management
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/api/authors` | List all authors |
 | `GET` | `/api/authors/{id}` | Get author details by ID |
-| `POST` | `/api/authors` | Create a new author (Admin only) |
-| `PUT` | `/api/authors/{id}` | Update author details (Admin only) |
-| `DELETE` | `/api/authors/{id}` | Delete an author (Admin only) |
+| `POST` | `/api/management/authors` | Create a new author (Admin only) |
+| `PUT` | `/api/management/authors/{id}` | Update author details (Admin only) |
+| `DELETE` | `/api/management/authors/{id}` | Delete an author (Admin only) |
 
 ### Categories Management
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/api/categories` | List all categories |
 | `GET` | `/api/categories/{id}` | Get category details by ID |
-| `POST` | `/api/categories` | Create a new category (Admin only) |
-| `PUT` | `/api/categories/{id}` | Update category details (Admin only) |
-| `DELETE` | `/api/categories/{id}` | Delete a category (Admin only) |
+| `POST` | `/api/management/categories` | Create a new category (Admin only) |
+| `PUT` | `/api/management/categories/{id}` | Update category details (Admin only) |
+| `DELETE` | `/api/management/categories/{id}` | Delete a category (Admin only) |
 
 ### Book Copies Management
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/api/copies` | List book copies (with pagination) |
 | `GET` | `/api/copies/{id}` | Get copy details by ID |
-| `POST` | `/api/copies` | Create a new book copy (Admin only) |
-| `PUT` | `/api/copies/{id}` | Update copy details (Admin only) |
-| `DELETE` | `/api/copies/{id}` | Delete a book copy (Admin only) |
+| `GET` | `/api/copies/by-barcode/{barcode}` | Get copy details by Barcode |
+| `POST` | `/api/management/copies` | Create a new book copy (Admin/Librarian) |
+| `PUT` | `/api/management/copies/{id}` | Update copy details (Admin/Librarian) |
+| `PATCH` | `/api/management/copies/{id}` | Patch copy details (Admin/Librarian) |
+| `POST` | `/api/management/copies/{id}/retire` | Retire (soft delete) a book copy (Admin/Librarian) |
 
 ### Loans Management
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/api/loans` | List all loans (Admin only) |
 | `GET` | `/api/loans/my-loans` | Get current user's loans |
-| `GET` | `/api/loans/{id}` | Get loan details by ID |
-| `POST` | `/api/loans` | Borrow a book copy |
-| `POST` | `/api/loans/{id}/return` | Return a borrowed book |
-| `PUT` | `/api/loans/{id}` | Update loan details (Admin only) |
+| `GET` | `/api/management/loans` | List all loans (Admin/Librarian) |
+| `GET` | `/api/management/loans/{id}` | Get loan details by ID (Admin/Librarian) |
+| `POST` | `/api/management/loans` | Create a new loan (Admin/Librarian) |
+| `POST` | `/api/management/loans/{id}/return` | Return a borrowed book (Admin/Librarian) |
+| `POST` | `/api/management/loans/{id}/report-lost` | Report a book as lost (Admin/Librarian) |
+| `POST` | `/api/management/loans/{id}/report-damaged` | Report a book as damaged (Admin/Librarian) |
+| `PUT` | `/api/management/loans/{id}` | Update loan details (Admin only) |
+| `PATCH` | `/api/management/loans/{id}` | Patch loan details (Admin only) |
+| `DELETE` | `/api/management/loans/{id}` | Delete a loan (Admin only) |
 
 ### Fines Management
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/api/fines` | List all fines (Admin only) |
 | `GET` | `/api/fines/my-fines` | Get current user's fines |
-| `GET` | `/api/fines/{id}` | Get fine details by ID |
 | `POST` | `/api/fines/{id}/pay` | Pay a fine |
-| `POST` | `/api/fines/{id}/waive` | Waive a fine (Admin only) |
-
-### User Management
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/users/me` | Get current user profile |
-| `PUT` | `/api/users/me` | Update current user profile |
-| `GET` | `/api/users` | List all users (Admin only) |
-| `GET` | `/api/users/{id}` | Get user details by ID (Admin only) |
-| `PUT` | `/api/users/{id}` | Update user details (Admin only) |
-| `POST` | `/api/users/{id}/ban` | Ban a user (Admin only) |
-| `POST` | `/api/users/{id}/unban` | Unban a user (Admin only) |
+| `GET` | `/api/management/fines` | List all fines (Admin only) |
+| `GET` | `/api/management/fines/{id}` | Get fine details by ID (Admin only) |
+| `POST` | `/api/management/fines` | Create a fine manually (Admin only) |
+| `PUT` | `/api/management/fines/{id}` | Update fine details (Admin only) |
+| `PATCH` | `/api/management/fines/{id}` | Patch fine details (Admin only) |
 
 ### Dashboard
 | Method | Endpoint | Description |
@@ -407,9 +431,8 @@ The API is organized around RESTful principles. Below are the key endpoints cate
 ### Notifications
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/api/notifications` | Get user notifications |
-| `PUT` | `/api/notifications/preferences` | Update notification preferences |
-| `POST` | `/api/notifications/send` | Send notification (Admin only) |
+| `GET` | `/api/notification-preferences` | Get user notification preferences |
+| `PUT` | `/api/notification-preferences` | Update notification preferences |
 
 *For a complete and interactive list of endpoints, visit the **Swagger UI** at `http://localhost:8080/swagger-ui.html` after starting the backend.*
 
