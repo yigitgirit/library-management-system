@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig, ParamsSerializerOptions } from "axios"
+import axios, { AxiosInstance, AxiosError } from "axios"
 import { AppError, ApiErrorResponse } from "@/types/api"
 
 // Token provider signature
@@ -13,6 +13,19 @@ export interface ApiClientOptions {
   timeout?: number
   tokenProvider?: TokenProvider
   errorHandler?: ErrorHandler
+}
+
+const serializeParams = (params: Record<string, unknown>): string => {
+    const searchParams = new URLSearchParams()
+    for (const key in params) {
+        const value = params[key]
+        if (Array.isArray(value)) {
+            value.forEach((v) => searchParams.append(key, String(v)))
+        } else if (value !== undefined && value !== null) {
+            searchParams.append(key, String(value))
+        }
+    }
+    return searchParams.toString()
 }
 
 export const createApiClient = ({
@@ -31,18 +44,7 @@ export const createApiClient = ({
       ...headers
     },
     paramsSerializer: {
-      serialize: (params) => {
-        const searchParams = new URLSearchParams()
-        for (const key in params) {
-          const value = params[key]
-          if (Array.isArray(value)) {
-            value.forEach((v) => searchParams.append(key, String(v)))
-          } else if (value !== undefined && value !== null) {
-            searchParams.append(key, String(value))
-          }
-        }
-        return searchParams.toString()
-      },
+      serialize: serializeParams,
     },
   })
 
@@ -52,52 +54,51 @@ export const createApiClient = ({
     if (tokenProvider) {
       try {
         const token = await tokenProvider()
-        // Only inject token if it exists AND the request is NOT for the refresh endpoint
-        // This prevents sending an expired access token to the refresh endpoint, which might confuse the backend
-        if (token && !config.url?.includes("/auth/refresh")) {
+        if (token) {
             config.headers.Authorization = `Bearer ${token}`
         }
       } catch (error) {
-        // Token provider failed (e.g. outside request context), proceed without token
+        // Token provider failed (maybe outside request context)
+        // Then proceed without token
       }
     }
 
-    // Logging
-    const baseUrl = config.baseURL || ""
-    const url = config.url || ""
-    const fullUrl = baseUrl + url
-
-    let query = ""
-    if (config.params) {
-        const serializer = config.paramsSerializer as ParamsSerializerOptions | undefined
-        if (serializer && typeof serializer === 'object' && serializer.serialize) {
-             query = "?" + serializer.serialize(config.params)
-        }
-    }
-
-    // Use a simpler log format or conditional logging based on env
-    if (process.env.NODE_ENV === 'development') {
-        console.log(`[API] ${config.method?.toUpperCase()} ${fullUrl}${query}`)
-    }
+    // // Logging
+    // const baseUrl = config.baseURL || ""
+    // const url = config.url || ""
+    // const fullUrl = baseUrl + url
+    //
+    // let query = ""
+    // if (config.params) {
+    //     const serializer = config.paramsSerializer as ParamsSerializerOptions | undefined
+    //     if (serializer && typeof serializer === 'object' && serializer.serialize) {
+    //          query = "?" + serializer.serialize(config.params)
+    //     }
+    // }
+    //
+    // // Use a simpler log format or conditional logging based on env
+    // if (process.env.NODE_ENV === 'development') {
+    //     console.log(`[API] ${config.method?.toUpperCase()} ${fullUrl}${query}`)
+    // }
 
     return config
   })
 
   // Response Interceptor: Error Handling
   client.interceptors.response.use(
-    (response) => response,
-    async (error: AxiosError) => {
-      // 1. If custom error handler is provided (e.g. for Refresh Token flow), use it
+      // On fullfilled, return response
+      (response) => response,
+      // On reject, handle error
+     async (error: AxiosError) => {
       if (errorHandler) {
         try {
             return await errorHandler(error)
         } catch (e) {
-            // If handler re-throws, fall through to default error parsing
             error = e as AxiosError
         }
       }
 
-      // 2. Default Error Parsing (AppError conversion)
+      // Default Error Parsing
       if (axios.isAxiosError(error) && error.response?.data) {
         const responseData = error.response.data as unknown
 

@@ -1,104 +1,125 @@
-import { createApiClient } from "./base-client"
+import {createApiClient, ErrorHandler} from "./base-client"
 import { API_CONFIG } from "@/config/api"
 import { refreshSessionAction, logoutAction } from "@/app/actions/auth"
 import { AxiosError, InternalAxiosRequestConfig } from "axios"
+import {AppError, ErrorCodes} from "@/types/api";
+
+interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
+    _retry?: boolean
+}
 
 // Queue for failed requests during token refresh
-interface RetryQueueItem {
+interface QueuedRequest {
   resolve: (token: string | null) => void
   reject: (error: unknown) => void
 }
 
 let isRefreshing = false
-let failedQueue: RetryQueueItem[] = []
+let failedQueue: QueuedRequest[] = []
 
 const processQueue = (error: unknown, token: string | null = null) => {
-  failedQueue.forEach((prom) => {
-    if (error) {
-      prom.reject(error)
-    } else {
-      prom.resolve(token)
+    failedQueue.forEach(({ resolve, reject }) => {
+        if (error) {
+            reject(error)
+        } else {
+            resolve(token)
+        }
+    })
+    failedQueue = []
+}
+
+// Token refresh utilities
+const shouldSkipRefresh = (requestUrl?: string): boolean => {
+    if (!requestUrl) return true
+    return requestUrl.includes("/auth/login") || requestUrl.includes("/auth/refresh")
+}
+
+const createQueuedRequestPromise = (): Promise<string | null> => {
+    return new Promise<string | null>((resolve, reject) => {
+        failedQueue.push({ resolve, reject })
+    })
+}
+
+// Main error handling logic
+const handleUnauthorizedError = async (
+    error: AxiosError,
+    originalRequest: ExtendedAxiosRequestConfig
+): Promise<unknown> => {
+    if (shouldSkipRefresh(originalRequest.url)) {
+        throw error
     }
-  })
-  failedQueue = []
+
+    // Handle concurrent refresh requests
+    if (isRefreshing) {
+        const token = await createQueuedRequestPromise()
+        if (token) {
+            originalRequest.headers.Authorization = `Bearer ${token}`
+            originalRequest._retry = true
+            return browserClient(originalRequest)
+        }
+        throw error
+    }
+
+    // Start refresh process
+    originalRequest._retry = true
+    isRefreshing = true
+
+    try {
+        const result = await refreshSessionAction()
+
+        if (result.success && result.accessToken) {
+            // Update authorization for future requests
+            browserClient.defaults.headers.common.Authorization = `Bearer ${result.accessToken}`
+
+            // Update current request
+            originalRequest.headers.Authorization = `Bearer ${result.accessToken}`
+
+            // Process queued requests
+            processQueue(null, result.accessToken)
+
+            // Retry original request
+            return browserClient(originalRequest)
+        } else {
+            // Handle business logic failure
+            const refreshError = new AppError({
+                code: result.errorCode || "UNKNOWN_ERROR",
+                message: result.error || "Token refresh failed"
+            })
+
+            // Process queued requests
+            processQueue(refreshError, null)
+            await logoutAction()
+            throw refreshError
+        }
+    } catch (error) {
+        // Handle both network errors and business logic errors
+        const errorToThrow = error instanceof AppError
+            ? error
+            : new AppError({
+                code: "NETWORK_ERROR",
+                message: error instanceof Error
+                    ? error.message
+                    : "Network error during token refresh"
+            })
+
+        processQueue(errorToThrow, null)
+        await logoutAction()
+        throw errorToThrow
+    } finally {
+        isRefreshing = false
+    }
 }
 
 // Browser-side error handler with Refresh Token logic
-const browserErrorHandler = async (error: AxiosError) => {
-    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean }
+const browserErrorHandler: ErrorHandler = async (error: AxiosError) => {
+    const originalRequest = error.config as ExtendedAxiosRequestConfig
 
-    console.log(`[BrowserClient] Error intercepted: ${error.message}`, {
-        url: originalRequest?.url,
-        status: error.response?.status,
-        isRetry: originalRequest?._retry,
-        isRefreshing
-    })
-
-    // Check for 401 Unauthorized
+    // Handle 401 Unauthorized errors
     if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
-
-      // Don't retry login or refresh endpoints to avoid infinite loops
-      if (originalRequest.url?.includes("/auth/login") || originalRequest.url?.includes("/auth/refresh")) {
-        console.log("[BrowserClient] 401 on login/refresh, skipping retry")
-        throw error
-      }
-
-      // If already refreshing, queue this request
-      if (isRefreshing) {
-        console.log("[BrowserClient] Already refreshing, queuing request:", originalRequest.url)
-        return new Promise<string | null>(function (resolve, reject) {
-          failedQueue.push({ resolve, reject })
-        })
-          .then((token) => {
-            if (token) {
-                console.log("[BrowserClient] Retrying queued request with new token:", originalRequest.url)
-                originalRequest.headers["Authorization"] = "Bearer " + token
-            }
-            return browserClient(originalRequest)
-          })
-          .catch((err) => {
-            throw err
-          })
-      }
-
-      originalRequest._retry = true
-      isRefreshing = true
-      console.log("[BrowserClient] Starting refresh flow...")
-
-      try {
-        // Call Server Action to refresh token (HttpOnly cookie)
-        const result = await refreshSessionAction()
-        console.log("[BrowserClient] Refresh result:", result)
-
-        if (result.success && result.accessToken) {
-          console.log("[BrowserClient] Refresh successful, updating headers and retrying")
-          
-          // Update default headers for future requests
-          browserClient.defaults.headers.common["Authorization"] = "Bearer " + result.accessToken
-
-          // Update current request headers
-          originalRequest.headers["Authorization"] = "Bearer " + result.accessToken
-
-          // Process queued requests
-          processQueue(null, result.accessToken)
-
-          // Retry original request
-          return browserClient(originalRequest)
-        }
-
-        console.error("[BrowserClient] Refresh failed (no success or token)")
-        throw new Error("Refresh failed")
-      } catch (err) {
-        console.error("[BrowserClient] Refresh flow error:", err)
-        processQueue(err, null)
-        await logoutAction()
-        throw err
-      } finally {
-        isRefreshing = false
-      }
+        return handleUnauthorizedError(error, originalRequest)
     }
 
-    // If not 401 or retry failed, re-throw to let base-client handle AppError conversion
+    // Pass through to base client error handling
     throw error
 }
 
@@ -107,7 +128,7 @@ export const browserClient = createApiClient({
   timeout: API_CONFIG.TIMEOUT,
   headers: API_CONFIG.HEADERS,
   // Browser automatically sends cookies for same-origin requests (Next.js proxy).
-  // If you need to send token in header for direct backend access:
+  // If there is need to send token in header for direct backend access:
   // tokenProvider: async () => { ... get from memory/cookie ... }
   errorHandler: browserErrorHandler
 })
