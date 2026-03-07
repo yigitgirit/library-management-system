@@ -92,7 +92,7 @@ export function SettingsView({ initialProfile }: SettingsViewProps) {
             <CardHeader className="text-center">
                 <div className="mx-auto mb-4 relative h-24 w-24">
                     <Avatar className="h-24 w-24">
-                        <AvatarImage src="/avatars/01.png" alt={profile.firstName} />
+                        <AvatarImage src="avatar.svg" alt={profile.firstName} />
                         <AvatarFallback className="text-2xl">{initials}</AvatarFallback>
                     </Avatar>
                 </div>

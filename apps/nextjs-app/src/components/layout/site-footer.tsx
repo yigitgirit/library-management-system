@@ -28,9 +28,9 @@ export function SiteFooter() {
 
         {/* Copyright */}
         <div className="mt-12 pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
-          <p>© 2025 Library System. All rights reserved.</p>
-          <Link href="https://github.com/yigit-7/library-management-system">
-            <p>Built with (づ￣ ³￣)づ by Yiğit </p>
+          <p>© 2026 Library System. All rights reserved.</p>
+          <Link href="https://github.com/yigitgirit/library-management-system">
+            <p>Built by yigit</p>
           </Link>
         </div>
       </div>

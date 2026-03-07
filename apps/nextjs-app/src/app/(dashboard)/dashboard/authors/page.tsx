@@ -1,7 +1,4 @@
 import { AuthorsManagementView } from "@/features/authors/components/authors-management-view"
-import { getCurrentUser } from "@/features/auth/utils"
-import { redirect } from "next/navigation"
-import { ROLES } from "@/constants"
 import { authorSearchParamsSchema } from "@/features/authors/schemas/author-search"
 import { DashboardPageHeader } from "@/features/common/components/ui/dashboard-page-header"
 import { parseSearchParams } from "@/lib/search-params-utils"

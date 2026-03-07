@@ -17,7 +17,7 @@ async function getBooks(sort: string[] = ['title,asc']): Promise<Book[]> {
     const response = await bookService.getAll({ sort, size: 10 });
     return response.content || [];
   } catch (error) {
-    console.error("Failed to fetch books:", error);
+    console.warn("Failed to fetch books:", error);
     return [];
   }
 }
@@ -161,6 +161,7 @@ export default async function Home() {
                                                 src={review.coverUrl} 
                                                 alt={review.book} 
                                                 fill 
+                                                sizes="150px"
                                                 className="object-cover group-hover:scale-105 transition-transform duration-500"
                                             />
                                             <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />

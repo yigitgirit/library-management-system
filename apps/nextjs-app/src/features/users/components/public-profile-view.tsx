@@ -27,7 +27,7 @@ export async function PublicProfileView({ userId }: PublicProfileViewProps) {
                     <CardHeader className="relative px-8 pb-0">
                         <div className="-mt-20 mb-6 flex flex-col md:flex-row items-center md:items-end gap-6">
                             <Avatar className="h-40 w-40 border-[6px] border-background shadow-xl ring-1 ring-border/10">
-                                <AvatarImage src="/avatars/01.png" alt={profile.firstName} className="object-cover" />
+                                <AvatarImage src="avatar.svg" alt={profile.firstName} className="object-cover" />
                                 <AvatarFallback className="text-5xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 font-bold">
                                     {initials}
                                 </AvatarFallback>

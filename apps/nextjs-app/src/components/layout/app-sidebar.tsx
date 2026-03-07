@@ -179,7 +179,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground group-data-[collapsible=icon]:!p-0"
                 >
                   <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src="/avatars/01.png" alt={user?.firstName} />
+                    <AvatarImage src="avatar.svg" alt={user?.firstName} />
                     <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
@@ -198,7 +198,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                 <DropdownMenuLabel className="p-0 font-normal">
                   <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                     <Avatar className="h-8 w-8 rounded-lg">
-                      <AvatarImage src="/avatars/01.png" alt={user?.firstName} />
+                      <AvatarImage src="avatar.svg" alt={user?.firstName} />
                       <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">

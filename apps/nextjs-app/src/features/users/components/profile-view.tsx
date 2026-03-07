@@ -36,7 +36,7 @@ export async function ProfileView() {
                     <CardHeader className="relative px-8 pb-0">
                         <div className="-mt-20 mb-6 flex flex-col md:flex-row items-center md:items-end gap-6">
                             <Avatar className="h-40 w-40 border-[6px] border-background shadow-xl ring-1 ring-border/10">
-                                <AvatarImage src="/avatars/01.png" alt={user.firstName} className="object-cover" />
+                                <AvatarImage src="avatar.svg" alt={user.firstName} className="object-cover" />
                                 <AvatarFallback className="text-5xl bg-primary/10 text-primary font-bold">
                                     {initials}
                                 </AvatarFallback>
