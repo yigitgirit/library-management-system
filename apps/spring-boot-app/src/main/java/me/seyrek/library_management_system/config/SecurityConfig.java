@@ -59,6 +59,8 @@ public class SecurityConfig {
                             "/swagger-resources/**",
                             "/webjars/**")
                         .permitAll()
+                    .requestMatchers("/actuator/**")
+                        .permitAll()
                     .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
@@ -81,7 +83,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setAllowCredentials(true); // Allow cookies
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
