@@ -134,6 +134,12 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.18.0</version>
 		</dependency>
+
+		<dependency>
+			<groupId>me.paulschwarz</groupId>
+			<artifactId>spring-dotenv</artifactId>
+			<version>4.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -172,6 +178,7 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+                    <excludeDevtools>true</excludeDevtools>
 				</configuration>
 			</plugin>
 		</plugins>
