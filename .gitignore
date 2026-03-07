@@ -45,6 +45,10 @@ nbdist/
 # Application-Specific Ignores
 # ===================================================================
 
+# App-specific environment files
+apps/spring-boot-app/.env
+apps/nextjs-app/.env.local
+
 ### Spring Boot App (apps/spring-boot-app) ###
 apps/spring-boot-app/target/
 apps/spring-boot-app/.mvn/wrapper/maven-wrapper.jar
