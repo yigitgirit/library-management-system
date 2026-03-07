@@ -5,6 +5,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@Slf4j
 @Service
 public class JwtService {
     @Value("${application.security.jwt.secret-key}")
@@ -21,6 +24,15 @@ public class JwtService {
     @Value("${application.security.jwt.access-token.expiration}")
     private long accessTokenExpiration;
     private Key signInKey;
+
+    @PostConstruct
+    public void init() {
+        if (secretKey == null || secretKey.isEmpty()) {
+            log.error("JWT Secret key is NULL or EMPTY. Authentication will fail.");
+        } else {
+            log.info("JwtService initialized successfully. Secret key length: {}", secretKey.length());
+        }
+    }
 
     public String extractSubject(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -63,7 +75,7 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts 
+        return Jwts
                 .parserBuilder()
                 .setSigningKey(getSignInKey())
                 .build()
