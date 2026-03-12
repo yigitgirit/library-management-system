@@ -6,9 +6,9 @@
 ![Docker](https://img.shields.io/badge/Docker-Enabled-blue)
 ![Next.js](https://img.shields.io/badge/Next.js-16.1-black)
 
-Welcome to the **Library Management System**!
+A full-stack library management application built with **Spring Boot** and **Next.js**.
 
-This is a comprehensive, full-stack solution designed to modernize library operations. Built with the robust power of **Spring Boot** and the dynamic interactivity of **Next.js**, it streamlines everything from book tracking and user management to loan processing and fine calculations. Whether you're a librarian managing a vast catalog or a user looking for your next great read, this system offers a secure, responsive, and intuitive experience.
+This started as a standard school project, but I decided to push it further to focus on designing a solid REST API. The current frontend is built with Next.js. But my roadmap includes a partial or full migration to TanStack Start in the near future to experiment with its routing and ecosystem. I am seeking advantages of server-side rendering and other capabilities I can to fulfill the needs of catalog and inventory features of this project. 
 
 ## Table of Contents
 
@@ -31,19 +31,19 @@ This is a comprehensive, full-stack solution designed to modernize library opera
 
 ### Catalog Management
 - **Book Management:** Create, update, and delete books with rich metadata (ISBN, Publisher, Year).
-- **Author & Category Management:** Organize books by authors and categories.
+- **Author & Category Management:** Organize books by authors and categories. Planning to support multiple categories for books.
 - **Copy Management:** Track individual physical copies of books and their status (Available, Loaned, Lost).
-- **Advanced Search:** Filter books by title, author, category, or ISBN.
+- **Advanced Search:** Filter books dynamically by title, author, category, or ISBN. It uses JPA Specification API in background.
 
 ### Circulation & Loans
-- **Borrowing System:** Users can borrow available copies with automated due date calculation.
-- **Return Process:** Streamlined return workflow with automatic fine calculation for overdue items.
-- **Loan History:** Users can view their current and past loans.
+- **Borrowing System:** Library staff create and manage loan records on behalf of users. Future updates include reservation system.
+- **Return Process:** Streamlined return workflow with automatic fine calculation for overdue items. Books can also be marked as "Damaged" or "Lost".
+- **Loan History:** Users can view their current and past loans. Can see their fines categorized.
 - **Fine Management:** Automated fine generation for overdue books, with admin capabilities to waive or adjust fines.
-- **Payment Processing:** Integrated mock payment service for fine settlements (simulates 3-second processing delay).
+- **Payment Processing:** Integrated mock payment service for fine settlements.
 
-### Intelligent Fine Calculation
-The system uses a smart, adaptive approach to calculate overdue fines, ensuring fairness based on user history.
+### Fine Calculation
+The system uses a adaptive approach to calculate overdue fines based on user history.
 
 - **Standard Policy:**
     - Applies a fixed daily fine for overdue items.
@@ -116,7 +116,7 @@ cd library-management-system
 You can run the project using **Docker** (Recommended) or from **Source**.
 
 #### Option A: Docker (Recommended)
-*Best for running the app quickly without installing Java or Node.js locally.*
+The fastest way to spin up the entire stack. Requires Docker Desktop.
 
 **Prerequisites:**
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
@@ -135,7 +135,7 @@ You can run the project using **Docker** (Recommended) or from **Source**.
 ---
 
 #### Option B: From Source
-*Best for development and debugging. The database will still run in Docker to ensure consistency.*
+If you want to run the backend and frontend locally while keeping the database in Docker.
 
 **Prerequisites:**
 - **Java 21** (JDK 21)
