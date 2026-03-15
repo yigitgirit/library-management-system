@@ -2,11 +2,14 @@ package me.seyrek.library_management_system.config;
 
 import lombok.RequiredArgsConstructor;
 import me.seyrek.library_management_system.security.filter.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,13 +26,34 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    @Value("${application.cors.allowed-origins}")
+    private List<String> allowedOrigins;
+
+    public static final String[] PUBLIC_ENDPOINTS = {
+            "/api/auth/**",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/swagger-ui.html",
+            "/swagger-resources/**",
+            "/webjars/**",
+            "/error",
+            "/favicon.ico",
+            "/actuator/**"
+    };
+
+    public static final String[] PUBLIC_GET_ENDPOINTS = {
+            "/api/books/**",
+            "/api/categories/**",
+            "/api/authors/**"
+    };
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDetailsService userDetailsService;
@@ -42,25 +66,10 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(
-                            "/api/auth/**",
-                            "/api/books/**",
-                            "/api/categories/**",
-                            "/api/authors/**")
-                        .permitAll()
-                    .requestMatchers("/api/loans/**").hasAnyRole("MEMBER", "LIBRARIAN", "ADMIN")
-                    .requestMatchers("/api/fines/**").hasAnyRole("MEMBER", "LIBRARIAN", "ADMIN")
-                    .requestMatchers("/api/notification-preferences/**").hasAnyRole("MEMBER", "LIBRARIAN", "ADMIN")
-                    .requestMatchers("/api/management/**").hasAnyRole("ADMIN", "LIBRARIAN")
-                    .requestMatchers(
-                            "/swagger-ui/**",
-                            "/v3/api-docs/**",
-                            "/swagger-ui.html",
-                            "/swagger-resources/**",
-                            "/webjars/**")
-                        .permitAll()
-                    .requestMatchers("/actuator/**")
-                        .permitAll()
+                    .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                    .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
+                    .requestMatchers("/api/loans/**", "/api/fines/**", "/api/notification-preferences/**").hasAnyRole("MEMBER", "LIBRARIAN", "ADMIN")
+                    .requestMatchers("/api/management/**").hasAnyRole("LIBRARIAN", "ADMIN")
                     .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
@@ -79,10 +88,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Allow frontend origin
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
-        configuration.setAllowCredentials(true); // Allow cookies
+        configuration.setAllowedOrigins(allowedOrigins);
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

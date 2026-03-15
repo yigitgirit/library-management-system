@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.seyrek.library_management_system.config.SecurityConfig;
 import me.seyrek.library_management_system.security.service.JpaUserDetailsService;
 import me.seyrek.library_management_system.security.service.JwtService;
 import org.springframework.lang.NonNull;
@@ -14,10 +15,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Slf4j
 @Component
@@ -35,15 +38,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
 
-        // Skip JWT validation for auth endpoints (login, register, refresh)
-        // This allows the controller to handle the logic (e.g. validating refresh token body)
-        // even if an expired access token is present in the header.
-        if (request.getServletPath().contains("/api/auth")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            // Stop filtering if Authorization header is missing or does not start with "Bearer ".
+            // This is completely normal for public endpoints.
+            log.trace("Authorization header is missing or does not start with 'Bearer'. Path: {}", request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }
@@ -53,6 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final String userId = jwtService.extractSubject(jwt);
 
             if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                log.debug("JWT token found for user ID: {}. Initializing security context.", userId);
                 // At this point, we know the signature is valid. We only need to check the expiration.
                 if (!jwtService.isTokenExpired(jwt)) {
                     // Token is valid, load user details to create the authentication context
@@ -66,12 +65,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             new WebAuthenticationDetailsSource().buildDetails(request)
                     );
                     SecurityContextHolder.getContext().setAuthentication(authToken);
+                    log.info("User ID: {} successfully authenticated and added to security context.", userId);
+                } else {
+                    log.warn("JWT token has expired for user ID: {}", userId);
                 }
+            } else if (userId != null) {
+                log.trace("Security context already contains authentication for user ID: {}. Skipping token validation.", userId);
             }
             filterChain.doFilter(request, response);
         } catch (Exception exception) {
+            log.error("Error occurred while processing JWT token: {}", exception.getMessage());
             handlerExceptionResolver.resolveException(request, response, null, exception);
         }
     }
 
+    @Override
+    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) throws ServletException {
+        AntPathMatcher pathMatcher = new AntPathMatcher();
+        String path = request.getServletPath();
+        
+        boolean shouldNotFilter = Arrays.stream(SecurityConfig.PUBLIC_ENDPOINTS)
+                .anyMatch(pattern -> pathMatcher.match(pattern, path));
+
+        if (shouldNotFilter) {
+            log.trace("Skipping JWT filter for public path: {}", path);
+        }
+
+        return shouldNotFilter;
+    }
 }
