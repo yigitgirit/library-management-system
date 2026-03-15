@@ -1,0 +1,47 @@
+#-------------------------------------------------------------------------------#
+#               Qodana analysis is configured by qodana.yaml file               #
+#             https://www.jetbrains.com/help/qodana/qodana-yaml.html            #
+#-------------------------------------------------------------------------------#
+
+#################################################################################
+#              WARNING: Do not store sensitive information in this file,        #
+#               as its contents will be included in the Qodana report.          #
+#################################################################################
+version: "1.0"
+
+#Specify inspection profile for code analysis
+profile:
+  # qodana.recommended provides a more in-depth and professional analysis
+  name: qodana.recommended
+
+include:
+  # We specify to scan only the main source code and dependency file (pom.xml) of the Spring Boot application.
+  # This ensures that if new projects in other languages are added to the monorepo later, Qodana will automatically ignore them.
+  - name: "All"
+    paths:
+      - "apps/spring-boot-app/src/main/**"
+      - "apps/spring-boot-app/pom.xml"
+
+projectJDK: "21" #(Applied in CI/CD pipeline)
+
+#Execute shell command before Qodana execution (Applied in CI/CD pipeline)
+#bootstrap: sh ./prepare-qodana.sh
+
+#Install IDE plugins before Qodana execution (Applied in CI/CD pipeline)
+#plugins:
+#  - id: <plugin.id> #(plugin id can be found at https://plugins.jetbrains.com)
+
+# Quality gate. Will fail the CI/CD pipeline if any condition is not met
+# severityThresholds - configures maximum thresholds for different problem severities
+# testCoverageThresholds - configures minimum code coverage on a whole project and newly added code
+# Code Coverage is available in Ultimate and Ultimate Plus plans
+
+# Quality Gate: Fails the GitHub Actions pipeline (red cross) if the number of errors exceeds a certain threshold
+failureConditions:
+  severityThresholds:
+    any: 50       # Fails if there are more than 50 total warnings (including minor ones)
+    critical: 0   # Fails the pipeline immediately if there is even 1 critical error
+  
+#Qodana supports other languages, for example, Python, JavaScript, TypeScript, Go, C#, PHP
+#For all supported languages see https://www.jetbrains.com/help/qodana/linters.html
+linter: jetbrains/qodana-jvm-community:2025.3
