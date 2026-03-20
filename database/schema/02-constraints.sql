@@ -33,8 +33,14 @@ ALTER TABLE user_notification_preferences ADD CONSTRAINT fk_usernotifpref_user F
 -- Foreign Keys for 'user_notification_preference_channels'
 ALTER TABLE user_notification_preference_channels ADD CONSTRAINT fk_usernotifprefchan_pref FOREIGN KEY (preference_id) REFERENCES user_notification_preferences(id);
 
+-- Foreign Keys for 'reviews'
+ALTER TABLE reviews ADD CONSTRAINT fk_reviews_book FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE;
+ALTER TABLE reviews ADD CONSTRAINT fk_reviews_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 
 -- Indexes
 CREATE INDEX idx_loans_user ON loans (user_id);
 CREATE INDEX idx_loans_copy ON loans (copy_id);
 CREATE INDEX idx_loans_active ON loans (return_date);
+CREATE INDEX idx_reviews_book ON reviews (book_id);
+CREATE INDEX idx_reviews_user ON reviews (user_id);
