@@ -4,6 +4,8 @@ public record BookShortDto(
         Long id,
         String isbn,
         String title,
-        Integer availableCopies
+        Integer availableCopies,
+        Double averageRating,
+        Integer reviewCount
 ) {
 }

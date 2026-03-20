@@ -215,6 +215,38 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Function: update_book_rating_stats
+CREATE OR REPLACE FUNCTION update_book_rating_stats()
+RETURNS TRIGGER AS $$
+DECLARE
+    target_book_id BIGINT;
+    new_avg DOUBLE PRECISION;
+    new_count INTEGER;
+BEGIN
+    IF (TG_OP = 'DELETE') THEN
+        target_book_id := OLD.book_id;
+    ELSE
+        target_book_id := NEW.book_id;
+    END IF;
+
+    SELECT COALESCE(AVG(rating), 0.0), COUNT(id)
+    INTO new_avg, new_count
+    FROM reviews
+    WHERE book_id = target_book_id;
+
+    UPDATE books
+    SET average_rating = new_avg,
+        review_count = new_count
+    WHERE id = target_book_id;
+
+    IF (TG_OP = 'DELETE') THEN
+        RETURN OLD;
+    ELSE
+        RETURN NEW;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
 
 -- ------------------------------------------
 -- D. TRIGGER DEFINITIONS
@@ -278,3 +310,8 @@ DROP TRIGGER IF EXISTS trg_update_available_copies ON copies;
 CREATE TRIGGER trg_update_available_copies
 AFTER INSERT OR UPDATE OR DELETE ON copies
 FOR EACH ROW EXECUTE FUNCTION update_available_copies();
+
+DROP TRIGGER IF EXISTS trg_update_book_rating ON reviews;
+CREATE TRIGGER trg_update_book_rating
+AFTER INSERT OR UPDATE OR DELETE ON reviews
+FOR EACH ROW EXECUTE FUNCTION update_book_rating_stats();

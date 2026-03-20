@@ -16,7 +16,7 @@ export function BookPagination({ totalPages }: BookPaginationProps) {
   const handlePageChange = (newPage: number) => {
     const newSearchParams = new URLSearchParams(searchParams.toString())
     if (newPage > 0) {
-      newSearchParams.set("page", (newPage + 1).toString())
+      newSearchParams.set("page", (newPage).toString())
     } else {
       newSearchParams.delete("page")
     }
@@ -27,7 +27,7 @@ export function BookPagination({ totalPages }: BookPaginationProps) {
 
   return (
     <PaginationControl
-      page={currentPage - 1}
+      page={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
       className="mt-8 pt-4 border-t"

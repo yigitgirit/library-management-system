@@ -11,16 +11,16 @@ import { CreateAuthorDialog } from "./create-author-dialog"
 
 type AuthorsToolbarProps = {
   searchQuery: string
-  setSearchQuery: (value: string) => void
+  setSearchQueryAction: (value: string) => void
   hasActiveFilters: boolean
-  resetFilters: () => void
+  resetFiltersAction: () => void
 }
 
 export function AuthorsToolbar({ 
   searchQuery, 
-  setSearchQuery, 
+  setSearchQueryAction, 
   hasActiveFilters, 
-  resetFilters 
+  resetFiltersAction 
 }: AuthorsToolbarProps) {
   
   return (
@@ -34,7 +34,7 @@ export function AuthorsToolbar({
               placeholder="Search authors..."
               className="pl-9 h-9"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => setSearchQueryAction(e.target.value)}
             />
           </div>
 
@@ -44,7 +44,7 @@ export function AuthorsToolbar({
                 variant="ghost"
                 size="sm"
                 className="h-9 px-2 text-xs text-muted-foreground hover:text-foreground"
-                onClick={resetFilters}
+                onClick={resetFiltersAction}
             >
               Clear all
               <X className="ml-2 h-3 w-3" />

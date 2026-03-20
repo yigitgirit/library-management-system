@@ -66,8 +66,12 @@ public interface LoanMapper {
     @Mapping(target = "status", ignore = true)
     void updateLoanFromRequest(LoanUpdateRequest request, @MappingTarget Loan loan);
 
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "copy", ignore = true)
+    @Mapping(target = "loanDate", ignore = true)
+    @Mapping(target = "fines", ignore = true)
+    @Mapping(target = "status", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @InheritConfiguration(name = "updateLoanFromRequest")
     void patchLoanFromRequest(LoanPatchRequest request, @MappingTarget Loan loan);
 
     @Mapping(target = "userId", source = "userId")

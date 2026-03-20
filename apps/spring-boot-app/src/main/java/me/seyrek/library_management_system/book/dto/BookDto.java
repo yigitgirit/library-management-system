@@ -21,6 +21,8 @@ public record BookDto(
         String format,
         Integer availableCopies,
         String availableLocation,
+        Double averageRating,
+        Integer reviewCount,
         Set<AuthorDto> authors,
         CategoryDto category
 ) {

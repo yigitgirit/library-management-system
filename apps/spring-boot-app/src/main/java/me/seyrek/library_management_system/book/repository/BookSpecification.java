@@ -13,7 +13,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static me.seyrek.library_management_system.common.repository.SpecificationUtils.getOrCreateJoin;
@@ -25,38 +25,33 @@ import static me.seyrek.library_management_system.common.repository.Specificatio
  */
 public final class BookSpecification {
 
+    private BookSpecification() {
+        // Utility class
+    }
+
     public static Specification<Book> withDynamicQuery(BookSearchRequest request) {
         return (root, query, cb) -> {
-            List<Specification<Book>> specifications = new ArrayList<>();
+            Specification<Book> filterSpec = Specification.allOf(Arrays.asList(
+                    hasCategoryIds(request.categoryIds()),
+                    hasMinPrice(request.minPrice()),
+                    hasMaxPrice(request.maxPrice()),
+                    hasAvailableCopies(request.available())
+            ));
 
-            // Mode 1: Smart Search (if search is present)
-            // Flexible filters for the title, ISBN and author name
             if (StringUtils.hasText(request.search())) {
-                specifications.add(Specification.anyOf(
+                filterSpec = filterSpec.and(Specification.anyOf(Arrays.asList(
                         hasTitle(request.search()),
                         hasIsbn(request.search()),
                         hasAuthorName(request.search())
-                ));
+                )));
+            } else {
+                filterSpec = filterSpec.and(Specification.allOf(Arrays.asList(
+                        hasTitle(request.title()),
+                        hasIsbn(request.isbn()),
+                        hasAuthorName(request.authorName())
+                )));
             }
-            // Mode 2: Advanced Filter (if search is not present)
-            // Strictly filters title, ISBN and author name
-            else {
-                specifications.add(hasTitle(request.title()));
-                specifications.add(hasIsbn(request.isbn()));
-                specifications.add(hasAuthorName(request.authorName()));
-            }
 
-            // Add other filters that apply in both modes
-            // These are strict filters, always applied
-            specifications.add(hasCategoryIds(request.categoryIds()));
-            specifications.add(hasMinPrice(request.minPrice()));
-            specifications.add(hasMaxPrice(request.maxPrice()));
-            specifications.add(hasAvailableCopies(request.available()));
-
-            // Combine all specifications with AND
-            Specification<Book> finalSpec = Specification.allOf(specifications);
-
-            // Determine if a distinct query is needed
             boolean smartSearchActive = StringUtils.hasText(request.search());
             boolean authorFilterActive = StringUtils.hasText(request.authorName());
             boolean availableFilterActive = request.available() != null && request.available();
@@ -65,10 +60,13 @@ public final class BookSpecification {
                 query.distinct(true);
             }
 
-            return finalSpec.toPredicate(root, query, cb);
+            return filterSpec.toPredicate(root, query, cb);
         };
     }
 
+    // -----------------------------------------------------------------
+    // BOOK SPECIFICATIONS
+    // -----------------------------------------------------------------
     private static Specification<Book> hasIsbn(String isbn) {
         if (!StringUtils.hasText(isbn)) return null;
         return (root, query, cb) -> cb.like(root.get("isbn"), "%" + isbn + "%");
@@ -87,21 +85,14 @@ public final class BookSpecification {
         };
     }
 
+    // -----------------------------------------------------------------
+    // CATEGORY & PRICE SPECIFICATIONS
+    // -----------------------------------------------------------------
     private static Specification<Book> hasCategoryIds(List<Long> categoryIds) {
         if (CollectionUtils.isEmpty(categoryIds)) return null;
         return (root, query, cb) -> {
             Join<Book, Category> category = getOrCreateJoin(root, "category", JoinType.INNER);
             return category.get("id").in(categoryIds);
-        };
-    }
-
-    private static Specification<Book> hasAvailableCopies(Boolean available) {
-        if (available == null || !available) {
-            return null;
-        }
-        return (root, query, cb) -> {
-            Join<Book, Copy> copy = getOrCreateJoin(root, "copies", JoinType.INNER);
-            return cb.equal(copy.get("status"), CopyStatus.AVAILABLE);
         };
     }
 
@@ -113,5 +104,18 @@ public final class BookSpecification {
     private static Specification<Book> hasMaxPrice(BigDecimal maxPrice) {
         if (maxPrice == null) return null;
         return (root, query, cb) -> cb.lessThanOrEqualTo(root.get("price"), maxPrice);
+    }
+
+    // -----------------------------------------------------------------
+    // COPY SPECIFICATIONS
+    // -----------------------------------------------------------------
+    private static Specification<Book> hasAvailableCopies(Boolean available) {
+        if (available == null || !available) {
+            return null;
+        }
+        return (root, query, cb) -> {
+            Join<Book, Copy> copy = getOrCreateJoin(root, "copies", JoinType.INNER);
+            return cb.equal(copy.get("status"), CopyStatus.AVAILABLE);
+        };
     }
 }

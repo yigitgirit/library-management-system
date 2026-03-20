@@ -7,5 +7,7 @@ export function useAuth() {
     user,
     isAuthenticated,
     isLoading,
+    currentUserId: user?.id,
+    isAdmin: user?.roles?.includes("ADMIN") ?? false,
   }
 }

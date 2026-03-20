@@ -15,8 +15,6 @@ import { categoryQueries } from "@/features/categories/api/categoryQueries"
 import { BookListSkeleton, FiltersSkeleton } from "@/features/books/components/book-skeletons"
 import { getQueryClient } from "@/lib/query-client"
 
-export const dynamic = 'force-dynamic'
-
 interface CatalogPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }

@@ -21,7 +21,6 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
 
     @Override
     @NonNull
-    // TODO: add @NamedEntityGraph for EAGER join fetch
     Optional<Book> findById(@NonNull Long id);
 
     long countByCategoryId(Long categoryId);

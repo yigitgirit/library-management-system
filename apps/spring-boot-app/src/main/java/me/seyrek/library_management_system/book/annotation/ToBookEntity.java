@@ -10,5 +10,8 @@ import java.lang.annotation.RetentionPolicy;
 @Mapping(target = "authors", ignore = true)
 @Mapping(target = "category", ignore = true)
 @Mapping(target = "copies", ignore = true)
+@Mapping(target = "averageRating", ignore = true)
+@Mapping(target = "reviewCount", ignore = true)
+@Mapping(target = "availableCopies", ignore = true)
 public @interface ToBookEntity {
 }

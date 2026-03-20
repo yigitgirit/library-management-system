@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
-  Plus,
   Search,
   X,
 } from "lucide-react"
@@ -12,16 +11,16 @@ import { CreateCategoryDialog } from "./create-category-dialog"
 
 type CategoriesToolbarProps = {
   searchQuery: string
-  setSearchQuery: (value: string) => void
+  setSearchQueryAction: (value: string) => void
   hasActiveFilters: boolean
-  resetFilters: () => void
+  resetFiltersAction: () => void
 }
 
 export function CategoriesToolbar({ 
   searchQuery, 
-  setSearchQuery, 
+  setSearchQueryAction, 
   hasActiveFilters, 
-  resetFilters 
+  resetFiltersAction 
 }: CategoriesToolbarProps) {
   
   return (
@@ -35,7 +34,7 @@ export function CategoriesToolbar({
               placeholder="Search categories..."
               className="pl-9 h-9"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => setSearchQueryAction(e.target.value)}
             />
           </div>
 
@@ -45,7 +44,7 @@ export function CategoriesToolbar({
                 variant="ghost"
                 size="sm"
                 className="h-9 px-2 text-xs text-muted-foreground hover:text-foreground"
-                onClick={resetFilters}
+                onClick={resetFiltersAction}
             >
               Clear all
               <X className="ml-2 h-3 w-3" />
