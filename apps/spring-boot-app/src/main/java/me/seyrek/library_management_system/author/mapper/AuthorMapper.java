@@ -10,5 +10,6 @@ import org.mapstruct.Mapping;
 public interface AuthorMapper {
     AuthorDto toAuthorDto(Author author);
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "bookCount", ignore = true)
     Author fromAuthorCreateRequest(AuthorCreateRequest request);
 }
