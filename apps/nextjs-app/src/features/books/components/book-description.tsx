@@ -41,7 +41,7 @@ export function BookDescription({ description, maxLength = 500 }: BookDescriptio
       </div>
       
       <Button 
-        variant="ghost" 
+        variant="ghost"
         onClick={() => setIsExpanded(!isExpanded)}
         className="mt-2 pl-0 hover:bg-transparent hover:text-primary font-medium"
       >

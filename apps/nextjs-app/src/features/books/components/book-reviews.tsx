@@ -46,9 +46,9 @@ export function BookReviews({ reviews }: BookReviewsProps) {
               </div>
               <div className="flex items-center mb-2">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star 
-                    key={i} 
-                    className={`h-4 w-4 ${i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`} 
+                  <Star
+                    key={i}
+                    className={`h-4 w-4 ${i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`}
                   />
                 ))}
               </div>
