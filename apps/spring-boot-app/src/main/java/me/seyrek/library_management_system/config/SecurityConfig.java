@@ -52,7 +52,8 @@ public class SecurityConfig {
     public static final String[] PUBLIC_GET_ENDPOINTS = {
             "/api/books/**",
             "/api/categories/**",
-            "/api/authors/**"
+            "/api/authors/**",
+            "/api/reviews/**"
     };
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;

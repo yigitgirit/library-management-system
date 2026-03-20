@@ -15,6 +15,8 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", uses = {AuthorMapper.class, CategoryMapper.class})
 public interface BookMapper {
 
+    @Mapping(target = "averageRating", source = "averageRating")
+    @Mapping(target = "reviewCount", source = "reviewCount")
     @Mapping(target = "availableLocation", expression = "java(findFirstAvailableLocation(book))")
     BookDto toBookDto(Book book);
 

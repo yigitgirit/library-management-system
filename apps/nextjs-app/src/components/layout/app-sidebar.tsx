@@ -14,7 +14,8 @@ import {
   ChevronsUpDown,
   Barcode,
   PenTool,
-  Tags
+  Tags,
+  MessageSquare
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
@@ -110,6 +111,12 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       url: "/dashboard/loans",
       icon: Library,
       visible: true,
+    },
+    {
+      title: "Reviews",
+      url: "/dashboard/reviews",
+      icon: MessageSquare,
+      visible: isAdmin,
     },
     {
       title: "Users",

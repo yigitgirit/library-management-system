@@ -23,6 +23,8 @@ export type Book = {
   format?: string;
   availableCopies?: number;
   availableLocation?: string;
+  averageRating: number;
+  reviewCount: number;
   authors: Author[];
   category?: Category;
 }
@@ -33,8 +35,6 @@ export type BookDetail = Book & {
   isAvailable: boolean;
   statusDetail: string;
   locationDisplay: string;
-  rating?: number;      // Mock/Future field
-  reviewCount?: number; // Mock/Future field
 }
 
 export type BookSearchParams = {

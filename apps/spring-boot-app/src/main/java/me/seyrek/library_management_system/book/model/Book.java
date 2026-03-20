@@ -59,6 +59,12 @@ public class Book extends BaseEntity {
 
     private String format;
 
+    @Column(name = "average_rating", nullable = false)
+    private double averageRating = 0.0;
+
+    @Column(name = "review_count", nullable = false)
+    private int reviewCount = 0;
+
     @NotEmpty(message = "Authors cannot be empty")
     @ManyToMany
     @JoinTable(
@@ -77,7 +83,7 @@ public class Book extends BaseEntity {
     private List<Copy> copies;
 
     @Column(name = "available_copies", nullable = false)
-    private Integer availableCopies = 0;
+    private int availableCopies = 0;
 
     @Version
     @Column(name = "version", nullable = false)

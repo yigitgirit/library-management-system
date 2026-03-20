@@ -4,7 +4,7 @@ import * as React from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
-import { useState, useTransition } from "react"
+import { useTransition } from "react"
 import Link from "next/link"
 import { Loader2 } from "lucide-react"
 
@@ -26,7 +26,6 @@ type RegisterFormProps = React.HTMLAttributes<HTMLDivElement>
 
 export function RegisterForm({ className, ...props }: RegisterFormProps) {
   const router = useRouter()
-  const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
   const form = useForm<RegisterInput>({
@@ -41,7 +40,7 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
   })
 
   function onSubmit(data: RegisterInput) {
-    setError(null)
+    form.clearErrors("root")
     startTransition(async () => {
       try {
         const result = await registerAction(data)
@@ -58,15 +57,15 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
           
           // Set general error if exists
           if (result.error) {
-             setError(result.error)
+             form.setError("root", { message: result.error })
           } else if (!result.validationErrors) {
-             setError("An unexpected error occurred")
+             form.setError("root", { message: "An unexpected error occurred" })
           }
         } else {
           router.push("/login") // Redirect to login page after successful registration
         }
       } catch (err) {
-        setError("An unexpected error occurred")
+        form.setError("root", { message: "An unexpected error occurred" })
       }
     })
   }
@@ -162,9 +161,9 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
               </FormItem>
             )}
           />
-          {error && (
+          {form.formState.errors.root && (
             <div className="text-sm font-medium text-destructive text-center bg-destructive/10 p-3 rounded-md">
-              {error}
+              {form.formState.errors.root.message}
             </div>
           )}
           <Button type="submit" className="w-full" disabled={isPending}>

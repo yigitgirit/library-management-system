@@ -23,16 +23,19 @@ public interface UserMapper {
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "version", ignore = true)
+    @Mapping(target = "notificationPreferences", ignore = true)
     User toUser(UserDto userDto);
 
     @Mapping(target = "roles", ignore = true) // Handled in the service layer
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "version", ignore = true)
+    @Mapping(target = "notificationPreferences", ignore = true)
     User toUser(RegisterRequest registerRequest);
 
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "version", ignore = true)
+    @Mapping(target = "notificationPreferences", ignore = true)
     User toUser(UserCreateRequest request);
 
     @Mapping(target = "id", ignore = true)
@@ -41,11 +44,13 @@ public interface UserMapper {
     @Mapping(target = "roles", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "version", ignore = true)
+    @Mapping(target = "notificationPreferences", ignore = true)
     void updateUserFromEditProfileRequest(UserEditProfileRequest request, @MappingTarget User user);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "version", ignore = true)
+    @Mapping(target = "notificationPreferences", ignore = true)
     void updateUserFromRequest(UserUpdateRequest request, @MappingTarget User user);
 }
