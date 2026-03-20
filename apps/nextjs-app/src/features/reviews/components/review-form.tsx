@@ -22,10 +22,10 @@ import { StarRating } from "./star-rating"
 
 type ReviewFormProps = {
   bookId: number
-  onSuccess?: () => void
+  onSuccessAction?: () => void
 }
 
-export function ReviewForm({ bookId, onSuccess }: ReviewFormProps) {
+export function ReviewForm({ bookId, onSuccessAction }: ReviewFormProps) {
   const [isPending, startTransition] = useTransition()
   const createReview = useCreateReview()
 
@@ -43,7 +43,7 @@ export function ReviewForm({ bookId, onSuccess }: ReviewFormProps) {
       try {
         await createReview.mutateAsync(data)
         form.reset()
-        onSuccess?.()
+        onSuccessAction?.()
       } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to create review"
         form.setError("root", { message })
@@ -69,7 +69,7 @@ export function ReviewForm({ bookId, onSuccess }: ReviewFormProps) {
                   <FormControl>
                     <StarRating
                       value={field.value}
-                      onChange={field.onChange}
+                      onChangeAction={field.onChange}
                       disabled={isPending || createReview.isPending}
                     />
                   </FormControl>

@@ -33,7 +33,7 @@ export const columns: ColumnDef<Review>[] = [
     size: 120,
     cell: ({ row }) => {
       const rating = row.getValue("rating") as number
-      return <StarRating value={rating} onChange={() => {}} readonly size="sm" />
+      return <StarRating value={rating} onChangeAction={() => {}} readonly size="sm" />
     },
   },
   {

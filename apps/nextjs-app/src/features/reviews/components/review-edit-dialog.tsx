@@ -77,7 +77,7 @@ export function ReviewEditDialog({ review, open, onOpenChangeAction }: ReviewEdi
                   <FormControl>
                     <StarRating
                       value={field.value}
-                      onChange={field.onChange}
+                      onChangeAction={field.onChange}
                       disabled={isPending || updateReview.isPending}
                     />
                   </FormControl>

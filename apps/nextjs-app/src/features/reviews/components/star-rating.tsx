@@ -1,12 +1,11 @@
 "use client"
 
 import { Star } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 type StarRatingProps = {
   value: number
-  onChange: (value: number) => void
+  onChangeAction: (value: number) => void
   disabled?: boolean
   readonly?: boolean
   size?: "sm" | "md" | "lg"
@@ -20,7 +19,7 @@ const sizeClasses = {
 
 export function StarRating({
   value,
-  onChange,
+  onChangeAction,
   disabled = false,
   readonly = false,
   size = "md",
@@ -35,7 +34,7 @@ export function StarRating({
           <button
             key={i}
             type="button"
-            onClick={() => !readonly && onChange(rating)}
+            onClick={() => !readonly && onChangeAction(rating)}
             disabled={disabled || readonly}
             className={cn(
               "relative inline-flex items-center justify-center transition-colors",

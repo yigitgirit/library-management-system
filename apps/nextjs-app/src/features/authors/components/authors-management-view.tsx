@@ -32,9 +32,9 @@ export function AuthorsManagementView({ initialFilters }: AuthorsManagementViewP
     <div className="space-y-4">
       <AuthorsToolbar
         searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
+        setSearchQueryAction={setSearchQuery}
         hasActiveFilters={hasActiveFilters}
-        resetFilters={resetFilters}
+        resetFiltersAction={resetFilters}
       />
 
       <AuthorsTable

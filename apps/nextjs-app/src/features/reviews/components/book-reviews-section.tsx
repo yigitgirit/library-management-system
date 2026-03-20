@@ -52,7 +52,7 @@ export function BookReviewsSection({
           ) : (
             <ReviewForm
               bookId={bookId}
-              onSuccess={() => setPage(1)}
+              onSuccessAction={() => setPage(1)}
             />
           )}
         </div>

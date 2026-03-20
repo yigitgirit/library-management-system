@@ -15,14 +15,14 @@ type ReviewCardProps = {
   review: Review
   currentUserId?: number
   isAdmin?: boolean
-  onDelete?: () => void
+  onDeleteAction?: () => void
 }
 
 export function ReviewCard({
   review,
   currentUserId,
   isAdmin = false,
-  onDelete,
+  onDeleteAction,
 }: ReviewCardProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -48,7 +48,7 @@ export function ReviewCard({
             bookId: review.bookId
           })
         }
-        onDelete?.()
+        onDeleteAction?.()
       } catch (error) {
         console.error("Failed to delete review:", error)
       }
@@ -74,7 +74,7 @@ export function ReviewCard({
                   </span>
                 </div>
                 <div className="mb-2">
-                  <StarRating value={review.rating} onChange={() => {}} readonly size="sm" />
+                  <StarRating value={review.rating} onChangeAction={() => {}} readonly size="sm" />
                 </div>
                 {review.comment && (
                   <p className="text-sm text-foreground break-words">{review.comment}</p>

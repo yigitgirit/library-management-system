@@ -32,9 +32,9 @@ export function CategoriesManagementView({ initialFilters }: CategoriesManagemen
     <div className="space-y-4">
       <CategoriesToolbar
         searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
+        setSearchQueryAction={setSearchQuery}
         hasActiveFilters={hasActiveFilters}
-        resetFilters={resetFilters}
+        resetFiltersAction={resetFilters}
       />
 
       <CategoriesTable
