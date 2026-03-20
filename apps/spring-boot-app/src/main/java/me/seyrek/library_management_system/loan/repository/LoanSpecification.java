@@ -23,6 +23,10 @@ import static me.seyrek.library_management_system.common.repository.Specificatio
  */
 public final class LoanSpecification {
 
+    private LoanSpecification() {
+        // Utility class
+    }
+
     public static Specification<Loan> withDynamicQuery(LoanSearchRequest request) {
         return Specification.allOf(Arrays.asList(
                 hasUserId(request.userId()),
