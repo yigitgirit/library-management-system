@@ -99,7 +99,7 @@ export function UrlSearch({
       value={query}
       onValueChange={setQuery}
       onClear={() => setQuery("")}
-      containerClassName={cn("w-full sm:max-w-sm", containerClassName, className)}
+      containerClassName={cn("w-full", containerClassName)}
       className={className}
       name={paramName}
       {...props}
@@ -148,7 +148,7 @@ export function UrlSubmitSearch({
   }
 
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSearch(query); }} className={cn("w-full sm:max-w-sm", containerClassName, className)}>
+    <form onSubmit={(e) => { e.preventDefault(); onSearch(query); }} className={cn("w-full", containerClassName)}>
       <SearchBase
         value={query}
         onValueChange={setQuery}
@@ -187,7 +187,7 @@ export function DebouncedSearch({
       value={query}
       onValueChange={setQuery}
       onClear={() => setQuery("")}
-      containerClassName={cn("w-full sm:max-w-sm", containerClassName, className)}
+      containerClassName={cn("w-full", containerClassName)}
       className={className}
       {...props}
     />
@@ -214,7 +214,7 @@ export function SubmitSearch({
   }
 
   return (
-    <form onSubmit={handleSubmit} className={cn("w-full sm:max-w-sm", containerClassName, className)}>
+    <form onSubmit={handleSubmit} className={cn("w-full", containerClassName)}>
       <SearchBase
         value={query}
         onValueChange={setQuery}
@@ -243,7 +243,7 @@ export function InstantSearch({
       value={value}
       onValueChange={onValueChange}
       onClear={() => onValueChange("")}
-      containerClassName={cn("w-full sm:max-w-sm", containerClassName, className)}
+      containerClassName={cn("w-full", containerClassName)}
       className={className}
       {...props}
     />
