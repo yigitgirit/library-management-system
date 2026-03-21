@@ -2,25 +2,18 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { BookOpen, Menu, Info, Phone, HelpCircle, LayoutDashboard, CreditCard, User, Settings } from "lucide-react"
+import {usePathname} from "next/navigation"
+import {BookOpen, CreditCard, Info, LayoutDashboard, Menu, Phone, Settings, User} from "lucide-react"
 
-import { Button } from "@/components/ui/button"
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
-import { cn } from "@/lib/utils"
-import { useAuth } from "@/features/auth/hooks/use-auth"
-import { ROLES } from "@/constants"
-import { Separator } from "@/components/ui/separator"
+import {Button} from "@/components/ui/button"
+import {Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger,} from "@/components/ui/sheet"
+import {cn} from "@/lib/utils"
+import {useAuth} from "@/features/auth/hooks/use-auth"
+import {ROLES} from "@/constants"
+import {Separator} from "@/components/ui/separator"
 
 export function MobileNav() {
   const [open, setOpen] = React.useState(false)
-  const pathname = usePathname()
   const { user } = useAuth()
   
   const hasDashboardAccess = user?.roles?.some(role => role === ROLES.ADMIN || role === ROLES.LIBRARIAN)
