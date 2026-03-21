@@ -1,8 +1,8 @@
 "use client"
 
-import {useSuspenseQuery} from "@tanstack/react-query"
+import {useQuery} from "@tanstack/react-query"
 import { cn, createBookSlug } from "@/lib/utils"
-import { Library, BookOpen } from "lucide-react"
+import { Library, BookOpen, AlertCircle } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -37,7 +37,7 @@ export function BookList() {
   const colsParam = searchParams.get("cols")
   const cols = colsParam === '2' ? 2 : colsParam === '3' ? 3 : 4
 
-  const { data, isLoading, isError, isFetching } = useSuspenseQuery(bookQueries.list({
+  const { data, isLoading, isError, isFetching } = useQuery(bookQueries.list({
     search,
     categoryIds,
     available: available ? true : undefined,
@@ -45,6 +45,23 @@ export function BookList() {
     size,
     sort: sort ? [sort] : undefined
   }))
+
+  if (isLoading) {
+    return <BookListSkeleton cols={cols} count={size} />
+  }
+
+  if (isError) {
+    return (
+        <div className="flex flex-col items-center justify-center py-20 text-center border rounded-lg bg-destructive/5 border-destructive/20 border-dashed">
+            <AlertCircle className="h-16 w-16 text-destructive/20 mb-4" />
+            <h3 className="text-lg font-semibold text-destructive">Error loading books</h3>
+            <p className="text-muted-foreground">We couldn&#39;t fetch the catalog from the server.</p>
+            <Button variant="outline" onClick={() => window.location.reload()} className="mt-4">
+                Try again
+            </Button>
+        </div>
+    )
+  }
 
   const books = data?.content || []
   const totalPages = data?.page?.totalPages || 0
@@ -56,10 +73,6 @@ export function BookList() {
     cols === 3 && "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
     cols === 4 && "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
   )
-
-  if (isLoading) {
-    return <BookListSkeleton cols={cols} count={size} />
-  }
 
   return (
     <div className="space-y-4 relative min-h-[50vh]">
@@ -77,19 +90,14 @@ export function BookList() {
         </div>
 
         {/* Background Fetching Progress Bar */}
-        {!isLoading && isFetching && (
+        {isFetching && (
             <div className="absolute inset-x-0 top-3 z-50 h-[2px] bg-primary/20 overflow-hidden rounded-full">
                 <div className="h-full bg-primary animate-progress-loading w-1/3" />
             </div>
         )}
 
         {/* Books Grid */}
-        {isError ? (
-            <div className="flex flex-col items-center justify-center py-20 text-center border rounded-lg bg-destructive/10 border-destructive/20">
-                <h3 className="text-lg font-semibold text-destructive">Error loading books</h3>
-                <p className="text-muted-foreground">Please try again later.</p>
-            </div>
-        ) : books.length > 0 ? (
+        {books.length > 0 ? (
             <div className={cn(gridClass, isFetching && "opacity-50 transition-opacity duration-200")}>
                 {books.map((book) => (
                     <BookCard key={book.id} book={book} />
