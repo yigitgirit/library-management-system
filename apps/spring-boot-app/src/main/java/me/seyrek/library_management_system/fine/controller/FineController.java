@@ -7,7 +7,6 @@ import me.seyrek.library_management_system.common.PagedData;
 import me.seyrek.library_management_system.fine.dto.FineDto;
 import me.seyrek.library_management_system.fine.dto.FineUserSearchRequest;
 import me.seyrek.library_management_system.fine.service.FineService;
-import me.seyrek.library_management_system.fine.service.FineServiceImpl;
 import me.seyrek.library_management_system.payment.dto.PaymentRequest;
 import me.seyrek.library_management_system.security.utils.SecurityUtils;
 import org.springdoc.core.annotations.ParameterObject;
