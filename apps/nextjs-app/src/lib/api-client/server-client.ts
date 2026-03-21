@@ -36,7 +36,13 @@ const serverErrorHandler = async (error: AxiosError) => {
             throw new AppError(apiError as AppError);
         }
     }
-    throw error
+
+    throw new AppError({
+        code: error.code || "NETWORK_ERROR",
+        message: error.response 
+            ? `Server responded with ${error.response.status}`
+            : "Cannot connect to the backend server. It might be offline.",
+    })
 }
 
 export const serverApiClient = createApiClient({
