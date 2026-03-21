@@ -39,9 +39,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            // Stop filtering if Authorization header is missing or does not start with "Bearer ".
-            // This is completely normal for public endpoints.
-            log.trace("Authorization header is missing or does not start with 'Bearer'. Path: {}", request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }
@@ -52,9 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 log.debug("JWT token found for user ID: {}. Initializing security context.", userId);
-                // At this point, we know the signature is valid. We only need to check the expiration.
                 if (!jwtService.isTokenExpired(jwt)) {
-                    // Token is valid, load user details to create the authentication context
                     UserDetails userDetails = this.userDetailsService.loadByUserId(userId);
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
@@ -65,7 +60,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             new WebAuthenticationDetailsSource().buildDetails(request)
                     );
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                    log.info("User ID: {} successfully authenticated and added to security context.", userId);
                 } else {
                     log.warn("JWT token has expired for user ID: {}", userId);
                 }
